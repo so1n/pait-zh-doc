@@ -9,7 +9,7 @@ theme:
         - content.code.annotate
 
 repo_name: so1n/pait
-repo_url: https://github.com/so1n/pait-zh-doc
+repo_url: https://github.com/so1n/pait
 edit_uri: ""
 
 
@@ -37,10 +37,10 @@ extra:
     provider: mike
   alternate:
     - name: English
-      link: /en/
+      link: /pait/
       lang: en
     - name: 中文
-      link: /
+      link: /pait-zh-doc
       lang: zh
   social:
     - icon: fontawesome/brands/github
