@@ -5,7 +5,8 @@
 - 实现一些安全校验的功能
 - 与别的系统交互(如数据库)。
 
-> NOTE：示例代码都是使用`async def`语法，实际上也是支持`def`语法。
+!!! note ""
+    示例代码都是使用`async def`语法，实际上也是支持`def`语法。
 
 ## 1.使用Depend功能
 一般的后端系统中都带有用户Token校验业务，这个业务是非常符合Depend的使用场景。
@@ -268,14 +269,14 @@ app.add_exception_handler(Exception, api_exception)
 
 uvicorn.run(app)
 ```
-如果这段代码是使用IDE进行编写的，那么高亮处的token变量会被打上下划线，如果使用`pyflake`进行代码检测，可能会检查不通过，这时可以把高亮处代码的token参数名改为`_`:
+如果这段代码是使用IDE进行编写的，那么高亮处的token变量会被打上下划线，如果使用`pyflake`进行代码检测，可能会检查不通过，这时可以把高亮处代码的token参数名改为`_`来解决问题，如下:
 ```python
 
 @pait()
 async def demo(_: str = field.Depends.i(get_user_by_token)) -> JSONResponse:
     return JSONResponse({"msg": "success"})
 ```
-来解决问题， 但是Python是不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们变量名都改为`_`。
+但是Python是不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们变量名都改为`_`。
 
 为此，`Pait`通过可选参数`pre_depend_list`来提供了`Pre-Depends`功能，用户只需要把函数传入到Pait的pre_depend_list可选参数即可，
 代码的逻辑和功能均不会被受到影响，这样修改后代码会变为如下：

@@ -1,17 +1,16 @@
 # 介绍
 `Pait`是一个轻量级的Python Api开发工具，拥有参数类型检查, 类型转换和提供文档输出等功能，非常适合用于后端的接口开发，
-它被设计兼容多个Python的Web应用开发框架(目前适配了`Flask`, `Starlette`, `Sanic`, `Tornado`)，且做到尽量少地侵入原有框架，`Pait`设计灵感见文章[《给python接口加上一层类型检》](https://so1n.me/2019/04/15/%E7%BB%99python%E6%8E%A5%E5%8F%A3%E5%8A%A0%E4%B8%8A%E4%B8%80%E5%B1%82%E7%B1%BB%E5%9E%8B%E6%A3%80/)
+它被设计成可以用于多个Python的Web应用开发框架(目前适配了`Flask`, `Starlette`, `Sanic`, `Tornado`)，`Pait`设计灵感见文章[《给python接口加上一层类型检》](https://so1n.me/2019/04/15/%E7%BB%99python%E6%8E%A5%E5%8F%A3%E5%8A%A0%E4%B8%8A%E4%B8%80%E5%B1%82%E7%B1%BB%E5%9E%8B%E6%A3%80/)
 。
 
-> NOTE:
->
-> mypy check 100%
->
-> test coverage 95%+ (排除api_doc)
->
-> python version >= 3.7 (支持延迟注释)
->
-> 以下代码没有特别说明, 都默认以starlette框架为例
+!!! note Note
+    type hint check 100%
+
+    test coverage 95%+ (排除api_doc)
+
+    python version >= 3.7 (支持延迟注释)
+
+    以下代码没有特别说明, 都默认以starlette框架为例
 
 
 # 功能
@@ -88,7 +87,7 @@ uvicorn.run(app)
 
 ## 插件
 除了参数校验和文档生成外，`Pait`还拥有一个插件系统，通过插件系统可以拓展其它功能，比如Mock响应功能，它能根据ResponseModel来自动返回数据，即使这个路由没有数据返回，比如下面的代码：
-```py hl_lines="8 11 18 27"
+```py hl_lines="8 11 17 26"
 from typing import Type
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -96,10 +95,9 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 from pait.app.starlette import pait, add_doc_route
-from pait.app.starlette.plugin.mock_response import MockAsyncPlugin
+from pait.app.starlette.plugin.mock_response import AsyncMockPlugin 
 from pait.field import Body
 from pait.model.response import PaitResponseModel
-from pait.plugin import PluginManager
 from pydantic import BaseModel, Field
 
 
@@ -115,7 +113,7 @@ class DemoResponseModel(PaitResponseModel):
 
 # 使用pait装饰器装饰函数
 @pait(
-    post_plugin_list=[PluginManager(MockAsyncPlugin)],
+    post_plugin_list=[AsyncMockPlugin.build()],
     response_model_list=[DemoResponseModel]
 )
 async def demo_post(
@@ -129,6 +127,8 @@ app = Starlette(routes=[Route('/api', demo_post, methods=['POST'])])
 # 注册OpenAPI接口
 add_doc_route(app)
 uvicorn.run(app)
+
+
 ```
 该代码是根据上面的代码进行更改，它移除了返回响应，同时引入了高亮部分的代码，其中第18行中的`uid: int = Field(example=999)`指定了了example值为999，接着运行代码，并运行上面Swagger返回的`Curl`命令:
 ```bash

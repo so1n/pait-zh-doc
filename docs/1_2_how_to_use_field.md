@@ -103,8 +103,8 @@ curl -X 'POST' \
 }
 ```
 ## 2.Field的功能
-从上面的例子可以看到， 请求中没有带上`email`参数， 但是该接口任然可以得到`email`的值`example@xxx.com`，
-这是因为在填写`email`的`field`时，我把`example@xxx.com`填写到default值中，这样`Pait`会在获取不到该变量的对应值的情况下，`也能把默认值赋给对应的变量。
+从上面的例子可以看到， 请求中没有带上`email`参数， 但是该接口返回的响应值中`email`的值是`example@xxx.com`，
+这是因为在填写`email`的`field`时，我把`example@xxx.com`填写到default值中，这样`Pait`会在获取不到该变量的对应值的情况下，也能把默认值赋给对应的变量。
 
 除了默认值之外， `field`也有很多的功能，这些功能大部分来源于`field`所继承的`pydantic.Field`。
 

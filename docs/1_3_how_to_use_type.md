@@ -8,7 +8,7 @@ async def demo(
 ) -> JSONResponse:
     return JSONResponse({"a": a, "b": b})
 ```
-在`Pait`内部， 会认为该接口需要的是一个`Pydantic.BaseModel`:
+在`Pait`内部， 会认为该接口需要的是一个如下的`Pydantic.BaseModel`:
 ```Python
 from pydantic import BaseModel, Field
 
