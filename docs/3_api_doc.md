@@ -1,5 +1,5 @@
 ## 1.介绍
-`Pait`会在运行时自动捕获路由函数的请求参数和url,method等信息自动生成OpenAPI数据, 不过单靠函数的信息还不够，还需要开发者手动标注一些相关信息, 如下面的例子:
+`Pait`会在运行时自动捕获路由函数的请求参数和url，method等信息自动生成OpenAPI数据, 不过单靠函数的信息还不够，还需要开发者手动标注一些相关信息, 如下面的例子:
 ```Python
 from example.param_verify.model import FailRespModel, UserSuccessRespModel
 from pait.app.starlette import pait
@@ -21,7 +21,7 @@ def demo() -> None:
 - author: 编写接口的作者列表
 - group: 接口所属的组(该选项目前不会用于OpenAPI)
 - tag: 接口的标签
-- response_model_list: 返回的结果数据, 需要继承于`pait.model.PaitResponseModel`.由于`pait`是web框架的拓展,不会修改框架的代码, 所以该参数不会用于普通的请求判断(也不应该用于生产环境), 目前只会用于文档生成, mock响应生成, TestClient校验。
+- response_model_list: 返回的结果数据, 需要继承于`pait.model.PaitResponseModel`.由于`pait`是web框架的拓展插件,不会修改框架的代码, 所以该参数不会与接口生成的响应进行校验(也不应该用于生产环境), 目前只会用于文档生成，mock响应生成，TestClient校验。
 - status: 接口的状态, 目前只支持PaitStatus的几种状态(该选项只有下线相关的才会用于OpenAPI并标注为弃用)
 
     * 默认状态:
@@ -43,17 +43,16 @@ def demo() -> None:
 
 
 ## OpenAPI
-通过这些数据后，`Pait`就能生成一份完整的OpenAPI文档， 目前`Pait`支持OpenAPI的大多数功能,少数未实现的功能将通过迭代逐步完善，目前支持的参数如下(下一个版本会提供更多的参数):
+通过用户手动补齐这些数据后，`Pait`就能生成一份完整的OpenAPI文档， 目前`Pait`支持OpenAPI的大多数功能,少数未实现的功能将通过迭代逐步完善，目前支持的参数如下(下一个版本会提供更多的参数):
 
 - title: `OpenAPI`的title
 - open_api_info: `OpenAPI` info的参数
 - open_api_tag_list: `OpenAPI` tag的相关描述
 - open_api_server_list: `OpenAPI` server 列表
-- type_: 输出的类型, 可选json和yaml
+- type_: 输出的OpenAPI文件类型, 可选json和yaml
 - filename: 输出文件名, 如果为空则输出到终端
 
 以下是OpenAPI文档输出的示例代码:
-
 ```Python
 from pydantic import BaseModel, conint, constr
 from starlette.applications import Starlette
@@ -73,9 +72,9 @@ class PydanticModel(BaseModel):
 # 使用pait装饰器装饰函数
 @pait()
 async def demo_post(
-        # pait通过Body()知道当前需要从请求中获取body的值,并赋值到model中,
-        # 而这个model的结构正是上面的PydanticModel,他会根据我们定义的字段自动获取值并进行转换和判断
-        model: PydanticModel = Body.i()
+    # pait通过Body()知道当前需要从请求中获取body的值,并赋值到model中,
+    # 而这个model的结构正是上面的PydanticModel,他会根据我们定义的字段自动获取值并进行转换和判断
+    model: PydanticModel = Body.i()
 ):
     # 获取对应的值进行返回
     return JSONResponse({'result': model.dict()})
@@ -91,7 +90,7 @@ pait_dict = load_app(app)
 # 根据数据模块的数据生成路由的OpenAPI
 PaitOpenAPI(pait_dict)
 ```
-此外，如果单纯的需要一份API文档，那么可以使用自带的`markdown`模块来生成接口对应的`markdown`文档：
+通过改代码就可以自动生成一个OpenAPI的文件，不过一般情况下都很少直接使用生成的OpenAPI文件，如果单纯的需要一份API文档，那么可以使用自带的`markdown`模块来生成接口对应的`markdown`文档：
 ```Python
 from pait.api_doc.markdown import PaitMd
 
@@ -139,8 +138,7 @@ app = Starlette(routes=[Route('/api', demo_post, methods=['POST'])])
 # 把路由注入到app中
 add_doc_route(app)
 ```
-
-此外，`add_doc_route`函数支持其它参数，具体如下：
+通过`add_doc_route`函数，用户就可以调用`http://127.0.0.1/swagger`访问对应的Swagger页面，得到首页类型的API文档页面，不过`add_doc_route`函数支持其它参数，具体如下：
 ```Python
 # 把路由注入到app中, 并且以/doc为前缀
 add_doc_route(app, prefix='/doc')

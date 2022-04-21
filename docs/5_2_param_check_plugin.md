@@ -4,7 +4,7 @@
 ## Required插件
 在编写API接口时，经常会遇到一种情况，比如某个接口存在请求参数A，B，C，一般情况下B和C都是选填，但是参数C依赖于参数B，也就是参数B存在时，C才可以存在，
 这时就可以使用`Required`插件配置规则来满足这一个条件，如下代码：
-```py hl_lines="23-25"
+```py hl_lines="22-24"
 from typing import Optional
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -12,7 +12,6 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 from pait.exceptions import TipException
-from pait.plugin import PluginManager
 from pait.plugin.required import AsyncRequiredPlugin
 
 from pait.app.starlette import pait
@@ -28,7 +27,7 @@ async def api_exception(request: Request, exc: Exception) -> JSONResponse:
 
 @pait(
     post_plugin_list=[
-        PluginManager(AsyncRequiredPlugin, required_dict={"email": ["user_name"]})
+        AsyncRequiredPlugin.build(required_dict={"email": ["user_name"]})
     ]
 )
 async def demo(
@@ -61,7 +60,7 @@ uvicorn.run(app)
 
 ## AtMostOneOf插件
 除了参数的互相依赖外，还存在参数互相排斥的情况，比如某个接口有参数A，B，C三个，当B存在时，C就不能存在，C存在时，B就不能存在，这时可以使用`AtMostOneOf`插件配置规则来实现功能，代码如下：
-```py hl_lines="23-28"
+```py hl_lines="22-24"
 from typing import Optional
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -69,7 +68,6 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 from pait.exceptions import TipException
-from pait.plugin import PluginManager
 from pait.plugin.at_most_one_of import AsyncAtMostOneOfPlugin
 
 from pait.app.starlette import pait
@@ -85,10 +83,7 @@ async def api_exception(request: Request, exc: Exception) -> JSONResponse:
 
 @pait(
     post_plugin_list=[
-        PluginManager(
-            AsyncAtMostOneOfPlugin,
-            at_most_one_of_list=[["email", "user_name"]]
-        )
+        AsyncAtMostOneOfPlugin.build(at_most_one_of_list=[["email", "user_name"]])
     ]
 )
 async def demo(

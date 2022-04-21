@@ -5,7 +5,7 @@
 这样会增加前端的工作量，同时前端Mock的数据并不一定是我们想要的，这时可以使用`MockPlugin`插件来让接口提供Mock数据。
 
 `MockPlugin`插件使用非常简单，代码如下:
-```py hl_lines="16-19"
+```py hl_lines="15-18"
 from typing import Optional
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -13,7 +13,6 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 from pait.exceptions import TipException
-from pait.plugin import PluginManager
 from pait.app.starlette.plugin.mock_response import AsyncMockPlugin
 from example.param_verify.model import UserSuccessRespModel3
 
@@ -23,7 +22,7 @@ from pait import field
 
 @pait(
     response_model_list=[UserSuccessRespModel3],
-    plugin_list=[PluginManager(AsyncMockPlugin)]
+    plugin_list=[AsyncMockPlugin.build()]
 )
 async def demo(
     uid: int = field.Query.i(description="user id", gt=10, lt=1000),
