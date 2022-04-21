@@ -632,9 +632,9 @@
 <li>实现一些安全校验的功能</li>
 <li>与别的系统交互(如数据库)。</li>
 </ul>
-<blockquote>
-<p>NOTE：示例代码都是使用<code>async def</code>语法，实际上也是支持<code>def</code>语法。</p>
-</blockquote>
+<div class="admonition note">
+<p>示例代码都是使用<code>async def</code>语法，实际上也是支持<code>def</code>语法。</p>
+</div>
 <h2 id="1depend">1.使用Depend功能</h2>
 <p>一般的后端系统中都带有用户Token校验业务，这个业务是非常符合Depend的使用场景。
 在这个场景中，用户每次访问接口时都需要带上Token，服务端收到用户的请求后会先判断Token是否合法，如果不合法则会返回错误，合法则会执行接口的逻辑。</p>
@@ -880,12 +880,12 @@
 <a id="__codelineno-8-33" name="__codelineno-8-33"></a>
 <a id="__codelineno-8-34" name="__codelineno-8-34"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
-如果这段代码是使用IDE进行编写的，那么高亮处的token变量会被打上下划线，如果使用<code>pyflake</code>进行代码检测，可能会检查不通过，这时可以把高亮处代码的token参数名改为<code>_</code>:
+如果这段代码是使用IDE进行编写的，那么高亮处的token变量会被打上下划线，如果使用<code>pyflake</code>进行代码检测，可能会检查不通过，这时可以把高亮处代码的token参数名改为<code>_</code>来解决问题，如下:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nd">@pait</span><span class="p">()</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Depends</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">get_user_by_token</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
 <a id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">})</span>
 </code></pre></div>
-来解决问题， 但是Python是不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们变量名都改为<code>_</code>。</p>
+但是Python是不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们变量名都改为<code>_</code>。</p>
 <p>为此，<code>Pait</code>通过可选参数<code>pre_depend_list</code>来提供了<code>Pre-Depends</code>功能，用户只需要把函数传入到Pait的pre_depend_list可选参数即可，
 代码的逻辑和功能均不会被受到影响，这样修改后代码会变为如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>

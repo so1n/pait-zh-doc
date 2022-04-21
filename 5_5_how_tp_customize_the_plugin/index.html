@@ -604,7 +604,7 @@
 <a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="n">is_pre_core</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10"></a>
 <a id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="nd">@classmethod</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="k">def</span> <span class="nf">cls_hook_by_core_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pait_core_model</span><span class="p">:</span> <span class="s2">&quot;PaitCoreModel&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="k">def</span> <span class="nf">pre_check</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pait_core_model</span><span class="p">:</span> <span class="s2">&quot;PaitCoreModel&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <a id="__codelineno-2-13" name="__codelineno-2-13"></a>        <span class="k">if</span> <span class="n">pait_core_model</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;demo&quot;</span><span class="p">:</span>
 <a id="__codelineno-2-14" name="__codelineno-2-14"></a>            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is only used for demo func&quot;</span><span class="p">)</span>
 <a id="__codelineno-2-15" name="__codelineno-2-15"></a>        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">cls_hook_by_core_model</span><span class="p">(</span><span class="n">pait_core_model</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
@@ -620,19 +620,16 @@
 <ul>
 <li>0.由于该路由函数是<code>async</code>的，所以该函数只能被基于<code>BaseAsyncPlugin</code>插件挂载。</li>
 <li>1.第9行的<code>is_pre_core = True</code>是设置该插件为前置插件，这样就能拦截<code>Pait</code>和路由函数的异常了。</li>
-<li>2.第12行的<code>cls_hook_by_core_model</code>方法会进行一些初始化的检查，该检查只会在初始化的时候运行，这个检查的逻辑是如果判定该插件并不是挂在<code>demo</code>函数上就会抛错，
+<li>2.第12行的<code>pre_chec</code>方法会进行一些初始化的检查，该检查只会在初始化的时候运行，这个检查的逻辑是如果判定该插件并不是挂在<code>demo</code>函数上就会抛错，
 其中<code>pait_core_model</code>是<code>Pait</code>为路由函数生成的一些属性。</li>
 <li>3.第17行的<code>__call__</code>方法是该插件的主要处理逻辑，当有请求进来时，<code>Pait</code>会通过<code>__call__</code>方法调用插件，插件可以通过<code>call_next</code>来调用下一个插件，
 该插件通过<code>try...except</code>来捕获后续所有调用段异常，如果是符合条件的异常就会被捕获，并生成不一样的响应结果。</li>
 </ul>
-<p>编写完毕插件后，通过<code>PluginManager</code>托管挂载插件:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">pait.plugin</span> <span class="kn">import</span> <span class="n">PluginManager</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">plugin_list</span><span class="o">=</span><span class="p">[</span><span class="n">PluginManager</span><span class="p">(</span><span class="n">DemoExceptionPlugin</span><span class="p">)])</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="o">...</span><span class="p">):</span> <span class="k">pass</span>
+<p>编写完毕插件后，就可以直接使用了，对上面代码进行如下的小更改:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">plugin_list</span><span class="o">=</span><span class="p">[</span><span class="n">DemoExceptionPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">])</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="o">...</span><span class="p">):</span> <span class="k">pass</span>
 </code></pre></div>
-最后重启程序并运行同样的请求，可以发现响应结果已经变为插件自己抛出的结果：
+然后重启程序并运行同样的请求，可以发现响应结果已经变为插件自己抛出的结果：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a>➜  ~ curl http://127.0.0.1:8000/api/demo
 <a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="o">{</span><span class="s2">&quot;plugin exc info&quot;</span>:<span class="s2">&quot;File \&quot;/home/so1n/demo.py\&quot;, line 48, in demo.\nerror:Can not found uid value&quot;</span><span class="o">}</span>
 </code></pre></div></p>

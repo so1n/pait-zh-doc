@@ -471,6 +471,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    关闭预检查
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -595,6 +602,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    关闭预检查
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -643,19 +657,35 @@
 最后才经由后置插件把参数交给真正的路由函数处理生成响应并一一返回。</p>
 <h2 id="_2">如何使用</h2>
 <p>目前<code>Pait</code>提供<code>plugin_list</code>和<code>post_plugin_list</code>来供开发者传入前置插件和后置插件，如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nd">@pait</span><span class="p">(</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a>        <span class="n">PluginManager</span><span class="p">(</span><span class="n">RequiredPlugin</span><span class="p">,</span> <span class="n">required_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]})</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="p">]</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pait.plugin.required</span> <span class="kn">import</span> <span class="n">RequiredPlugin</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span><span class="n">RequiredPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">required_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]})])</span>
 </code></pre></div>
-这段代码使用到的是一个名为<code>RequiredPlugin</code>的插件，这个插件属于后置形插件，所以是以<code>post_plugin_list</code>来传入插件。
-同时<code>Pait</code>为了防止多个请求共享到相同的插件变量，所以不支持直接引入插件，而是需要通过一个名为<code>PluginManager</code>的类来托管，
-其中，<code>RequiredPlugin</code>插件要求传入一个<code>required_dict</code>参数，需要把这个参数一并写入到<code>PluginManager</code>中，由<code>PluginManager</code>来初始化和运行插件。</p>
-<p>不过这种写法比较啰嗦，同时无法通过类型检查工具来检查传的参数是否正确，在<code>Pait</code> 0.7.5版本后，可以通过<code>build</code>方法来方便的使用插件，使用方法如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span><span class="n">RequiredPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">required_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]})])</span>
+这段代码使用到的是一个名为<code>RequiredPlugin</code>的插件，这个插件属于后置形插件，所以是以<code>post_plugin_list</code>来传入插件。同时，由于插件是在收到请求的时候才会进行初始化，为了防止多个请求共享到相同的插件变量，<code>Pait</code>不支持直接初始化插件，而是使用<code>build</code>方法来使用插件(所以不为<code>__init__</code>方法提供准确的函数签名)。</p>
+<p>如果考虑到插件的复用，推荐使用<code>create_factory</code>函数，该函数支持<a href="https://peps.python.org/pep-0612/">PEP-612</a>，支持IDE提醒和类型检查，<code>create_factory</code>使用方法如下：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">pait.util</span> <span class="kn">import</span> <span class="n">create_factory</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1"># 首先传入插件的build方法，并把build需要的参数传进去</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># 然后得到的是一个可调用的方法</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="n">required_plugin</span> <span class="o">=</span> <span class="n">create_factory</span><span class="p">(</span><span class="n">RequiredPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">)(</span><span class="n">required_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]})</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="c1"># 直接调用create_factory的返回，这时候插件会注入到路由函数中并进行一些初始化，同时也不影响其它路由函数的使用</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span><span class="n">required_plugin</span><span class="p">()])</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="k">def</span> <span class="nf">demo_1</span><span class="p">():</span> 
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="k">pass</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span><span class="n">required_plugin</span><span class="p">()])</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="k">def</span> <span class="nf">demo_2</span><span class="p">():</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="k">pass</span>
+</code></pre></div></p>
+<h2 id="_3">关闭预检查</h2>
+<p><code>Pait</code>是一个装饰器，用来装饰路由函数，所以在程序启动的时候会直接运行，装填各种参数。不过在把插件装填到路由函数时会调用到插件的<code>pre_check</code>方法，对用户使用插件是否正确进行校验，比如下面的代码:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nd">@pait</span><span class="p">()</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Body</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="p">)</span>
 </code></pre></div>
-这样一来也可以通过<code>mypy</code>,<code>pyright</code>等工具进行参数检查。</p>
+在启动的时候核心插件会校验到用户填写的<code>default</code>值并不属于<code>str</code>类型，所以会抛出错误。不过这类检查可能会影响到程序的启动时间，所以建议在测试环境下才通过<code>pre_check</code>进行检查，而在生产环境则关闭，而关闭的方法很简单，通过设置环境变量<code>PAIT_IGNORE_PRE_CHECK</code>为True即可关闭检查。</p>
 
               
             </article>

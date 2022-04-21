@@ -624,7 +624,7 @@
   <h1>API文档</h1>
 
 <h2 id="1">1.介绍</h2>
-<p><code>Pait</code>会在运行时自动捕获路由函数的请求参数和url,method等信息自动生成OpenAPI数据, 不过单靠函数的信息还不够，还需要开发者手动标注一些相关信息, 如下面的例子:
+<p><code>Pait</code>会在运行时自动捕获路由函数的请求参数和url，method等信息自动生成OpenAPI数据, 不过单靠函数的信息还不够，还需要开发者手动标注一些相关信息, 如下面的例子:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">example.param_verify.model</span> <span class="kn">import</span> <span class="n">FailRespModel</span><span class="p">,</span> <span class="n">UserSuccessRespModel</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">pait.model.status</span> <span class="kn">import</span> <span class="n">PaitStatus</span>
@@ -645,7 +645,7 @@
 <li>author: 编写接口的作者列表</li>
 <li>group: 接口所属的组(该选项目前不会用于OpenAPI)</li>
 <li>tag: 接口的标签</li>
-<li>response_model_list: 返回的结果数据, 需要继承于<code>pait.model.PaitResponseModel</code>.由于<code>pait</code>是web框架的拓展,不会修改框架的代码, 所以该参数不会用于普通的请求判断(也不应该用于生产环境), 目前只会用于文档生成, mock响应生成, TestClient校验。</li>
+<li>response_model_list: 返回的结果数据, 需要继承于<code>pait.model.PaitResponseModel</code>.由于<code>pait</code>是web框架的拓展插件,不会修改框架的代码, 所以该参数不会与接口生成的响应进行校验(也不应该用于生产环境), 目前只会用于文档生成，mock响应生成，TestClient校验。</li>
 <li>
 <p>status: 接口的状态, 目前只支持PaitStatus的几种状态(该选项只有下线相关的才会用于OpenAPI并标注为弃用)</p>
 <ul>
@@ -679,17 +679,17 @@
 </li>
 </ul>
 <h2 id="openapi">OpenAPI</h2>
-<p>通过这些数据后，<code>Pait</code>就能生成一份完整的OpenAPI文档， 目前<code>Pait</code>支持OpenAPI的大多数功能,少数未实现的功能将通过迭代逐步完善，目前支持的参数如下(下一个版本会提供更多的参数):</p>
+<p>通过用户手动补齐这些数据后，<code>Pait</code>就能生成一份完整的OpenAPI文档， 目前<code>Pait</code>支持OpenAPI的大多数功能,少数未实现的功能将通过迭代逐步完善，目前支持的参数如下(下一个版本会提供更多的参数):</p>
 <ul>
 <li>title: <code>OpenAPI</code>的title</li>
 <li>open_api_info: <code>OpenAPI</code> info的参数</li>
 <li>open_api_tag_list: <code>OpenAPI</code> tag的相关描述</li>
 <li>open_api_server_list: <code>OpenAPI</code> server 列表</li>
-<li>type_: 输出的类型, 可选json和yaml</li>
+<li>type_: 输出的OpenAPI文件类型, 可选json和yaml</li>
 <li>filename: 输出文件名, 如果为空则输出到终端</li>
 </ul>
-<p>以下是OpenAPI文档输出的示例代码:</p>
-<p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">conint</span><span class="p">,</span> <span class="n">constr</span>
+<p>以下是OpenAPI文档输出的示例代码:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">conint</span><span class="p">,</span> <span class="n">constr</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
@@ -707,9 +707,9 @@
 <a id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="c1"># 使用pait装饰器装饰函数</span>
 <a id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="nd">@pait</span><span class="p">()</span>
 <a id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo_post</span><span class="p">(</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19"></a>        <span class="c1"># pait通过Body()知道当前需要从请求中获取body的值,并赋值到model中,</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20"></a>        <span class="c1"># 而这个model的结构正是上面的PydanticModel,他会根据我们定义的字段自动获取值并进行转换和判断</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21"></a>        <span class="n">model</span><span class="p">:</span> <span class="n">PydanticModel</span> <span class="o">=</span> <span class="n">Body</span><span class="o">.</span><span class="n">i</span><span class="p">()</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="c1"># pait通过Body()知道当前需要从请求中获取body的值,并赋值到model中,</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20"></a>    <span class="c1"># 而这个model的结构正是上面的PydanticModel,他会根据我们定义的字段自动获取值并进行转换和判断</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">PydanticModel</span> <span class="o">=</span> <span class="n">Body</span><span class="o">.</span><span class="n">i</span><span class="p">()</span>
 <a id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="p">):</span>
 <a id="__codelineno-1-23" name="__codelineno-1-23"></a>    <span class="c1"># 获取对应的值进行返回</span>
 <a id="__codelineno-1-24" name="__codelineno-1-24"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">dict</span><span class="p">()})</span>
@@ -725,7 +725,7 @@
 <a id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="c1"># 根据数据模块的数据生成路由的OpenAPI</span>
 <a id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="n">PaitOpenAPI</span><span class="p">(</span><span class="n">pait_dict</span><span class="p">)</span>
 </code></pre></div>
-此外，如果单纯的需要一份API文档，那么可以使用自带的<code>markdown</code>模块来生成接口对应的<code>markdown</code>文档：
+通过改代码就可以自动生成一个OpenAPI的文件，不过一般情况下都很少直接使用生成的OpenAPI文件，如果单纯的需要一份API文档，那么可以使用自带的<code>markdown</code>模块来生成接口对应的<code>markdown</code>文档：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">pait.api_doc.markdown</span> <span class="kn">import</span> <span class="n">PaitMd</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">PaitMd</span><span class="p">(</span><span class="n">pait_dict</span><span class="p">)</span>
@@ -769,8 +769,8 @@
 <a id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="n">Route</span><span class="p">(</span><span class="s1">&#39;/api&#39;</span><span class="p">,</span> <span class="n">demo_post</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])])</span>
 <a id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="c1"># 把路由注入到app中</span>
 <a id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="n">add_doc_route</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
-</code></pre></div></p>
-<p>此外，<code>add_doc_route</code>函数支持其它参数，具体如下：
+</code></pre></div>
+通过<code>add_doc_route</code>函数，用户就可以调用<code>http://127.0.0.1/swagger</code>访问对应的Swagger页面，得到首页类型的API文档页面，不过<code>add_doc_route</code>函数支持其它参数，具体如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># 把路由注入到app中, 并且以/doc为前缀</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">add_doc_route</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/doc&#39;</span><span class="p">)</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="c1"># 通常挂在Nginx后面的应用程序可能无法知道当前请求的scheme是https还是http，可以通过scheme指定请求点scheme</span>

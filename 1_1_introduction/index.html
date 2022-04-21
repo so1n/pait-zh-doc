@@ -591,10 +591,11 @@
 <li><code>type</code>为值对应的类型，<code>Pait</code>会用来做参数校验和转化</li>
 <li><code>default</code>则是<code>Pait</code>的<code>field</code>对象，不同的<code>field</code>代表从不同的请求类型获取值， 而对象的属性则告诉<code>Pait</code>该如何去预处理从请求中获取的值。</li>
 </ul>
-<p>以上面的<code>uid</code>参数为例子，代表从请求中的Body获取Json数据，获取Key为uid的值并转化或验证是否为<code>int</code>类型， 最后再判断是否处于10-1000之间， 再赋值给<code>uid</code>这个变量。</p>
-<blockquote>
-<p>注: 直接使用Body()时, mypy会检查到类型不匹配, 而Body.i()则可兼容这个问题， 一般情况下建议直接使用Body.i()。</p>
-</blockquote>
+<p>以上面的<code>uid</code>参数为例子，<code>Pait</code>会从请求中的Body获取Json数据，接着获取Json数据中Key为uid的值并转化或验证是否为<code>int</code>类型， 最后再判断该值是否处于10-1000之间，如果不是就直接报错， 如果是则赋值给<code>uid</code>这个变量。</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>直接使用Body()时, mypy会检查到类型不匹配, 而Body.i()则可兼容这个问题， 一般情况下建议直接使用Body.i()。</p>
+</div>
 
               
             </article>

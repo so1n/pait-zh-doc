@@ -609,7 +609,7 @@
 
   <h1>Pait的复用</h1>
 
-<p>在上面的章节中，通过直接使用<code>Pait</code>装饰器来使用<code>Pait</code>的参数转换与类型校验功能，也有简单的说明通过<code>pre_depend_list</code>参数来使用<code>Pait</code>的Pre-Depend功能，
+<p>在上面的章节中，介绍了通过直接使用<code>Pait</code>装饰器来使用参数转换与类型校验功能，也有简单的介绍通过<code>pre_depend_list</code>参数来使用<code>Pait</code>的Pre-Depend功能，
 而在后面的章节中（特别是文档章节）会介绍<code>Pait</code>的其它功能，这些功能用需要通过指定的参数来启用，但是很多接口本身都有一些共性从而它们在使用<code>Pait</code>时填写的参数的一样的，
 比如当一个开发者编写了几个接口时，可能会这样写:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">Response</span>
@@ -664,7 +664,7 @@
 <a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="k">pass</span>
 </code></pre></div>
-如果在后续的代码迭代且接口函数需要集中变动时，我们只需要直接修改定义的<code>global_pait</code>的属性则可以让所有接口的<code>Pait</code>属性都得到更改。</p>
+如果在后续的代码迭代且接口函数需要集中变动时，我们只需要直接修<code>global_pait</code>的属性则可以让所有接口的<code>Pait</code>属性都得到更改。</p>
 <h2 id="pait_1">创建子Pait</h2>
 <p><code>Pait</code>可以通过<code>create_sub_pait</code>方法创建自己的子<code>Pait</code>，每个子<code>Pait</code>的属性都是继承于自己的父<code>Pait</code>属性，比如下面这段示例代码：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
@@ -691,15 +691,15 @@
 <a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="n">user_pait</span><span class="p">:</span> <span class="n">Pait</span> <span class="o">=</span> <span class="n">global_pait</span><span class="o">.</span><span class="n">create_sub_pait</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
 <a id="__codelineno-6-6" name="__codelineno-6-6"></a>
 <a id="__codelineno-6-7" name="__codelineno-6-7"></a>
-<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="nd">@user_pait</span><span class="p">()</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="nd">@user_pait</span><span class="p">()</span>  <span class="c1"># group=&quot;user&quot;</span>
 <a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">user_login</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
 <a id="__codelineno-6-10" name="__codelineno-6-10"></a>    <span class="k">pass</span>
 <a id="__codelineno-6-11" name="__codelineno-6-11"></a>
-<a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="nd">@user_pait</span><span class="p">()</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="nd">@user_pait</span><span class="p">()</span>  <span class="c1"># group=&quot;user&quot;</span>
 <a id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">user_logout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
 <a id="__codelineno-6-14" name="__codelineno-6-14"></a>    <span class="k">pass</span>
 <a id="__codelineno-6-15" name="__codelineno-6-15"></a>
-<a id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="nd">@global_pait</span><span class="p">()</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="nd">@global_pait</span><span class="p">()</span>  <span class="c1"># group=&quot;global&quot;</span>
 <a id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_server_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
 <a id="__codelineno-6-18" name="__codelineno-6-18"></a>    <span class="k">pass</span>
 </code></pre></div>

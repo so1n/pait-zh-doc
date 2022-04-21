@@ -836,8 +836,8 @@
 <a id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="o">}</span>
 </code></pre></div></p>
 <h2 id="2field">2.Field的功能</h2>
-<p>从上面的例子可以看到， 请求中没有带上<code>email</code>参数， 但是该接口任然可以得到<code>email</code>的值<code>example@xxx.com</code>，
-这是因为在填写<code>email</code>的<code>field</code>时，我把<code>example@xxx.com</code>填写到default值中，这样<code>Pait</code>会在获取不到该变量的对应值的情况下，`也能把默认值赋给对应的变量。</p>
+<p>从上面的例子可以看到， 请求中没有带上<code>email</code>参数， 但是该接口返回的响应值中<code>email</code>的值是<code>example@xxx.com</code>，
+这是因为在填写<code>email</code>的<code>field</code>时，我把<code>example@xxx.com</code>填写到default值中，这样<code>Pait</code>会在获取不到该变量的对应值的情况下，也能把默认值赋给对应的变量。</p>
 <p>除了默认值之外， <code>field</code>也有很多的功能，这些功能大部分来源于<code>field</code>所继承的<code>pydantic.Field</code>。</p>
 <h3 id="21default">2.1.default</h3>
 <p><code>Pait</code>通过该参数支持默认值， 如果没有默认值可以直接不填写该参数的值。</p>
