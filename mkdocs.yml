@@ -30,7 +30,8 @@ nav:
       - Json响应插件: '5_3_json_response_plugin.md'
       - Mock响应插件: '5_4_mock_json_response_check_plugin.md'
       - 如何自定义插件: '5_5_how_tp_customize_the_plugin.md'
-  - 其它: "6_other.md"
+  - config: "6_config.md"
+  - 其它: "7_other.md"
 
 extra:
   version:
