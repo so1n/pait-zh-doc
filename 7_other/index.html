@@ -502,6 +502,21 @@
 
   
   
+  
+    <li class="md-nav__item">
+      <a href="../6_config/" class="md-nav__link">
+        config
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
     
   
   
@@ -541,8 +556,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#config-dataload_app" class="md-nav__link">
-    config, data与load_app
+  <a href="#dataload_app" class="md-nav__link">
+    data与load_app
   </a>
   
 </li>
@@ -615,8 +630,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#config-dataload_app" class="md-nav__link">
-    config, data与load_app
+  <a href="#dataload_app" class="md-nav__link">
+    data与load_app
   </a>
   
 </li>
@@ -672,7 +687,7 @@
 但是如果同时安装了多个框架, 那么上面的引入会抛出错误, 建议使用显示引入, 如:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">add_doc_route</span><span class="p">,</span> <span class="n">load_app</span><span class="p">,</span> <span class="n">pait</span>
 </code></pre></div></p>
-<h2 id="config-dataload_app">config, data与load_app</h2>
+<h2 id="dataload_app">data与load_app</h2>
 <ul>
 <li>data
 由于<code>pait</code>的通过一个装饰器来提供功能支持, 所以在编译器启动时, 所有数据都注入到data中, 为后续的文档生成等功能提供支。</li>
@@ -693,37 +708,13 @@ data里面有很多路由函数的信息, 但是会缺少关键的参数如<code
 <a id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="c1"># 成功的</span>
 <a id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="n">load_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div></li>
-<li>config
-config能为<code>pait</code>提供一些配置支持, 它需要尽快的初始化, 最佳的初始化位置就是在app初始化之前进行初始化,  同时整个运行时只允许初始化一次
-  <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">load_app</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">author</span><span class="o">=</span><span class="s2">&quot;so1n&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="n">app</span><span class="p">:</span> <span class="n">Starlette</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">()</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="c1"># --------</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="c1"># app.add_route</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># --------</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="n">load_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
-</code></pre></div></li>
-</ul>
-<p>参数介绍:</p>
-<ul>
-<li>author: 全局的默认API作者, 如果<code>@pait</code>中没有填写author, 会默认调用到<code>config.author</code></li>
-<li>status: 全局的默认API状态, 如果<code>@pait</code>中没有填写status, 会默认调用到<code>config.status</code></li>
-<li>enable_mock_response: 决定这次运行是返回正常的响应还是根据<code>response_model</code>返回mock响应</li>
-<li>enable_mock_response_filter_fn: 默认支持多个<code>response_model</code>, mock响应默认只取第一个<code>response_model</code>, 如果觉得这个不符合自己想要的<code>response_model</code>, 则可以配置该函数来返回自己想要的结果</li>
-<li>block_http_method_set: 有一些web框架会自动帮忙把一些路由函数添加<code>HEAD</code>等请求方法, <code>pait</code>是无法识别哪些是框架添加, 哪些是用户自己添加的, 这时可以通过该参数屏蔽一些<code>method</code></li>
-<li>default_response_model_list: 在设计一些API接口时, 通常有一些默认的异常响应, 只需要配置该参数即可应用到全局</li>
-<li>json_type_default_value_dict: 配置json类型的默认值</li>
 </ul>
 <h2 id="webpait">如何在其它Web框架使用Pait</h2>
-<p>如果要在其他尚未支持的框架中使用pait, 或者要对功能进行拓展, 可以查照两个框架进行简单的适配即可.</p>
+<p>目前<code>Pait</code>还在快速迭代中，所以还是以功能开发为主，如果要在其他尚未支持的框架中使用<code>Pait</code>, 或者要对功能进行拓展, 可以参照两个框架进行简单的适配即可.</p>
 <p>同步类型的web框架请参照 <a href="https://github.com/so1n/pait/blob/master/pait/app/flask.py">pait.app.flask</a></p>
 <p>异步类型的web框架请参照 <a href="https://github.com/so1n/pait/blob/master/pait/app/starlette.py">pait.app.starlette</a></p>
 <h2 id="ide">IDE支持</h2>
-<p>pait的类型校验和转换以及类型拓展得益于<code>Pydantic</code>,同时也从<code>pydantic</code>或得到IDE的支持,目前支持<code>Pycharm</code>和<code>Mypy</code>
+<p>pait的类型校验和转换以及类型拓展得益于<code>Pydantic</code>,同时也从<code>pydantic</code>或得到IDE的支持，目前支持<code>Pycharm</code>和<code>Mypy</code>
 - <a href="https://pydantic-docs.helpmanual.io/pycharm_plugin/">PyCharm plugin</a>
 - <a href="https://pydantic-docs.helpmanual.io/mypy_plugin/">Mypy plugin</a></p>
 <h2 id="_2">示例代码</h2>
@@ -748,7 +739,7 @@ config能为<code>pait</code>提供一些配置支持, 它需要尽快的初始�
     <nav class="md-footer__inner md-grid" aria-label="页脚">
       
         
-        <a href="../5_5_how_tp_customize_the_plugin/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 如何自定义插件" rel="prev">
+        <a href="../6_config/" class="md-footer__link md-footer__link--prev" aria-label="上一页: config" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -757,7 +748,7 @@ config能为<code>pait</code>提供一些配置支持, 它需要尽快的初始�
               <span class="md-footer__direction">
                 上一页
               </span>
-              如何自定义插件
+              config
             </div>
           </div>
         </a>

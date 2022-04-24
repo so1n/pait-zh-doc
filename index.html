@@ -514,7 +514,22 @@
   
   
     <li class="md-nav__item">
-      <a href="6_other/" class="md-nav__link">
+      <a href="6_config/" class="md-nav__link">
+        config
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="7_other/" class="md-nav__link">
         其它
       </a>
     </li>
@@ -684,7 +699,7 @@
 可以看到，该接口仍然可以返回响应，该响应是由Mock插件自动生成的，响应中<code>uid</code>的值是999，与我们代码中<code>uid: int = Field(example=999)</code>设定的值一致，而<code>user_name</code>的值则是默认的空字符串。</p>
 <p>除此之外，<code>Pait</code>还有其它的插件和其它功能，将在后续的文档中详细介绍。</p>
 <h1 id="_8">性能</h1>
-<p><code>Pait</code>基于<code>Python</code>自带的<code>inspect</code>实现函数签名提取， 基于<code>Pydantic</code>实现参数校验和类型转换，所以<code>Pait</code>的性能表现十分优越。不过目前的<code>Pait</code>还在成长中， 还有许多需要优化的地方。</p>
+<p><code>Pait</code>基于<code>Python</code>自带的<code>inspect</code>实现函数签名提取， 基于<code>Pydantic</code>实现参数校验和类型转换，同时还使用了很多预加载设计，所以<code>Pait</code>的运行时性能表现十分优越。不过目前的<code>Pait</code>还在成长中， 还有许多需要优化的地方。</p>
 <h1 id="_9">使用示例</h1>
 <p><code>Pait</code>针对每一个支持的Web框架都有完善的代码示例， 可以通过访问示例代码了解最佳实践:</p>
 <ul>
