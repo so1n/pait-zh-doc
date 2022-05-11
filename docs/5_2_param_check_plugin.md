@@ -12,7 +12,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 from pait.exceptions import TipException
-from pait.plugin.required import AsyncRequiredPlugin
+from pait.plugin.required import RequiredPlugin
 
 from pait.app.starlette import pait
 from pait import field
@@ -27,7 +27,7 @@ async def api_exception(request: Request, exc: Exception) -> JSONResponse:
 
 @pait(
     post_plugin_list=[
-        AsyncRequiredPlugin.build(required_dict={"email": ["user_name"]})
+        RequiredPlugin.build(required_dict={"email": ["user_name"]})
     ]
 )
 async def demo(
@@ -42,7 +42,7 @@ app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
 app.add_exception_handler(Exception, api_exception)
 uvicorn.run(app)
 ```
-这个函数本意上要求的是参数`uid`为必填参数，而参数`user_name`和`email`是选填参数，但是通过使用`AsyncReuiredPlugin`插件后就会新增一个校验逻辑，
+这个函数本意上要求的是参数`uid`为必填参数，而参数`user_name`和`email`是选填参数，但是通过使用`ReuiredPlugin`插件后就会新增一个校验逻辑，
 这个校验逻辑是由参数`required_dict`定义的，它表示的是参数`email`必须依赖于一个参数集合才可以存在，这里定义的集合只有一个参数--`user_name`
 
 使用`curl`发送请求后可以通过响应结果发现，如果请求的参数只有`uid`时能正常返回，但请求的参数`user_name`为空时，参数`email`必须为空，不然会报错。
@@ -55,8 +55,6 @@ uvicorn.run(app)
 {"uid":"123","user_name":"so1n","email":"aaa"}%
 ```
 
-!!! note
-    对于同步函数，请选用`ReuiredPlugin`插件
 
 ## AtMostOneOf插件
 除了参数的互相依赖外，还存在参数互相排斥的情况，比如某个接口有参数A，B，C三个，当B存在时，C就不能存在，C存在时，B就不能存在，这时可以使用`AtMostOneOf`插件配置规则来实现功能，代码如下：
@@ -68,7 +66,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 from pait.exceptions import TipException
-from pait.plugin.at_most_one_of import AsyncAtMostOneOfPlugin
+from pait.plugin.at_most_one_of import AtMostOneOfPlugin
 
 from pait.app.starlette import pait
 from pait import field
@@ -83,7 +81,7 @@ async def api_exception(request: Request, exc: Exception) -> JSONResponse:
 
 @pait(
     post_plugin_list=[
-        AsyncAtMostOneOfPlugin.build(at_most_one_of_list=[["email", "user_name"]])
+        AtMostOneOfPlugin.build(at_most_one_of_list=[["email", "user_name"]])
     ]
 )
 async def demo(
@@ -99,7 +97,7 @@ app.add_exception_handler(Exception, api_exception)
 uvicorn.run(app)
 ```
 
-这个函数本意上要求的是参数`uid`为必填参数，而参数`user_name`和`email`是选填参数，但是通过`AsyncAtMostOneOfPlugin`插件后就会新增一个校验逻辑，
+这个函数本意上要求的是参数`uid`为必填参数，而参数`user_name`和`email`是选填参数，但是通过`AtMostOneOfPlugin`插件后就会新增一个校验逻辑，
 这个校验逻辑是由参数`at_most_one_of_list`定义的，它表示的是某一组参数不能同时存在，这里定义的是参数`email`和`user_name`不能同时存在。
 
 使用`curl`发送请求后可以通过响应结果发现，参数`email`和`user_name`共存时候会返回错误，其它情况都能正常返回响应。
@@ -113,6 +111,3 @@ uvicorn.run(app)
 ➜ ~ curl http://127.0.0.1:8000/api/demo\?uid\=123\&email\=aaa\&user_name\=so1n
 {"data":"requires at most one of param email or user_name"}%
 ```
-
-!!! note
-    对于同步函数，请选用`AtMostOneOfPlugin`插件

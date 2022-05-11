@@ -44,13 +44,13 @@ uvicorn.run(app)
 它不可能为每个函数定义一个单独的函数处理，这时候可以定制一个捕获异常的插件来解决这个问题，如下是一个单独针对这个接口定制的插件：
 ```py linenums="1"
 from typing import Any, Dict
-from pait.plugin.base import BaseAsyncPlugin
+from pait.plugin.base import BasePlugin
 from pait.model.core import PaitCoreModel
 from pydantic import ValidationError
 from pait.exceptions import PaitBaseException
 
 
-class DemoExceptionPlugin(BaseAsyncPlugin):
+class DemoExceptionPlugin(BasePlugin):
     is_pre_core: bool = True
 
     @classmethod
@@ -67,7 +67,7 @@ class DemoExceptionPlugin(BaseAsyncPlugin):
 ```
 在这个示例插件中，需要注意的有几个地方：
 
-- 0.由于该路由函数是`async`的，所以该函数只能被基于`BaseAsyncPlugin`插件挂载。
+- 0.由于该路由函数是`async`的，所以`__call__`方法需要加上async。
 - 1.第9行的`is_pre_core = True`是设置该插件为前置插件，这样就能拦截`Pait`和路由函数的异常了。
 - 2.第12行的`pre_chec`方法会进行一些初始化的检查，该检查只会在初始化的时候运行，这个检查的逻辑是如果判定该插件并不是挂在`demo`函数上就会抛错，
 其中`pait_core_model`是`Pait`为路由函数生成的一些属性。

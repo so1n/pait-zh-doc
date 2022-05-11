@@ -12,6 +12,11 @@
 
     以下代码没有特别说明, 都默认以starlette框架为例
 
+# 愿景
+- 1.代码即文档。
+
+- 2.使开发者可以通过最少的代码实现最全的功能。
+
 
 # 功能
  - [x] 参数校验和自动转化(参数校验依赖于`Pydantic`)
@@ -21,6 +26,7 @@
  - [x] 支持mock响应
  - [x] TestClient支持, 支持测试用例的响应结果校验
  - [x] 支持插件拓展
+ - [x] 支持gRPC GateWay路由 
  - [ ] 本地api文档管理
 
 # 要求
@@ -36,7 +42,7 @@ pip3 install pait
 # 示例
 ## 参数校验与文档生成
 `Pait`使用方法很简单， 以`starlette`框架为例子：
-``` py hl_lines="24 26 27"
+``` py hl_lines="24 26 27" linenums="1" 
 from typing import Type
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -74,7 +80,7 @@ app = Starlette(routes=[Route('/api', demo_post, methods=['POST'])])
 add_doc_route(app)
 uvicorn.run(app)
 ```
-只需要添加高亮部分的代码，就完成了一个简单的接口，接着运行代码，并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) ,可以看到有个SwaggerUI的页面，目前有两组接口：
+这段代码添加高亮部分的代码，就完成了一个简单的`Pait`的使用，其中第24行使用了`pait`的装饰器，这样`Pait`就可以管理到路由的输入和输出了，同时通过`response_model_list`声明这个路由函数的输出格式是什么。 而第26,27行则声明这个路由需要的参数，以及他们的参数要从哪里获取以及参数的限制规则是什么，第35行则是注册了一个`Swagger`的路由，接着运行代码，并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) ,就可以看到有个SwaggerUI的页面，目前这个页面有两组接口：
 ![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/1648292884021Pait%20doc-%E9%A6%96%E9%A1%B5%E7%A4%BA%E4%BE%8B%E6%8E%A5%E5%8F%A3-Swagger%E9%A6%96%E9%A1%B5.png)
 
 其中一组是`Pait doc`自带的3个接口，另外一组是`default`，里面有我们刚创建的`/api`接口，点开`/api`接口，然后会弹出该接口的详情：
@@ -87,7 +93,7 @@ uvicorn.run(app)
 
 ## 插件
 除了参数校验和文档生成外，`Pait`还拥有一个插件系统，通过插件系统可以拓展其它功能，比如Mock响应功能，它能根据ResponseModel来自动返回数据，即使这个路由没有数据返回，比如下面的代码：
-```py hl_lines="8 11 17 26"
+```py hl_lines="8 11 17 26" linenums="1" 
 from typing import Type
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -95,7 +101,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 from pait.app.starlette import pait, add_doc_route
-from pait.app.starlette.plugin.mock_response import AsyncMockPlugin 
+from pait.app.starlette.plugin.mock_response import MockPlugin 
 from pait.field import Body
 from pait.model.response import PaitResponseModel
 from pydantic import BaseModel, Field
@@ -113,7 +119,7 @@ class DemoResponseModel(PaitResponseModel):
 
 # 使用pait装饰器装饰函数
 @pait(
-    post_plugin_list=[AsyncMockPlugin.build()],
+    post_plugin_list=[MockPlugin.build()],
     response_model_list=[DemoResponseModel]
 )
 async def demo_post(
@@ -130,7 +136,7 @@ uvicorn.run(app)
 
 
 ```
-该代码是根据上面的代码进行更改，它移除了返回响应，同时引入了高亮部分的代码，其中第18行中的`uid: int = Field(example=999)`指定了了example值为999，接着运行代码，并运行上面Swagger返回的`Curl`命令:
+该代码是根据上面的代码进行更改，它移除了返回响应，同时引入了高亮部分的代码，其中第17行中的`uid: int = Field(example=999)`指定了了example值为999，接着运行代码，并运行上面Swagger返回的`Curl`命令:
 ```bash
 ➜  ~ curl -X 'POST' \
   'http://127.0.0.1:8000/api' \
@@ -148,7 +154,7 @@ uvicorn.run(app)
 除此之外，`Pait`还有其它的插件和其它功能，将在后续的文档中详细介绍。
 
 # 性能
-`Pait`基于`Python`自带的`inspect`实现函数签名提取， 基于`Pydantic`实现参数校验和类型转换，同时还使用了很多预加载设计，所以`Pait`的运行时性能表现十分优越。不过目前的`Pait`还在成长中， 还有许多需要优化的地方。
+`Pait`是基于`Python`自带的`inspect`实现函数签名提取， 基于`Pydantic`实现参数校验和类型转换，同时还使用了很多预加载设计，所以`Pait`的运行时性能表现十分优越。不过目前的`Pait`还在成长中， 还有许多需要优化的地方，欢迎通过[issues](https://github.com/so1n/pait/issues)一起优化。
 
 # 使用示例
 `Pait`针对每一个支持的Web框架都有完善的代码示例， 可以通过访问示例代码了解最佳实践:

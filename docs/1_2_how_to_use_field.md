@@ -4,8 +4,8 @@
 
 除了上文提到的Body外， `Field`还拥有其它的种类， 它们的名称和作用如下:
 
-- Body: 获取当前请求的Json数据
-- Cookie: 获取当前请求的Cookie数据(注意， 目前Cookie数据会被转化为一个Python字典， 这意味着Cookie的Key不能重复。同时， 在Field为Cookie时， type最好是str)
+- Body: 获取当前请求的json数据
+- Cookie: 获取当前请求的cookie数据(注意， 目前Cookie数据会被转化为一个Python字典， 这意味着Cookie的Key不能重复。同时， 在Field为Cookie时， type最好是str)
 - File：获取当前请求的file对象，该对象与原文Web框架的file对象一致
 - Form：获取当前请求的form数据，如果有多个重复Key，只会返回第一个值
 - Header: 获取当前请求的header数据
@@ -166,10 +166,10 @@ Can not found demo_value value
 ```
 
 ### 2.2.default_factory
-该参数用于默认值是函数的情况，可以用来填写类似于`datetime.datetime.now`的默认值。
+该参数用于默认值是函数的情况，可以用来填写类似于`datetime.datetime.now`接收请求才生成的默认值。
 
-示例代码如下，第一个接口的默认值是当前时间， 第二个接口的默认值是uuid，他们每次调用段返回值都是收到请求时生成的:
-```py hl_lines="14 20"
+示例代码如下，第一个接口的默认值是当前时间， 第二个接口的默认值是uuid，他们每次调用的返回值都是收到请求时生成的:
+```py hl_lines="14 21"
 import datetime
 import uuid
 import uvicorn  # type: ignore
@@ -189,7 +189,9 @@ async def demo(
 
 
 @pait()
-async def demo1(demo_value: str = field.Query.i(default_factory=lambda: uuid.uuid4().hex)) -> PlainTextResponse:
+async def demo1(
+    demo_value: str = field.Query.i(default_factory=lambda: uuid.uuid4().hex)
+) -> PlainTextResponse:
     return PlainTextResponse(demo_value)
 
 
@@ -217,7 +219,7 @@ ef84f04fa9fc4ea9a8b44449c76146b8
 参数的别名，一些参数可能被命名为`Content-Type`, 但是Python不支持这种命名方式， 此时可以使用别名。
 
 示例代码如下:
-```py hl_lines="11"
+```py hl_lines="12"
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
 from starlette.responses import PlainTextResponse
@@ -228,7 +230,9 @@ from pait import field
 
 
 @pait()
-async def demo(content_type: str = field.Header.i(alias="Content-Type")) -> PlainTextResponse:
+async def demo(
+    content_type: str = field.Header.i(alias="Content-Type")
+) -> PlainTextResponse:
     return PlainTextResponse(content_type)
 
 
@@ -251,7 +255,7 @@ uvicorn.run(app)
 - le：仅用于数值的类型，会校验数值是否小于等于该值，同时也会在OpenAPI添加`exclusiveMaximum`属性。
 - multiple_of：仅用于数字， 会校验该数字是否是指定值得倍数。
 
-示例代码如下，这个示例代码只有一个接口，但是接受了三个参数`demo_value1`, `demo_value2`, `demo_value3`，他们分别只接收符合大于1小于10；等于1;3的倍数的三个数：
+示例代码如下，这个示例代码只有一个接口，但是接受了三个参数`demo_value1`, `demo_value2`, `demo_value3`，他们分别只接收符合大于1小于10；等于1以及3的倍数的三个数：
 ```py hl_lines="23-25"
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -334,7 +338,7 @@ uvicorn.run(app)
 - max_items： 仅用于数组类型，会校验字列表是否满足小于等于指定的值。
 
 示例代码如下，该接口通过`field.MultiQuery`从请求Url中获取参数`demo_value`的数组，并返回给调用端，其中数组的长度限定在大于等于1且小于等于2之间：
-```py hl_lines="24"
+```py hl_lines="25"
 from typing import List
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -358,7 +362,9 @@ async def api_exception(request: Request, exc: Exception) -> JSONResponse:
 
 
 @pait()
-async def demo(demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2)) -> JSONResponse:
+async def demo(
+    demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2)
+) -> JSONResponse:
     return JSONResponse({"data": demo_value})
 
 
@@ -397,7 +403,7 @@ uvicorn.run(app)
 - regex：仅用于字符串类型，会校验字符串是否符合该正则表达式。
 
 示例代码如下， 该接口需要从Url中获取一个值， 这个值得长度大小为6，且必须为英文字母u开头：
-```py hl_lines="23"
+```py hl_lines="24"
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
 from starlette.requests import Request
@@ -420,7 +426,9 @@ async def api_exception(request: Request, exc: Exception) -> JSONResponse:
 
 
 @pait()
-async def demo(demo_value: str = field.Query.i(min_length=6, max_length=6, regex="^u")) -> JSONResponse:
+async def demo(
+    demo_value: str = field.Query.i(min_length=6, max_length=6, regex="^u")
+) -> JSONResponse:
     return JSONResponse({"data": demo_value})
 
 
@@ -441,7 +449,7 @@ uvicorn.run(app)
 ### 2.7.raw_return
 该参数的默认值为`False`，如果为`True`，则`Pait`不会根据参数名或者`alias`为key从请求数据获取值， 而是把整个请求值返回给对应的变量。
 
-示例代码如下， 该接口为一个POST接口， 该接口需要两个值，第一个值为整个客户端传过来的Json参数， 而第二个值为客户端传过来的Json参数中Key为a的值：
+示例代码如下， 该接口为一个POST接口， 它需要两个值，第一个值为整个客户端传过来的Json参数， 而第二个值为客户端传过来的Json参数中Key为a的值：
 
 ```py hl_lines="12-13"
 import uvicorn  # type: ignore

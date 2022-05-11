@@ -28,7 +28,7 @@ async def demo2() -> Response:
 ```Python
 from pait.app.starlette import pait
 ```
-来引入一个`Pait`装饰器，这是一个最方便的使用方法，不过它本身是`Pait`类的单例，在考虑使用`Pait`的复用时，则需要通过`Pait`类入手，
+来引入一个`Pait`装饰器，这是一个最方便的使用方法，不过它本身是Web框架对应`Pait`类的单例，在考虑使用`Pait`的复用时，则需要通过`Pait`类入手，
 来重新实例化一个自己定制的`Pait`，然后把接口的`Pait`替换为自己定义的`Pait`，比如下面的示例：
 ```py hl_lines="6 8 13 18"
 from starlette.responses import Response

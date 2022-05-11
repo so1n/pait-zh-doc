@@ -21,7 +21,7 @@ def demo() -> None:
 - author: 编写接口的作者列表
 - group: 接口所属的组(该选项目前不会用于OpenAPI)
 - tag: 接口的标签
-- response_model_list: 返回的结果数据, 需要继承于`pait.model.PaitResponseModel`.由于`pait`是web框架的拓展插件,不会修改框架的代码, 所以该参数不会与接口生成的响应进行校验(也不应该用于生产环境), 目前只会用于文档生成，mock响应生成，TestClient校验。
+- response_model_list: 返回的结果数据, 需要继承于`pait.model.PaitResponseModel`.由于`pait`是web框架的拓展插件,不会修改框架的代码, 所以该参数不会与接口生成的响应进行校验(也不应该用于生产环境), 目前只会用于文档生成，mock响应生成，TestClient校验等。
 - status: 接口的状态, 目前只支持PaitStatus的几种状态(该选项只有下线相关的才会用于OpenAPI并标注为弃用)
 
     * 默认状态:
@@ -90,11 +90,11 @@ pait_dict = load_app(app)
 # 根据数据模块的数据生成路由的OpenAPI
 PaitOpenAPI(pait_dict)
 ```
-通过改代码就可以自动生成一个OpenAPI的文件，不过一般情况下都很少直接使用生成的OpenAPI文件，如果单纯的需要一份API文档，那么可以使用自带的`markdown`模块来生成接口对应的`markdown`文档：
+通过改代码就可以自动生成一个OpenAPI的文件，不过一般情况下都很少直接使用生成的OpenAPI文件，如果单纯的需要一份API文档，那么可以使用自带的`markdown`模块来生成接口对应的`markdown`文档，代码如下：
 ```Python
 from pait.api_doc.markdown import PaitMd
 
-PaitMd(pait_dict)
+PaitMd(pait_dict).content
 ```
 
 ## 3.OpenAPI路由
