@@ -652,7 +652,7 @@
 </div>
 <h2 id="tipexception">TipException异常</h2>
 <p><code>Pait</code>的核心是一个装饰器，在运行的时候<code>Pait</code>核心会检查参数是否存在，参数是否合法，以及参数是否通过<code>Pydantic</code>的校验，
-在上述条件中有一个校验不通过时都会抛出异常，但是该异常的堆栈只会在<code>Pait</code>的核心装饰器里流转，这样子对于使用<code>Pait</code>的用户来说，排查问题是十分困难的。
+在上述条件中有一个校验不通过时都会抛出异常，但是该异常的堆栈只会在<code>Pait</code>的核心装饰器里流转，这样子对于使用<code>Pait</code>的开发者来说很难找出出现问题的路由函数在哪，这样排查问题是十分困难的。
 所以<code>Pait</code>通过<code>TipException</code>对异常进行一个包装，在抛错信息里告诉用户说哪个路由函数抛错，抛错的位置在哪里，
 如果用户使用了类似于<code>Pycharm</code>的IDE,还可以通过点击路径跳转到对应的地方，一个异常示例如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
@@ -685,9 +685,9 @@
 <h2 id="_1">参数异常</h2>
 <p>目前<code>Pait</code>有3种参数异常，分别有:</p>
 <ul>
-<li>NotFoundFieldException  该异常表示匹配不到对应的<code>Field</code>， 通常用户在正常使用时，不会遇到该异常。</li>
+<li>NotFoundFieldException  该异常表示匹配不到对应的<code>Field</code>， 通常开发者在正常使用时，不会遇到该异常。</li>
 <li>NotFoundValueException  该异常表示无法从请求数据中找到对应的值，这是一个常见的异常，一般是请求数据缺少部分参数。</li>
-<li>FieldValueTypeException  该异常表示程序启动时，<code>Pait</code>发现<code>Field</code>里的<code>default</code>，<code>example</code>等填写的值不合法，用户需要根据提示进行改正。</li>
+<li>FieldValueTypeException  该异常表示程序启动时，<code>Pait</code>发现<code>Field</code>里的<code>default</code>，<code>example</code>等填写的值不合法，开发者需要根据提示进行改正。</li>
 </ul>
 <p>这三种异常都是继承于<code>PaitBaseParamException</code>，它的源码如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">class</span> <span class="nc">PaitBaseParamException</span><span class="p">(</span><span class="n">PaitBaseException</span><span class="p">):</span>

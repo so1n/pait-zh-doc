@@ -650,7 +650,7 @@
 <p>在上面的使用中，我们都是通过:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
 </code></pre></div>
-来引入一个<code>Pait</code>装饰器，这是一个最方便的使用方法，不过它本身是<code>Pait</code>类的单例，在考虑使用<code>Pait</code>的复用时，则需要通过<code>Pait</code>类入手，
+来引入一个<code>Pait</code>装饰器，这是一个最方便的使用方法，不过它本身是Web框架对应<code>Pait</code>类的单例，在考虑使用<code>Pait</code>的复用时，则需要通过<code>Pait</code>类入手，
 来重新实例化一个自己定制的<code>Pait</code>，然后把接口的<code>Pait</code>替换为自己定义的<code>Pait</code>，比如下面的示例：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">Response</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>

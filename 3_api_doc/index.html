@@ -686,7 +686,7 @@
 <li>author: 编写接口的作者列表</li>
 <li>group: 接口所属的组(该选项目前不会用于OpenAPI)</li>
 <li>tag: 接口的标签</li>
-<li>response_model_list: 返回的结果数据, 需要继承于<code>pait.model.PaitResponseModel</code>.由于<code>pait</code>是web框架的拓展插件,不会修改框架的代码, 所以该参数不会与接口生成的响应进行校验(也不应该用于生产环境), 目前只会用于文档生成，mock响应生成，TestClient校验。</li>
+<li>response_model_list: 返回的结果数据, 需要继承于<code>pait.model.PaitResponseModel</code>.由于<code>pait</code>是web框架的拓展插件,不会修改框架的代码, 所以该参数不会与接口生成的响应进行校验(也不应该用于生产环境), 目前只会用于文档生成，mock响应生成，TestClient校验等。</li>
 <li>
 <p>status: 接口的状态, 目前只支持PaitStatus的几种状态(该选项只有下线相关的才会用于OpenAPI并标注为弃用)</p>
 <ul>
@@ -766,10 +766,10 @@
 <a id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="c1"># 根据数据模块的数据生成路由的OpenAPI</span>
 <a id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="n">PaitOpenAPI</span><span class="p">(</span><span class="n">pait_dict</span><span class="p">)</span>
 </code></pre></div>
-通过改代码就可以自动生成一个OpenAPI的文件，不过一般情况下都很少直接使用生成的OpenAPI文件，如果单纯的需要一份API文档，那么可以使用自带的<code>markdown</code>模块来生成接口对应的<code>markdown</code>文档：
+通过改代码就可以自动生成一个OpenAPI的文件，不过一般情况下都很少直接使用生成的OpenAPI文件，如果单纯的需要一份API文档，那么可以使用自带的<code>markdown</code>模块来生成接口对应的<code>markdown</code>文档，代码如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">pait.api_doc.markdown</span> <span class="kn">import</span> <span class="n">PaitMd</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">PaitMd</span><span class="p">(</span><span class="n">pait_dict</span><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">PaitMd</span><span class="p">(</span><span class="n">pait_dict</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
 </code></pre></div></p>
 <h2 id="3openapi">3.OpenAPI路由</h2>
 <p>如文档首页示例，<code>Pait</code>还支持OpenAPI路由, 同时支持<code>Redoc</code>和<code>Swagger</code>的页面展示, 而这些只需要调用<code>add_doc_route</code>函数即可为<code>app</code>实例增加三个路由:</p>

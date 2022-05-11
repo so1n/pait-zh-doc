@@ -572,7 +572,32 @@
 
 <h1 id="_1">介绍</h1>
 <p>使用<code>Pait</code>来进行参数类型转换与参数校验非常简单，以示例的代码为例子：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
@@ -599,14 +624,15 @@
 <a id="__codelineno-0-25" name="__codelineno-0-25"></a>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
-其中高亮部分的第一部分是<code>Pait</code>的核心，<code>Pait</code>的所有运行功能都在这个装饰器中实现，在这个核心中，会通过<code>inspect</code>获取到函数对应的函数签名，并通过函数签名知道如何获取值, 在经过组装后交由Pydantic进行校验和转换后再根据函数签名返回给路由函数对应的参数。</p>
-<p>高亮的第二部分则是用户自己填写的参数， 用户在编写函数时， 只要把函数的参数都写成类似于<code>&lt;name&gt;:&lt;type&gt;=&lt;default&gt;</code>关键参数即可，除了符合标准外， <code>Pait</code>还会赋予其它的意义：</p>
+</td></tr></table>
+代码中其中第11行是<code>Pait</code>的核心，<code>Pait</code>的所有运行功能都在这个装饰器中实现，在这个核心中，会通过<code>inspect</code>获取到函数对应的函数签名，并通过函数签名生成一个<code>pydantic.BaseModel</code>对象, 然后通过该对象校验和转换请求点值并根据函数签名返回给函数对应的参数。</p>
+<p>而13,14行代码则是开发者自己填写的参数， 开发者在编写函数时， 只要把函数的参数都写成类似于<code>&lt;name&gt;:&lt;type&gt;=&lt;default&gt;</code>格式的关键参数即可，这种写法除了符合<code>Python</code>的关键参数标准外， <code>Pait</code>还会赋予其它的意义：</p>
 <ul>
-<li><code>name</code>为参数名， 在大多数情况下会作为Key使用</li>
-<li><code>type</code>为值对应的类型，<code>Pait</code>会用来做参数校验和转化</li>
+<li><code>name</code>为参数名， 在大多数情况下会作为Key来中请求资源获取对应的值</li>
+<li><code>type</code>为值对应的类型，<code>Pait</code>会用它来做参数校验和转化</li>
 <li><code>default</code>则是<code>Pait</code>的<code>field</code>对象，不同的<code>field</code>代表从不同的请求类型获取值， 而对象的属性则告诉<code>Pait</code>该如何去预处理从请求中获取的值。</li>
 </ul>
-<p>以上面的<code>uid</code>参数为例子，<code>Pait</code>会从请求中的Body获取Json数据，接着获取Json数据中Key为uid的值并转化或验证是否为<code>int</code>类型， 最后再判断该值是否处于10-1000之间，如果不是就直接报错， 如果是则赋值给<code>uid</code>这个变量。</p>
+<p>以上面的<code>uid</code>参数为例子，<code>Pait</code>会通过Body从请求中的获取Json数据，接着以Key为uid从Json数据中获取对应的的值并转化或验证是否为<code>int</code>类型， 最后再判断该值是否处于10-1000之间，如果不是就直接报错， 如果是则赋值给<code>uid</code>这个变量。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>直接使用Body()时, mypy会检查到类型不匹配, 而Body.i()则可兼容这个问题， 一般情况下建议直接使用Body.i()。</p>

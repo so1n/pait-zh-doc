@@ -638,7 +638,7 @@
 <a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="kn">from</span> <span class="nn">pait.exceptions</span> <span class="kn">import</span> <span class="n">TipException</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="kn">from</span> <span class="nn">pait.plugin.required</span> <span class="kn">import</span> <span class="n">AsyncRequiredPlugin</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="kn">from</span> <span class="nn">pait.plugin.required</span> <span class="kn">import</span> <span class="n">RequiredPlugin</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span>
@@ -653,7 +653,7 @@
 <a id="__codelineno-0-20" name="__codelineno-0-20"></a>
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="nd">@pait</span><span class="p">(</span>
 <a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="hll">    <span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span>
-</span><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="hll">        <span class="n">AsyncRequiredPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">required_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_name&quot;</span><span class="p">]})</span>
+</span><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="hll">        <span class="n">RequiredPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">required_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_name&quot;</span><span class="p">]})</span>
 </span><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="hll">    <span class="p">]</span>
 </span><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="p">)</span>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
@@ -668,7 +668,7 @@
 <a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="n">app</span><span class="o">.</span><span class="n">add_exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">api_exception</span><span class="p">)</span>
 <a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
-这个函数本意上要求的是参数<code>uid</code>为必填参数，而参数<code>user_name</code>和<code>email</code>是选填参数，但是通过使用<code>AsyncReuiredPlugin</code>插件后就会新增一个校验逻辑，
+这个函数本意上要求的是参数<code>uid</code>为必填参数，而参数<code>user_name</code>和<code>email</code>是选填参数，但是通过使用<code>ReuiredPlugin</code>插件后就会新增一个校验逻辑，
 这个校验逻辑是由参数<code>required_dict</code>定义的，它表示的是参数<code>email</code>必须依赖于一个参数集合才可以存在，这里定义的集合只有一个参数--<code>user_name</code></p>
 <p>使用<code>curl</code>发送请求后可以通过响应结果发现，如果请求的参数只有<code>uid</code>时能正常返回，但请求的参数<code>user_name</code>为空时，参数<code>email</code>必须为空，不然会报错。
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>➜ ~ curl http://127.0.0.1:8000/api/demo<span class="se">\?</span>uid<span class="se">\=</span><span class="m">123</span>
@@ -678,10 +678,6 @@
 <a id="__codelineno-1-5" name="__codelineno-1-5"></a>➜ ~ curl http://127.0.0.1:8000/api/demo<span class="se">\?</span>uid<span class="se">\=</span><span class="m">123</span><span class="se">\&amp;</span>email<span class="se">\=</span>aaa<span class="se">\&amp;</span>user_name<span class="se">\=</span>so1n
 <a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="o">{</span><span class="s2">&quot;uid&quot;</span>:<span class="s2">&quot;123&quot;</span>,<span class="s2">&quot;user_name&quot;</span>:<span class="s2">&quot;so1n&quot;</span>,<span class="s2">&quot;email&quot;</span>:<span class="s2">&quot;aaa&quot;</span><span class="o">}</span>%
 </code></pre></div></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>对于同步函数，请选用<code>ReuiredPlugin</code>插件</p>
-</div>
 <h2 id="atmostoneof">AtMostOneOf插件</h2>
 <p>除了参数的互相依赖外，还存在参数互相排斥的情况，比如某个接口有参数A，B，C三个，当B存在时，C就不能存在，C存在时，B就不能存在，这时可以使用<code>AtMostOneOf</code>插件配置规则来实现功能，代码如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
@@ -691,7 +687,7 @@
 <a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
 <a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="kn">from</span> <span class="nn">pait.exceptions</span> <span class="kn">import</span> <span class="n">TipException</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="kn">from</span> <span class="nn">pait.plugin.at_most_one_of</span> <span class="kn">import</span> <span class="n">AsyncAtMostOneOfPlugin</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="kn">from</span> <span class="nn">pait.plugin.at_most_one_of</span> <span class="kn">import</span> <span class="n">AtMostOneOfPlugin</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9"></a>
 <a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
 <a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span>
@@ -706,7 +702,7 @@
 <a id="__codelineno-2-20" name="__codelineno-2-20"></a>
 <a id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="nd">@pait</span><span class="p">(</span>
 <a id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="hll">    <span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span>
-</span><a id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="hll">        <span class="n">AsyncAtMostOneOfPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">at_most_one_of_list</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;user_name&quot;</span><span class="p">]])</span>
+</span><a id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="hll">        <span class="n">AtMostOneOfPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">at_most_one_of_list</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;user_name&quot;</span><span class="p">]])</span>
 </span><a id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="hll">    <span class="p">]</span>
 </span><a id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="p">)</span>
 <a id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
@@ -721,7 +717,7 @@
 <a id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="n">app</span><span class="o">.</span><span class="n">add_exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">api_exception</span><span class="p">)</span>
 <a id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div></p>
-<p>这个函数本意上要求的是参数<code>uid</code>为必填参数，而参数<code>user_name</code>和<code>email</code>是选填参数，但是通过<code>AsyncAtMostOneOfPlugin</code>插件后就会新增一个校验逻辑，
+<p>这个函数本意上要求的是参数<code>uid</code>为必填参数，而参数<code>user_name</code>和<code>email</code>是选填参数，但是通过<code>AtMostOneOfPlugin</code>插件后就会新增一个校验逻辑，
 这个校验逻辑是由参数<code>at_most_one_of_list</code>定义的，它表示的是某一组参数不能同时存在，这里定义的是参数<code>email</code>和<code>user_name</code>不能同时存在。</p>
 <p>使用<code>curl</code>发送请求后可以通过响应结果发现，参数<code>email</code>和<code>user_name</code>共存时候会返回错误，其它情况都能正常返回响应。
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a>➜ ~ curl http://127.0.0.1:8000/api/demo<span class="se">\?</span>uid<span class="se">\=</span><span class="m">123</span>
@@ -733,10 +729,6 @@
 <a id="__codelineno-3-7" name="__codelineno-3-7"></a>➜ ~ curl http://127.0.0.1:8000/api/demo<span class="se">\?</span>uid<span class="se">\=</span><span class="m">123</span><span class="se">\&amp;</span>email<span class="se">\=</span>aaa<span class="se">\&amp;</span>user_name<span class="se">\=</span>so1n
 <a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="o">{</span><span class="s2">&quot;data&quot;</span>:<span class="s2">&quot;requires at most one of param email or user_name&quot;</span><span class="o">}</span>%
 </code></pre></div></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>对于同步函数，请选用<code>AtMostOneOfPlugin</code>插件</p>
-</div>
 
               
             </article>

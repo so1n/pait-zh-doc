@@ -640,8 +640,8 @@
 
   <h1>Depend</h1>
 
-<p><code>Pait</code>的<code>Depend</code>参考了<a href="https://github.com/tiangolo/fastapi">FastAPI</a>，它的作用跟<a href="https://github.com/tiangolo/fastapi">FastAPI</a>很像，
-用户通过<code>Pait</code>的<code>Depend</code>可以一些功能:</p>
+<p><code>Pait</code>的<code>Depend</code>设计参考了<a href="https://github.com/tiangolo/fastapi">FastAPI</a>，它的作用跟<a href="https://github.com/tiangolo/fastapi">FastAPI</a>很像，
+用户通过<code>Pait</code>的<code>Depend</code>可以实现一些功能:</p>
 <ul>
 <li>共享一些相同的逻辑</li>
 <li>实现一些安全校验的功能</li>
@@ -656,8 +656,7 @@
 <p>如果在使用类<code>Flask</code>这类型的微Web框架，那么都会选择使用Python装饰器的方法来实现共享用户Token校验，有些时候除了实现校验Token外，
 还会根据Token获取uid并传给路由函数的功能，但是这种实现方法比较动态，代码检测工具很难检测出来，而使用<code>Pait</code>的<code>Depend</code>可以解决这个问题。</p>
 <p>示例代码如下，其中第一段高亮是模仿数据库的调用方法，目前假设数据库只有token为"u12345"的值；第二段高亮是一个特殊的函数，这段函数可以被<code>Pait</code>的<code>Depend</code>使用，
-所以这个函数的参数填写规则与<code>Pait</code>装饰的路由函数一致，之前提到的任何写法都可以在这个函数中使用，而目前这个函数的功能就是从Header中获取Token，并校验Token是否存在，
-如果存在则返回用户，不存在则抛错。
+所以这个函数的参数填写规则与<code>Pait</code>装饰的路由函数一致，之前提到的任何写法都可以在这个函数中使用，而目前这个函数的功能就是从Header中获取Token，并校验Token是否存在，如果存在则返回用户，不存在则抛错。第三段高亮则是路由函数填写的Token参数，比较特殊的是这里通过<code>field.Depend</code>来裹住上面的<code>get_user_by_token</code>函数：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>
@@ -772,7 +771,7 @@
 <p class="admonition-title">Note</p>
 <p><code>ContextManager</code>的<code>Depend</code>函数除了参数外，其余的编写方法和官方的一致，具体可见<a href="https://docs.python.org/3/library/contextlib.html">contextlib — Utilities for with-statement contexts</a></p>
 </div>
-<p>下面的代码是一个使用了<code>ContextManager</code>的<code>Depend</code>例子， 该例子假设每次调用请求时都会基于对应的uid创建一个Session，请求结束时会自动关闭：
+<p>下面的代码是一个使用了<code>ContextManager</code>的<code>Depend</code>例子， 该例子假设每次调用请求时都会基于对应的uid创建一个Session，并在请求结束会自动关闭：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">asynccontextmanager</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">AsyncGenerator</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3"></a>
@@ -840,7 +839,7 @@
 <a id="__codelineno-5-65" name="__codelineno-5-65"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
 代码中第一段高亮是模拟一个基于Uid的Session，第二段高亮则是一段带有<code>ContextManger</code>的Depends函数，并分别在<code>try</code>, <code>except</code>以及<code>finally</code>打印不同的内容，
-而第三块则是路由函数，它会依据参数<code>is_raise</code>是否为<code>True</code>来决定抛错还是正常返回。</p>
+而第三块高亮则是路由函数，它会依据参数<code>is_raise</code>是否为<code>True</code>来决定抛错还是正常返回。</p>
 <p>现在运行代码并使用<code>curl</code>进行接口测试，发现第一个请求是通过的，但是第二个请求发生异常：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo?uid=999&quot;</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:0,<span class="s2">&quot;msg&quot;</span>:999<span class="o">}</span>
