@@ -1,5 +1,5 @@
 # 介绍
-`Pait`是一个轻量级的Python Api开发工具，拥有参数类型检查, 类型转换和提供文档输出等功能，非常适合用于后端的接口开发，
+`Pait`是一个轻量级的Python Api开发工具，拥有参数类型检查, 类型转换，提供文档输出和gRPC GateWay等功能，非常适合用于后端的接口开发，
 它被设计成可以用于多个Python的Web应用开发框架(目前适配了`Flask`, `Starlette`, `Sanic`, `Tornado`)，`Pait`设计灵感见文章[《给python接口加上一层类型检》](https://so1n.me/2019/04/15/%E7%BB%99python%E6%8E%A5%E5%8F%A3%E5%8A%A0%E4%B8%8A%E4%B8%80%E5%B1%82%E7%B1%BB%E5%9E%8B%E6%A3%80/)
 。
 

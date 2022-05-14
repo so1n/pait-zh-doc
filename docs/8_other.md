@@ -11,7 +11,7 @@ from pait.app.starlette import add_doc_route, load_app, pait
 ```
 ## data与load_app
 - data
-由于`pait`的通过一个装饰器来提供功能支持, 所以在编译器启动时, 所有数据都注入到data中, 为后续的文档生成等功能提供支。
+由于`pait`的通过一个装饰器来提供功能支持, 所以在编译器启动时, 所有数据都注入到data中, 为后续的文档生成等功能提供支持。
 - load_app
 data里面有很多路由函数的信息, 但是会缺少关键的参数如`url`, `method`等。
 所以还需要使用load_app把相关参数与`pait`装饰器装饰的路由函数数据在data中绑定, 使用方法很简单, 不过要记住, 一定要在注册所有路由后再调用:
