@@ -130,7 +130,7 @@ service User {
 - enable: 是否要生成对应方法的路由，默认为false
 
 ## 5.通过Protobuf文件注释定义Message的属性
-在生成路由函数时，`GrpcGatewayRoute`会把方法对应的请求message和响应message解析为路由函数对应的请求和响应对象，这些对象的类型都为`pydantic.BaseModel`，之后就`Pait`就可以通过对应的`pydantic.BaseModel`对象来生成文档或者做参数校验。
+在生成路由函数时，`GrpcGatewayRoute`会把方法对应的请求message和响应message解析为路由函数对应的请求和响应对象，这些对象的类型都为`pydantic.BaseModel`，之后`Pait`就可以通过对应的`pydantic.BaseModel`对象来生成文档或者做参数校验。
 
 目前也是通过注释来定义Message的每个字段对应的Field对象属性，不过`Python`的gRPC在通过Protobuf文件生成对应的Python对象时，并不会把对应的注释带过来，所以`GrpcGatewayRoute`需要通过`parse_msg_desc`参数来知道要解析的来源文件，不过这些来源文件的注释最终都是通过Protobuf文件的注释生成的，比如[user.proto](https://github.com/so1n/pait/blob/master/example/example_grpc/example_proto/user/user.proto)文件的`CreateUserRequest`，它的注释如下：
 ```proto

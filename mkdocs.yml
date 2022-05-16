@@ -4,6 +4,8 @@ site_description: Pait is a Python api tool. Pait enables your Python web framew
 theme:
     name: material
     language: zh
+    logo: assets/logo.png
+    favicon: assets/images/favicon.png
     features:
         - navigation.top
         - content.code.annotate
