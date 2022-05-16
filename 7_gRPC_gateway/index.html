@@ -83,8 +83,7 @@
   <nav class="md-header__inner md-grid" aria-label="页眉">
     <a href=".." title="Pait" class="md-header__button md-logo" aria-label="Pait" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <img src="../assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -207,8 +206,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Pait" class="md-nav__button md-logo" aria-label="Pait" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <img src="../assets/logo.png" alt="logo">
 
     </a>
     Pait
@@ -809,7 +807,7 @@
 <li>enable: 是否要生成对应方法的路由，默认为false</li>
 </ul>
 <h2 id="5protobufmessage">5.通过Protobuf文件注释定义Message的属性</h2>
-<p>在生成路由函数时，<code>GrpcGatewayRoute</code>会把方法对应的请求message和响应message解析为路由函数对应的请求和响应对象，这些对象的类型都为<code>pydantic.BaseModel</code>，之后就<code>Pait</code>就可以通过对应的<code>pydantic.BaseModel</code>对象来生成文档或者做参数校验。</p>
+<p>在生成路由函数时，<code>GrpcGatewayRoute</code>会把方法对应的请求message和响应message解析为路由函数对应的请求和响应对象，这些对象的类型都为<code>pydantic.BaseModel</code>，之后<code>Pait</code>就可以通过对应的<code>pydantic.BaseModel</code>对象来生成文档或者做参数校验。</p>
 <p>目前也是通过注释来定义Message的每个字段对应的Field对象属性，不过<code>Python</code>的gRPC在通过Protobuf文件生成对应的Python对象时，并不会把对应的注释带过来，所以<code>GrpcGatewayRoute</code>需要通过<code>parse_msg_desc</code>参数来知道要解析的来源文件，不过这些来源文件的注释最终都是通过Protobuf文件的注释生成的，比如<a href="https://github.com/so1n/pait/blob/master/example/example_grpc/example_proto/user/user.proto">user.proto</a>文件的<code>CreateUserRequest</code>，它的注释如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">message</span> <span class="nc">CreateUserRequest</span> <span class="p">{</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2"></a>  <span class="c1">// 通常Protobuf的Message都有默认值，如果指定miss_default为true，则不会使用gRPC的默认值 </span>

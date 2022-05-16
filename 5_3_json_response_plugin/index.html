@@ -83,8 +83,7 @@
   <nav class="md-header__inner md-grid" aria-label="页眉">
     <a href=".." title="Pait" class="md-header__button md-logo" aria-label="Pait" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <img src="../assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -207,8 +206,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Pait" class="md-nav__button md-logo" aria-label="Pait" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <img src="../assets/logo.png" alt="logo">
 
     </a>
     Pait
@@ -499,6 +497,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    缓存插件
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -621,6 +626,13 @@
         <li class="md-nav__item">
   <a href="#json_1" class="md-nav__link">
     自动补全Json响应结果插件
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    缓存插件
   </a>
   
 </li>
@@ -884,6 +896,60 @@
 <a id="__codelineno-5-3" name="__codelineno-5-3"></a>➜  ~ curl http://127.0.0.1:8000/api/demo<span class="se">\?</span>uid<span class="se">\=</span><span class="m">123</span><span class="se">\&amp;</span>user_name<span class="se">\=</span>so1n<span class="se">\&amp;</span>age<span class="se">\=</span><span class="m">18</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:0,<span class="s2">&quot;msg&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;data&quot;</span>:<span class="o">{</span><span class="s2">&quot;uid&quot;</span>:123,<span class="s2">&quot;user_name&quot;</span>:<span class="s2">&quot;so1n&quot;</span>,<span class="s2">&quot;age&quot;</span>:10,<span class="s2">&quot;email&quot;</span>:<span class="s2">&quot;example@xxx.com&quot;</span><span class="o">}}</span>%
 </code></pre></div></p>
+<h2 id="_1">缓存插件</h2>
+<p>缓存插件能缓存除流式响应意外的响应对象，同时也能根据函数签名来自动生成缓存的Key, 所以缓存插件属于后置插件，这样才能读取到函数签名的参数。 缓存插件示例代码如下：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">time</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="kn">import</span> <span class="nn">aiofiles</span>  <span class="c1"># type: ignore</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="kn">from</span> <span class="nn">redis.asyncio</span> <span class="kn">import</span> <span class="n">Redis</span>  <span class="c1"># type: ignore</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">PlainTextResponse</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="kn">from</span> <span class="nn">pait.app.starlette.plugin.cache_resonse</span> <span class="kn">import</span> <span class="n">CacheResponsePlugin</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="kn">from</span> <span class="nn">pait.model.response</span> <span class="kn">import</span> <span class="n">PaitTextResponseModel</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a>
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a>
+<a id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="nd">@pait</span><span class="p">(</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14"></a>    <span class="n">response_model_list</span><span class="o">=</span><span class="p">[</span><span class="n">PaitTextResponseModel</span><span class="p">],</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15"></a>    <span class="n">post_plugin_list</span><span class="o">=</span><span class="p">[</span><span class="n">CacheResponsePlugin</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">cache_time</span><span class="o">=</span><span class="mi">10</span><span class="p">)],</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="p">)</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PlainTextResponse</span><span class="p">:</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18"></a>    <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19"></a>
+<a id="__codelineno-6-20" name="__codelineno-6-20"></a>
+<a id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="k">def</span> <span class="nf">create_app</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Starlette</span><span class="p">:</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22"></a>    <span class="n">app</span><span class="p">:</span> <span class="n">Starlette</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="n">Route</span><span class="p">(</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">demo</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])])</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23"></a>    <span class="c1"># 延后绑定Redis，这样可以在不同的实例使用不同的Redis实例</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24"></a>    <span class="n">CacheResponsePlugin</span><span class="o">.</span><span class="n">set_redis_to_app</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">redis</span><span class="o">=</span><span class="n">Redis</span><span class="p">(</span><span class="n">decode_responses</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25"></a>    <span class="k">return</span> <span class="n">app</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26"></a>
+<a id="__codelineno-6-27" name="__codelineno-6-27"></a>
+<a id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<a id="__codelineno-6-29" name="__codelineno-6-29"></a>    <span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
+<a id="__codelineno-6-30" name="__codelineno-6-30"></a>
+<a id="__codelineno-6-31" name="__codelineno-6-31"></a>    <span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_block_http_method_set</span>
+<a id="__codelineno-6-32" name="__codelineno-6-32"></a>    <span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
+<a id="__codelineno-6-33" name="__codelineno-6-33"></a>
+<a id="__codelineno-6-34" name="__codelineno-6-34"></a>    <span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_block_http_method_set</span><span class="p">({</span><span class="s2">&quot;HEAD&quot;</span><span class="p">,</span> <span class="s2">&quot;OPTIONS&quot;</span><span class="p">})])</span>
+<a id="__codelineno-6-35" name="__codelineno-6-35"></a>    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">create_app</span><span class="p">(),</span> <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">)</span>
+</code></pre></div>
+运行代码后然后运行<code>curl</code>命令，可以发现每次返回的数据都是一样的：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a>➜ curl http://127.0.0.1:8000/api/demo
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="m">1652714661</span>.9645622
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a>➜ curl http://127.0.0.1:8000/api/demo
+<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="m">1652714661</span>.9645622 
+<a id="__codelineno-7-5" name="__codelineno-7-5"></a>➜ curl http://127.0.0.1:8000/api/demo
+<a id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="m">1652714661</span>.9645622  
+</code></pre></div>
+上面是缓存插件的简单使用方法，目前还支持其它的参数，如下：
+- redis: 指定插件可以使用的Redis实例，建议通过<code>CacheResponsePlugin.set_redis_to_app</code>方法指定Redis实例。
+- name: 指定路由函数的缓存Key，如果为空，则以函数名为Key。
+- enable_cache_name_merge_param: 如果为True，则会
+- cache_time: 缓存时间
+- timeout: 锁的最长时间，多个请求会争夺一个锁。
+- sleep: 当锁处于阻塞模式并且另一个客户端当前持有锁时，每次循环迭代的休眠时间。
+- blocking_timeout: 指尝试获取锁的最长时间，如果为None,则会一直等待。</p>
 
               
             </article>
