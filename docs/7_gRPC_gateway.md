@@ -146,14 +146,22 @@ message CreateUserRequest {
   string password = 3;
   SexType sex = 4;
 }
+
+// logout user
+message LogoutUserRequest {
+  string uid = 1;
+  // 不解析该字段
+  // pait: {"enable": false}
+  string token = 2; }
 ```
 之后生成的文档中关于`CreateUserRequest`的展示如下:
 ![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16525495684371652549568021.png)
 
-可以发现Message注释编写的方法与Service的一致，只不过是属性不同，Message支持的属性除了`miss_default`外，与`Pait`的Field对象一致，`miss_default`默认为false，如果为true,则代表该字段没有默认值，如果为false，则代表该字段的默认值为Protobuf对应属性的默认值。
+可以发现Message注释编写的方法与Service的一致，只不过是属性不同，Message支持的属性除了`miss_default`和`enable`外，与`Pait`的Field对象一致，`miss_default`默认为false，如果为true,则代表该字段没有默认值，如果为false，则代表该字段的默认值为Protobuf对应属性的默认值；`enable`默认为True，如果为False，则不会解析该字段。
 
 !!! 支持的属性列表
     - miss_default
+    - enable
     - example
     - alias
     - title
@@ -170,3 +178,94 @@ message CreateUserRequest {
     - multiple_of
     - regex
     - extra
+
+## 6.自定义`Gateway Route`路由函数
+虽然提供了一些参数用于`Gateway Route`路由的定制，但是光靠这些参数还是不够的，所以支持开发者通过继承的方式来定义`Gateway Route`路由函数的构造。
+
+比如下述示例的[User.proto](https://github.com/so1n/pait/blob/master/example/example_grpc/example_proto/user/user.proto)文件中定义的接口中有一个名为`User.get_uid_by_token`的接口
+```proto
+// 原文件见：https://github.com/so1n/pait/blob/master/example/example_grpc/example_proto/user/user.proto
+// logout user
+message LogoutUserRequest {
+  string uid = 1;
+  // 不解析该字段
+  // pait: {"enable": false}
+  string token = 2;
+}
+
+// pait: {"group": "user", "tag": [["grpc-user", "grpc_user_service"]]}
+service User {
+  // The interface should not be exposed for external use
+  // pait: {"enable": false}
+  rpc get_uid_by_token (GetUidByTokenRequest) returns (GetUidByTokenResult);
+  // pait: {"summary": "User exit from the system", "url": "/user/logout"}
+  rpc logout_user (LogoutUserRequest) returns (google.protobuf.Empty);
+  // pait: {"summary": "User login to system", "url": "/user/login"}
+  rpc login_user(LoginUserRequest) returns (LoginUserResult);
+  // pait: {"tag": [["grpc-user", "grpc_user_service"], ["grpc-user-system", "grpc_user_service"]]}
+  // pait: {"summary": "Create users through the system", "url": "/user/create"}
+  rpc create_user(CreateUserRequest) returns (google.protobuf.Empty);
+  // pait: {"url": "/user/delete", "tag": [["grpc-user", "grpc_user_service"], ["grpc-user-system", "grpc_user_service"]]}
+  // pait: {"desc": "This interface performs a logical delete, not a physical delete"}
+  rpc delete_user(DeleteUserRequest) returns (google.protobuf.Empty);
+}
+```
+它用于通过token获取uid, 同时拥有校验Token是否正确的效果，这个接口不会直接暴露给外部调用，也就不会通过`Gateway Route`生成对应的HTTP接口。
+而其它接口被调用时，需要从Header获取Token并通过gRPC接口`User.get_uid_by_token`进行判断，判断当前请求的用户是否正常，只有校验通过时才会去调用对应的gRPC接口。
+同时，接口`User.logout_user`请求体`LogoutUserRequest`的`token`字段被标注为不解析，并通过Herder的获取Token，使其跟其它接口统一。
+
+接下来就通过继承的方法来重新定义`Gateway Route`路由函数的构造：
+```Python
+from sys import modules
+from typing import Callable, Type
+from uuid import uuid4
+
+from example.example_grpc.python_example_proto_code.example_proto.user import user_pb2
+from pait.util.grpc_inspect.stub import GrpcModel
+from pait.util.grpc_inspect.types import Message
+
+class CustomerGrpcGatewayRoute(GrpcGatewayRoute):
+    # 继承`GrpcGatewayRoute`.`gen_route`方法
+    def gen_route(
+        self, method_name: str, grpc_model: GrpcModel, request_pydantic_model_class: Type[BaseModel]
+    ) -> Callable:
+
+        # 如果不是login_user接口，就走自定义的路由函数
+        if method_name != "/user.User/login_user":
+
+            async def _route(
+                request_pydantic_model: request_pydantic_model_class,  # type: ignore
+                token: str = Header.i(description="User Token"),  # 通过Header获取token
+                req_id: str = Header.i(alias="X-Request-Id", default_factory=lambda: str(uuid4())),  # 通过Header获取请求id
+            ) -> Any:
+                # 获取gRPC接口对应的调用函数，需要放在最前，因为它包括了判断channel是否创建的逻辑。
+                func: Callable = self.get_grpc_func(method_name)
+                request_dict: dict = request_pydantic_model.dict()  # type: ignore
+                if method_name == "/user.User/logout_user":
+                    # logout_user接口需要一个token参数
+                    request_dict["token"] = token
+                else:
+                    # 其它接口需要通过校验Token来判断用户是否合法 
+                    result: user_pb2.GetUidByTokenResult = await user_pb2_grpc.UserStub(
+                        self.channel
+                    ).get_uid_by_token(user_pb2.GetUidByTokenRequest(token=token))
+                    if not result.uid:
+                        # 如果不合法就报错
+                        raise RuntimeError(f"Not found user by token:{token}")
+                # 合法就调用对应的gRPC接口
+                request_msg: Message = self.get_msg_from_dict(grpc_model.request, request_dict)
+                # 添加一个请求ID给gRPC服务
+                grpc_msg: Message = await func(request_msg, metadata=[("req_id", req_id)])
+                return self._make_response(self.get_dict_from_msg(grpc_msg))
+
+            # 由于request_pydantic_model_class是在父类生成的，所以Pait在兼容延迟注释时获取不到该模块的request_pydantic_model_class值，
+            # 所以要把request_pydantic_model_class注入本模块，在下一个版本`GrpcGatewayRoute`会自动处理这个问题。
+            modules[_route.__module__].__dict__["request_pydantic_model_class"] = request_pydantic_model_class
+            return _route
+        else:
+            # login_user接口则走自动生成逻辑。
+            return super().gen_route(method_name, grpc_model, request_pydantic_model_class)
+```
+之后就可以跟原来使用`GrpcGatewayRoute`的方法一样使用我们新创建的`CustomerGrpcGatewayRoute`，之后就可以看到如下效果：
+![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16533162986271653316298233.png)
+可以看到`/api/user/login`没有什么变化，而`/api/user/logout`和`/api/user/create`(业务逻辑是不可以这样实现的，举例说明)需要通过Header获取token和`X-Request-ID`
