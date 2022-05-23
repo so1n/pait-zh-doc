@@ -31,7 +31,8 @@ nav:
       - 参数检查插件: '5_2_param_check_plugin.md'
       - Json响应插件: '5_3_json_response_plugin.md'
       - Mock响应插件: '5_4_mock_json_response_check_plugin.md'
-      - 如何自定义插件: '5_5_how_tp_customize_the_plugin.md'
+      - 缓存插件: '5_5_cache_response.md'
+      - 如何自定义插件: '5_x_how_tp_customize_the_plugin.md'
   - config: "6_config.md"
   - gRPC Gateway: "7_gRPC_gateway.md"
   - 其它: "8_other.md"
