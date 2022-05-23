@@ -581,6 +581,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#6gateway-route" class="md-nav__link">
+    6.自定义Gateway Route路由函数
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -659,6 +666,13 @@
         <li class="md-nav__item">
   <a href="#5protobufmessage" class="md-nav__link">
     5.通过Protobuf文件注释定义Message的属性
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6gateway-route" class="md-nav__link">
+    6.自定义Gateway Route路由函数
   </a>
   
 </li>
@@ -821,14 +835,22 @@
 <a id="__codelineno-3-10" name="__codelineno-3-10"></a>  <span class="kt">string</span> <span class="na">password</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 <a id="__codelineno-3-11" name="__codelineno-3-11"></a>  <span class="n">SexType</span> <span class="na">sex</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
 <a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="p">}</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13"></a>
+<a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="c1">// logout user</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="kd">message</span> <span class="nc">LogoutUserRequest</span> <span class="p">{</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16"></a>  <span class="kt">string</span> <span class="na">uid</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17"></a>  <span class="c1">// 不解析该字段</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18"></a>  <span class="c1">// pait: {&quot;enable&quot;: false}</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19"></a>  <span class="kt">string</span> <span class="na">token</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="p">}</span>
 </code></pre></div>
 之后生成的文档中关于<code>CreateUserRequest</code>的展示如下:
 <img alt="" src="https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16525495684371652549568021.png" /></p>
-<p>可以发现Message注释编写的方法与Service的一致，只不过是属性不同，Message支持的属性除了<code>miss_default</code>外，与<code>Pait</code>的Field对象一致，<code>miss_default</code>默认为false，如果为true,则代表该字段没有默认值，如果为false，则代表该字段的默认值为Protobuf对应属性的默认值。</p>
+<p>可以发现Message注释编写的方法与Service的一致，只不过是属性不同，Message支持的属性除了<code>miss_default</code>和<code>enable</code>外，与<code>Pait</code>的Field对象一致，<code>miss_default</code>默认为false，如果为true,则代表该字段没有默认值，如果为false，则代表该字段的默认值为Protobuf对应属性的默认值；<code>enable</code>默认为True，如果为False，则不会解析该字段。</p>
 <div class="admonition 支持的属性列表">
 <p class="admonition-title">支持的属性列表</p>
 <ul>
 <li>miss_default</li>
+<li>enable</li>
 <li>example</li>
 <li>alias</li>
 <li>title</li>
@@ -847,6 +869,92 @@
 <li>extra</li>
 </ul>
 </div>
+<h2 id="6gateway-route">6.自定义<code>Gateway Route</code>路由函数</h2>
+<p>虽然提供了一些参数用于<code>Gateway Route</code>路由的定制，但是光靠这些参数还是不够的，所以支持开发者通过继承的方式来定义<code>Gateway Route</code>路由函数的构造。</p>
+<p>比如下述示例的<a href="https://github.com/so1n/pait/blob/master/example/example_grpc/example_proto/user/user.proto">User.proto</a>文件中定义的接口中有一个名为<code>User.get_uid_by_token</code>的接口
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1">// 原文件见：https://github.com/so1n/pait/blob/master/example/example_grpc/example_proto/user/user.proto</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="c1">// logout user</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="kd">message</span> <span class="nc">LogoutUserRequest</span> <span class="p">{</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a>  <span class="kt">string</span> <span class="na">uid</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a>  <span class="c1">// 不解析该字段</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a>  <span class="c1">// pait: {&quot;enable&quot;: false}</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a>  <span class="kt">string</span> <span class="na">token</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">}</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1">// pait: {&quot;group&quot;: &quot;user&quot;, &quot;tag&quot;: [[&quot;grpc-user&quot;, &quot;grpc_user_service&quot;]]}</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="kd">service</span> <span class="n">User</span> <span class="p">{</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a>  <span class="c1">// The interface should not be exposed for external use</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13"></a>  <span class="c1">// pait: {&quot;enable&quot;: false}</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14"></a>  <span class="k">rpc</span> <span class="n">get_uid_by_token</span> <span class="p">(</span><span class="n">GetUidByTokenRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">GetUidByTokenResult</span><span class="p">);</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15"></a>  <span class="c1">// pait: {&quot;summary&quot;: &quot;User exit from the system&quot;, &quot;url&quot;: &quot;/user/logout&quot;}</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16"></a>  <span class="k">rpc</span> <span class="n">logout_user</span> <span class="p">(</span><span class="n">LogoutUserRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">google.protobuf.Empty</span><span class="p">);</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17"></a>  <span class="c1">// pait: {&quot;summary&quot;: &quot;User login to system&quot;, &quot;url&quot;: &quot;/user/login&quot;}</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18"></a>  <span class="k">rpc</span> <span class="n">login_user</span><span class="p">(</span><span class="n">LoginUserRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">LoginUserResult</span><span class="p">);</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19"></a>  <span class="c1">// pait: {&quot;tag&quot;: [[&quot;grpc-user&quot;, &quot;grpc_user_service&quot;], [&quot;grpc-user-system&quot;, &quot;grpc_user_service&quot;]]}</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20"></a>  <span class="c1">// pait: {&quot;summary&quot;: &quot;Create users through the system&quot;, &quot;url&quot;: &quot;/user/create&quot;}</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21"></a>  <span class="k">rpc</span> <span class="n">create_user</span><span class="p">(</span><span class="n">CreateUserRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">google.protobuf.Empty</span><span class="p">);</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22"></a>  <span class="c1">// pait: {&quot;url&quot;: &quot;/user/delete&quot;, &quot;tag&quot;: [[&quot;grpc-user&quot;, &quot;grpc_user_service&quot;], [&quot;grpc-user-system&quot;, &quot;grpc_user_service&quot;]]}</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23"></a>  <span class="c1">// pait: {&quot;desc&quot;: &quot;This interface performs a logical delete, not a physical delete&quot;}</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24"></a>  <span class="k">rpc</span> <span class="n">delete_user</span><span class="p">(</span><span class="n">DeleteUserRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">google.protobuf.Empty</span><span class="p">);</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25"></a><span class="p">}</span>
+</code></pre></div>
+它用于通过token获取uid, 同时拥有校验Token是否正确的效果，这个接口不会直接暴露给外部调用，也就不会通过<code>Gateway Route</code>生成对应的HTTP接口。
+而其它接口被调用时，需要从Header获取Token并通过gRPC接口<code>User.get_uid_by_token</code>进行判断，判断当前请求的用户是否正常，只有校验通过时才会去调用对应的gRPC接口。
+同时，接口<code>User.logout_user</code>请求体<code>LogoutUserRequest</code>的<code>token</code>字段被标注为不解析，并通过Herder的获取Token，使其跟其它接口统一。</p>
+<p>接下来就通过继承的方法来重新定义<code>Gateway Route</code>路由函数的构造：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">modules</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Type</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="kn">from</span> <span class="nn">example.example_grpc.python_example_proto_code.example_proto.user</span> <span class="kn">import</span> <span class="n">user_pb2</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="kn">from</span> <span class="nn">pait.util.grpc_inspect.stub</span> <span class="kn">import</span> <span class="n">GrpcModel</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="kn">from</span> <span class="nn">pait.util.grpc_inspect.types</span> <span class="kn">import</span> <span class="n">Message</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="k">class</span> <span class="nc">CustomerGrpcGatewayRoute</span><span class="p">(</span><span class="n">GrpcGatewayRoute</span><span class="p">):</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="c1"># 继承`GrpcGatewayRoute`.`gen_route`方法</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="k">def</span> <span class="nf">gen_route</span><span class="p">(</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12"></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">grpc_model</span><span class="p">:</span> <span class="n">GrpcModel</span><span class="p">,</span> <span class="n">request_pydantic_model_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a id="__codelineno-5-15" name="__codelineno-5-15"></a>        <span class="c1"># 如果不是login_user接口，就走自定义的路由函数</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16"></a>        <span class="k">if</span> <span class="n">method_name</span> <span class="o">!=</span> <span class="s2">&quot;/user.User/login_user&quot;</span><span class="p">:</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17"></a>
+<a id="__codelineno-5-18" name="__codelineno-5-18"></a>            <span class="k">async</span> <span class="k">def</span> <span class="nf">_route</span><span class="p">(</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19"></a>                <span class="n">request_pydantic_model</span><span class="p">:</span> <span class="n">request_pydantic_model_class</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20"></a>                <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;User Token&quot;</span><span class="p">),</span>  <span class="c1"># 通过Header获取token</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21"></a>                <span class="n">req_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">&quot;X-Request-Id&quot;</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())),</span>  <span class="c1"># 通过Header获取请求id</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22"></a>            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23"></a>                <span class="c1"># 获取gRPC接口对应的调用函数，需要放在最前，因为它包括了判断channel是否创建的逻辑。</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24"></a>                <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grpc_func</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25"></a>                <span class="n">request_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">request_pydantic_model</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26"></a>                <span class="k">if</span> <span class="n">method_name</span> <span class="o">==</span> <span class="s2">&quot;/user.User/logout_user&quot;</span><span class="p">:</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27"></a>                    <span class="c1"># logout_user接口需要一个token参数</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28"></a>                    <span class="n">request_dict</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span>
+<a id="__codelineno-5-29" name="__codelineno-5-29"></a>                <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-5-30" name="__codelineno-5-30"></a>                    <span class="c1"># 其它接口需要通过校验Token来判断用户是否合法 </span>
+<a id="__codelineno-5-31" name="__codelineno-5-31"></a>                    <span class="n">result</span><span class="p">:</span> <span class="n">user_pb2</span><span class="o">.</span><span class="n">GetUidByTokenResult</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_pb2_grpc</span><span class="o">.</span><span class="n">UserStub</span><span class="p">(</span>
+<a id="__codelineno-5-32" name="__codelineno-5-32"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33"></a>                    <span class="p">)</span><span class="o">.</span><span class="n">get_uid_by_token</span><span class="p">(</span><span class="n">user_pb2</span><span class="o">.</span><span class="n">GetUidByTokenRequest</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">))</span>
+<a id="__codelineno-5-34" name="__codelineno-5-34"></a>                    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">uid</span><span class="p">:</span>
+<a id="__codelineno-5-35" name="__codelineno-5-35"></a>                        <span class="c1"># 如果不合法就报错</span>
+<a id="__codelineno-5-36" name="__codelineno-5-36"></a>                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not found user by token:</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-37" name="__codelineno-5-37"></a>                <span class="c1"># 合法就调用对应的gRPC接口</span>
+<a id="__codelineno-5-38" name="__codelineno-5-38"></a>                <span class="n">request_msg</span><span class="p">:</span> <span class="n">Message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_msg_from_dict</span><span class="p">(</span><span class="n">grpc_model</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">request_dict</span><span class="p">)</span>
+<a id="__codelineno-5-39" name="__codelineno-5-39"></a>                <span class="c1"># 添加一个请求ID给gRPC服务</span>
+<a id="__codelineno-5-40" name="__codelineno-5-40"></a>                <span class="n">grpc_msg</span><span class="p">:</span> <span class="n">Message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">func</span><span class="p">(</span><span class="n">request_msg</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;req_id&quot;</span><span class="p">,</span> <span class="n">req_id</span><span class="p">)])</span>
+<a id="__codelineno-5-41" name="__codelineno-5-41"></a>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_dict_from_msg</span><span class="p">(</span><span class="n">grpc_msg</span><span class="p">))</span>
+<a id="__codelineno-5-42" name="__codelineno-5-42"></a>
+<a id="__codelineno-5-43" name="__codelineno-5-43"></a>            <span class="c1"># 由于request_pydantic_model_class是在父类生成的，所以Pait在兼容延迟注释时获取不到该模块的request_pydantic_model_class值，</span>
+<a id="__codelineno-5-44" name="__codelineno-5-44"></a>            <span class="c1"># 所以要把request_pydantic_model_class注入本模块，在下一个版本`GrpcGatewayRoute`会自动处理这个问题。</span>
+<a id="__codelineno-5-45" name="__codelineno-5-45"></a>            <span class="n">modules</span><span class="p">[</span><span class="n">_route</span><span class="o">.</span><span class="vm">__module__</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;request_pydantic_model_class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request_pydantic_model_class</span>
+<a id="__codelineno-5-46" name="__codelineno-5-46"></a>            <span class="k">return</span> <span class="n">_route</span>
+<a id="__codelineno-5-47" name="__codelineno-5-47"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-5-48" name="__codelineno-5-48"></a>            <span class="c1"># login_user接口则走自动生成逻辑。</span>
+<a id="__codelineno-5-49" name="__codelineno-5-49"></a>            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">gen_route</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">grpc_model</span><span class="p">,</span> <span class="n">request_pydantic_model_class</span><span class="p">)</span>
+</code></pre></div>
+之后就可以跟原来使用<code>GrpcGatewayRoute</code>的方法一样使用我们新创建的<code>CustomerGrpcGatewayRoute</code>，之后就可以看到如下效果：
+<img alt="" src="https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16533162986271653316298233.png" />
+可以看到<code>/api/user/login</code>没有什么变化，而<code>/api/user/logout</code>和<code>/api/user/create</code>(业务逻辑是不可以这样实现的，举例说明)需要通过Header获取token和<code>X-Request-ID</code></p>
 
               
             </article>
