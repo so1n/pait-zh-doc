@@ -267,5 +267,5 @@ class CustomerGrpcGatewayRoute(GrpcGatewayRoute):
             return super().gen_route(method_name, grpc_model, request_pydantic_model_class)
 ```
 之后就可以跟原来使用`GrpcGatewayRoute`的方法一样使用我们新创建的`CustomerGrpcGatewayRoute`，之后就可以看到如下效果：
-![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16533162986271653316298233.png)
-可以看到`/api/user/login`没有什么变化，而`/api/user/logout`和`/api/user/create`(业务逻辑是不可以这样实现的，举例说明)需要通过Header获取token和`X-Request-ID`
+![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16533609453921653360944910.png)
+可以看到`/api/user/login`和`/api/user/create`没有什么变化，而`/api/user/logout`需要通过Header获取token和`X-Request-ID`
