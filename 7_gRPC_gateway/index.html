@@ -967,8 +967,8 @@
 <a id="__codelineno-5-49" name="__codelineno-5-49"></a>            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">gen_route</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">grpc_model</span><span class="p">,</span> <span class="n">request_pydantic_model_class</span><span class="p">)</span>
 </code></pre></div>
 之后就可以跟原来使用<code>GrpcGatewayRoute</code>的方法一样使用我们新创建的<code>CustomerGrpcGatewayRoute</code>，之后就可以看到如下效果：
-<img alt="" src="https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16533162986271653316298233.png" />
-可以看到<code>/api/user/login</code>没有什么变化，而<code>/api/user/logout</code>和<code>/api/user/create</code>(业务逻辑是不可以这样实现的，举例说明)需要通过Header获取token和<code>X-Request-ID</code></p>
+<img alt="" src="https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/16533609453921653360944910.png" />
+可以看到<code>/api/user/login</code>和<code>/api/user/create</code>没有什么变化，而<code>/api/user/logout</code>需要通过Header获取token和<code>X-Request-ID</code></p>
 
               
             </article>
