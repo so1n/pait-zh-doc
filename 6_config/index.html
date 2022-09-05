@@ -801,7 +801,7 @@
 <a id="__codelineno-1-18" name="__codelineno-1-18"></a>    <span class="n">key</span><span class="p">:</span> <span class="n">MatchKeyLiteral</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
 <a id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="n">target</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
-这个对象的Key是指路由函数<code>Pait</code>属性的Key，其中<code>all</code>代表所有路由函数都匹配，以<code>!</code>开头的代表是反向匹配，比如<code>MatchRule(!status, "test")</code>代表是匹配<code>status</code>的值不是<code>test</code>的路由函数，而target则是对应的值。</p>
+这个对象的Key是指路由函数<code>Pait</code>属性的Key，其中<code>all</code>代表所有路由函数都匹配，以<code>!</code>开头的代表是反向匹配，比如<code>MatchRule("!status", "test")</code>代表是匹配<code>status</code>的值不是<code>test</code>的路由函数，而target则是对应的值。</p>
 <div class="admonition note note">
 <p class="admonition-title">Note</p>
 <p>需要注意的是，apply func提供的是追加功能，并不会覆盖掉之前的值。</p>
