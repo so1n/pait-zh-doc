@@ -39,7 +39,9 @@ data里面有很多路由函数的信息, 但是会缺少关键的参数如`url`
 
 ## IDE支持
 pait的类型校验和转换以及类型拓展得益于`Pydantic`,同时也从`pydantic`或得到IDE的支持，目前支持`Pycharm`和`Mypy`
+
 - [PyCharm plugin](https://pydantic-docs.helpmanual.io/pycharm_plugin/)
+
 - [Mypy plugin](https://pydantic-docs.helpmanual.io/mypy_plugin/)
 
 ## 示例代码

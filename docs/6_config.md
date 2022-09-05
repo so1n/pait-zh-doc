@@ -55,7 +55,7 @@ class MatchRule(object):
     key: MatchKeyLiteral = "all"
     target: Any = None
 ```
-这个对象的Key是指路由函数`Pait`属性的Key，其中`all`代表所有路由函数都匹配，以`!`开头的代表是反向匹配，比如`MatchRule(!status, "test")`代表是匹配`status`的值不是`test`的路由函数，而target则是对应的值。
+这个对象的Key是指路由函数`Pait`属性的Key，其中`all`代表所有路由函数都匹配，以`!`开头的代表是反向匹配，比如`MatchRule("!status", "test")`代表是匹配`status`的值不是`test`的路由函数，而target则是对应的值。
 
 !!! note Note
     需要注意的是，apply func提供的是追加功能，并不会覆盖掉之前的值。
