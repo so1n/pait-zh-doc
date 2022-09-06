@@ -748,7 +748,7 @@
   <h1>config</h1>
 
 <h2 id="config">config</h2>
-<p>config能为<code>Pait</code>提供一些配置支持, 不过由于<code>Pait</code>是以一个装饰器机制运行着，所以不是路由函数运行时来读取配置，而是<code>config</code>主动去覆盖路由函数对应的<code>Pait</code>属性，所以它有一个限制，就是需要在app被运行之前，<code>load_app</code>之后初始化, 同时整个运行时只允许初始化一次，如下代码：
+<p>config能为<code>Pait</code>提供一些配置支持, 整个运行时只允许初始化一次，建议在添加完所有路由并且调用<code>load_app</code>后再进行初始化，如下代码：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">pait.app</span> <span class="kn">import</span> <span class="n">load_app</span>
@@ -779,8 +779,8 @@
 <li>apply_func_list: 按照一定规则适配路由函数属性的函数列表</li>
 </ul>
 <h2 id="apply-func">apply func介绍</h2>
-<p>在使用<code>Pait</code>的过程中可能会依据路由函数对应的生命周期来应用不同的<code>Pait</code>属性，比如对于<code>status</code>为design的路由函数，往往会使用Mock插件，而对于<code>status</code>为test的路由函数，往往会使用响应结果检查的插件等等。如果每次都是手动去改会非常麻烦，这时候就可以使用apply func功能。</p>
-<p><code>Pait</code>提供了一系列的apply func，每个apply func只有应用一种<code>Pait</code>属性，他们都是接收2个参数，第一个参数是路由函数<code>Pait</code>对应属性要要应用的值，第二个参数是匹配规则，匹配规则封装在一个<code>MatchRule</code>对象中，对象如下：
+<p>在使用<code>Pait</code>的过程中可能会依据路由函数对应的生命周期来应用不同的<code>Pait</code>属性，比如对于<code>status</code>为<code>design</code>的路由函数，往往会使用Mock插件，而对于<code>status</code>为<code>test</code>的路由函数，往往会使用响应结果检查的插件等等。每次都是手动去改会非常麻烦，这时候就可以使用apply func功能。</p>
+<p><code>Pait</code>提供了一系列的apply func，每个apply func只会应用一种<code>Pait</code>属性，他们都是接收2个参数，第一个参数是路由函数<code>Pait</code>对应属性要要应用的值，第二个参数是匹配规则，匹配规则封装在一个<code>MatchRule</code>对象中，这个对象的Key是指路由函数<code>Pait</code>属性的Key，其中<code>all</code>代表所有路由函数都匹配(默认值)，而其它的参数以<code>!</code>开头的代表是反向匹配，比如<code>MatchRule("!status", "test")</code>代表是匹配<code>status</code>的值不是<code>test</code>的路由函数，而target则是对应的值，Key目前支持的值如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">MatchKeyLiteral</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="s2">&quot;all&quot;</span><span class="p">,</span>              <span class="c1"># 所有路由函数都会匹配</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="s2">&quot;status&quot;</span><span class="p">,</span>           <span class="c1"># 路由函数的status为对应值得都会匹配</span>
@@ -794,114 +794,116 @@
 <a id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="s2">&quot;!method_list&quot;</span><span class="p">,</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="s2">&quot;!path&quot;</span><span class="p">,</span>
 <a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="p">]</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="nd">@dataclass</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="k">class</span> <span class="nc">MatchRule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18"></a>    <span class="n">key</span><span class="p">:</span> <span class="n">MatchKeyLiteral</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="n">target</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-</code></pre></div>
-这个对象的Key是指路由函数<code>Pait</code>属性的Key，其中<code>all</code>代表所有路由函数都匹配，以<code>!</code>开头的代表是反向匹配，比如<code>MatchRule("!status", "test")</code>代表是匹配<code>status</code>的值不是<code>test</code>的路由函数，而target则是对应的值。</p>
+</code></pre></div></p>
+<p>此外，在0.8.1版本后，支持<code>&amp;</code>和<code>|</code>的多规则匹配，如下：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">MatchRule</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">pait.model.status</span> <span class="kn">import</span> <span class="n">PaitStatus</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># 匹配status为test或者是dev</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="n">MatchRule</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">PaitStatus</span><span class="o">.</span><span class="n">test</span><span class="p">)</span> <span class="o">|</span> <span class="n">MatchRule</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">PaitStatus</span><span class="o">.</span><span class="n">dev</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="c1"># 匹配path为/api/user且 method_list为GET或者group为gRPC</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="n">MatchRule</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;/api/user&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">MatchRule</span><span class="p">(</span><span class="s2">&quot;method_list&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">MatchRule</span><span class="p">(</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="s2">&quot;gRPC&quot;</span><span class="p">))</span>
+</code></pre></div></p>
 <div class="admonition note note">
 <p class="admonition-title">Note</p>
 <p>需要注意的是，apply func提供的是追加功能，并不会覆盖掉之前的值。</p>
 </div>
 <h3 id="apply_extra_openapi_model">apply_extra_openapi_model</h3>
-<p>在使用Web框架的时候，经常会使用中间件等其它用到请求参数的应用，比如有一个中间件，他会根据App版本号来进行限制，版本号小于1的都返回404。这种情况<code>Pait</code>无法托管到这个中间件使用的请求值，导致导出的OpanAPI文件，会缺少这个请求值，这时可以使用<code>apply_extra_openapi_model</code>来解决这个问题，它的使用方法如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">pait.field</span> <span class="kn">import</span> <span class="n">Header</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_extra_openapi_model</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">class</span> <span class="nc">DemoModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="sd">&quot;&quot;&quot;中间件一般都是通过Header读取对应的版本号值&quot;&quot;&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">version_code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;版本号&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">version_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;版本名称&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># 通过apply_extra_openapi_model应用当前这个Model，由于中间件都是应用到所有的路由函数，所以直接使用MatchRule的默认值。</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_extra_openapi_model</span><span class="p">(</span><span class="n">DemoModel</span><span class="p">)])</span>
+<p>在使用Web框架的时候，经常会使用中间件等其它用到请求参数的应用，比如有一个中间件，他会根据App版本号来进行限制，版本号小于1的都返回404。这种情况<code>Pait</code>无法托管到这个中间件使用的请求值，导致导出的OpanAPI文件会缺少这个请求值，这时可以使用<code>apply_extra_openapi_model</code>来解决这个问题，它的使用方法如下：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">pait.field</span> <span class="kn">import</span> <span class="n">Header</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_extra_openapi_model</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">class</span> <span class="nc">DemoModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="sd">&quot;&quot;&quot;中间件一般都是通过Header读取对应的版本号值&quot;&quot;&quot;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">version_code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;版本号&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">version_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;版本名称&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># 通过apply_extra_openapi_model应用当前这个Model，由于中间件都是应用到所有的路由函数，所以直接使用MatchRule的默认值。</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_extra_openapi_model</span><span class="p">(</span><span class="n">DemoModel</span><span class="p">)])</span>
 </code></pre></div></p>
 <h3 id="apply_response_model">apply_response_model</h3>
 <p>与apply_extra_openapi_model一样，在使用中间件限制版本号小于1的时候，可能返回的是一个内部的响应，这时候可以使用apply_response_model来添加一个默认的响应，需要注意点是，添加的这个默认响应模型的<code>is_core</code>属性必须为False，使用方法如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_response_model</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kn">from</span> <span class="nn">pait.model.response</span> <span class="kn">import</span> <span class="n">PaitHtmlResponseModel</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="k">class</span> <span class="nc">DefaultResponseModel</span><span class="p">(</span><span class="n">PaitHtmlResponseModel</span><span class="p">):</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="n">is_core</span> <span class="o">=</span> <span class="kc">False</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a id="__codelineno-3-10" name="__codelineno-3-10"></a>
-<a id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="c1"># 由于中间件都是应用到所有的路由函数，所以直接使用MatchRule的默认值。</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_response_model</span><span class="p">([</span><span class="n">DefaultResponseModel</span><span class="p">])])</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_response_model</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="kn">from</span> <span class="nn">pait.model.response</span> <span class="kn">import</span> <span class="n">PaitHtmlResponseModel</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="k">class</span> <span class="nc">DefaultResponseModel</span><span class="p">(</span><span class="n">PaitHtmlResponseModel</span><span class="p">):</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">is_core</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="c1"># 由于中间件都是应用到所有的路由函数，所以直接使用MatchRule的默认值。</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_response_model</span><span class="p">([</span><span class="n">DefaultResponseModel</span><span class="p">])])</span>
 </code></pre></div></p>
 <h3 id="apply_block_http_method_set">apply_block_http_method_set</h3>
 <p>由于<code>Pait</code>只是一个装饰器，他只能捕获到路由函数本身的属性，像Url, Http方法之类的需要后续调用<code>load_app</code>来补全，但是很多Web框架会自动为路由函数补上<code>HEAD</code>，<code>OPTIONS</code>等Http方法，即使开发者在注册路由时并没有填写，这样会导致导出来的OpenAPI数据会很多，这时可以使用<code>apply_block_http_method_set</code>来禁用一些方法不被<code>Pait</code>捕获，使用方法如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_block_http_method_set</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_block_http_method_set</span><span class="p">({</span><span class="s2">&quot;HEAD&quot;</span><span class="p">,</span> <span class="s2">&quot;OPTIONS&quot;</span><span class="p">})])</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_block_http_method_set</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_block_http_method_set</span><span class="p">({</span><span class="s2">&quot;HEAD&quot;</span><span class="p">,</span> <span class="s2">&quot;OPTIONS&quot;</span><span class="p">})])</span>
 </code></pre></div></p>
 <h3 id="apply_default_pydantic_model_config">apply_default_pydantic_model_config</h3>
 <p>前面说到，<code>Pait</code>实际上会把开发者填写的函数签名转换为一个<code>pydantic.BaseModel</code>再进行校验和类型转换，这种情况下有时候需要使用<code>pydantic.BaseConfig</code>功能，比如<code>pydantic</code>默认情况下不会对开发者填写的<code>default</code>值进行校验，如果需要进行校验，则需要使用<code>pydantic.BaseConfig</code>功能，这时就可以使用<code>apply_default_pydantic_model_config</code>，使用方法如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_default_pydantic_model_config</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseConfig</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4"></a>
-<a id="__codelineno-5-5" name="__codelineno-5-5"></a>
-<a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="k">class</span> <span class="nc">MyBaseConfig</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">validate_assignment</span> <span class="o">=</span> <span class="kc">True</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8"></a>
-<a id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_default_pydantic_model_config</span><span class="p">(</span><span class="n">MyBaseConfig</span><span class="p">)])</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_default_pydantic_model_config</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseConfig</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="k">class</span> <span class="nc">MyBaseConfig</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="n">validate_assignment</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_default_pydantic_model_config</span><span class="p">(</span><span class="n">MyBaseConfig</span><span class="p">)])</span>
 </code></pre></div></p>
 <h3 id="apply_multi_plugin">apply_multi_plugin</h3>
 <p>插件是<code>Pait</code>的重要组成部分，其中有些插件只适用了接口的某些生命周期，所以比较推荐以下这样的写法，根据路由函数的状态来判断要应用哪些插件，如下:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette.plugin.mock_response</span> <span class="kn">import</span> <span class="n">AsyncMockPlugin</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">pait.app.starlette.plugin.check_json_resp</span> <span class="kn">import</span> <span class="n">AsyncCheckJsonRespPlugin</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_multi_plugin</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="kn">from</span> <span class="nn">pait.model.core</span> <span class="kn">import</span> <span class="n">MatchRule</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="kn">from</span> <span class="nn">pait.model.status</span> <span class="kn">import</span> <span class="n">PaitStatus</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7"></a>
-<a id="__codelineno-6-8" name="__codelineno-6-8"></a>
-<a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10"></a>    <span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11"></a>        <span class="n">apply_multi_plugin</span><span class="p">(</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12"></a>            <span class="c1"># 为了能复用插件，这里只允许lambda写法，也可以使用pait自带的create_factory</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13"></a>            <span class="p">[</span><span class="k">lambda</span><span class="p">:</span> <span class="n">AsyncMockPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">()],</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14"></a>            <span class="c1"># 限定status为design的使用Mock插件</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15"></a>            <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">PaitStatus</span><span class="o">.</span><span class="n">design</span><span class="p">)</span>
-<a id="__codelineno-6-16" name="__codelineno-6-16"></a>        <span class="p">),</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17"></a>        <span class="n">apply_multi_plugin</span><span class="p">(</span>
-<a id="__codelineno-6-18" name="__codelineno-6-18"></a>            <span class="p">[</span><span class="k">lambda</span><span class="p">:</span> <span class="n">AsyncCheckJsonRespPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">()],</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19"></a>            <span class="c1"># 限定status为test的使用响应体检查插件</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20"></a>            <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">PaitStatus</span><span class="o">.</span><span class="n">test</span><span class="p">)</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21"></a>        <span class="p">),</span>
-<a id="__codelineno-6-22" name="__codelineno-6-22"></a>    <span class="p">]</span>
-<a id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette.plugin.mock_response</span> <span class="kn">import</span> <span class="n">MockPlugin</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="kn">from</span> <span class="nn">pait.app.starlette.plugin.check_json_resp</span> <span class="kn">import</span> <span class="n">CheckJsonRespPlugin</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_multi_plugin</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="kn">from</span> <span class="nn">pait.model.core</span> <span class="kn">import</span> <span class="n">MatchRule</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="kn">from</span> <span class="nn">pait.model.status</span> <span class="kn">import</span> <span class="n">PaitStatus</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7"></a>
+<a id="__codelineno-7-8" name="__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10"></a>    <span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11"></a>        <span class="n">apply_multi_plugin</span><span class="p">(</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12"></a>            <span class="c1"># 为了能复用插件，这里只允许lambda写法，也可以使用pait自带的create_factory</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13"></a>            <span class="p">[</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MockPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">()],</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14"></a>            <span class="c1"># 限定status为design的使用Mock插件</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15"></a>            <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">PaitStatus</span><span class="o">.</span><span class="n">design</span><span class="p">)</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16"></a>        <span class="p">),</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17"></a>        <span class="n">apply_multi_plugin</span><span class="p">(</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18"></a>            <span class="p">[</span><span class="k">lambda</span><span class="p">:</span> <span class="n">CheckJsonRespPlugin</span><span class="o">.</span><span class="n">build</span><span class="p">()],</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19"></a>            <span class="c1"># 限定status为test的使用响应体检查插件</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20"></a>            <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">PaitStatus</span><span class="o">.</span><span class="n">test</span><span class="p">)</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21"></a>        <span class="p">),</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22"></a>    <span class="p">]</span>
+<a id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="apply_pre_depend">apply_pre_depend</h3>
 <p>大多数时候可能会为某一组路由函数使用一个token检验函数，这种情况不适合使用中间件，但是一个一个路由函数去添加depend却是很麻烦的一件事，这时可以使用<code>apply_pre_depend</code>,使用方法如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_pre_depend</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="kn">from</span> <span class="nn">pait.field</span> <span class="kn">import</span> <span class="n">Header</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="kn">from</span> <span class="nn">pait.model.core</span> <span class="kn">import</span> <span class="n">MatchRule</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6"></a>
-<a id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="k">def</span> <span class="nf">check_token</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8"></a>    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9"></a>
-<a id="__codelineno-7-10" name="__codelineno-7-10"></a>
-<a id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span>
-<a id="__codelineno-7-12" name="__codelineno-7-12"></a>    <span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13"></a>        <span class="c1"># 匹配url以/api/v1/user开头的</span>
-<a id="__codelineno-7-14" name="__codelineno-7-14"></a>        <span class="n">apply_pre_depend</span><span class="p">(</span><span class="n">check_token</span><span class="p">,</span> <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;^/api/v1/user&quot;</span><span class="p">)),</span>
-<a id="__codelineno-7-15" name="__codelineno-7-15"></a>        <span class="c1"># 匹配路由函数的group属性为user的</span>
-<a id="__codelineno-7-16" name="__codelineno-7-16"></a>        <span class="n">apply_pre_depend</span><span class="p">(</span><span class="n">check_token</span><span class="p">,</span> <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">))</span>
-<a id="__codelineno-7-17" name="__codelineno-7-17"></a>    <span class="p">],</span>
-<a id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_pre_depend</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="kn">from</span> <span class="nn">pait.field</span> <span class="kn">import</span> <span class="n">Header</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="kn">from</span> <span class="nn">pait.model.core</span> <span class="kn">import</span> <span class="n">MatchRule</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a>
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="k">def</span> <span class="nf">check_token</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a id="__codelineno-8-10" name="__codelineno-8-10"></a>
+<a id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12"></a>    <span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13"></a>        <span class="c1"># 匹配url以/api/v1/user开头的</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14"></a>        <span class="n">apply_pre_depend</span><span class="p">(</span><span class="n">check_token</span><span class="p">,</span> <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;^/api/v1/user&quot;</span><span class="p">)),</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15"></a>        <span class="c1"># 匹配路由函数的group属性为user的</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16"></a>        <span class="n">apply_pre_depend</span><span class="p">(</span><span class="n">check_token</span><span class="p">,</span> <span class="n">match_rule</span><span class="o">=</span><span class="n">MatchRule</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">))</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17"></a>    <span class="p">],</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="p">)</span>
 </code></pre></div></p>
 
               
