@@ -1,5 +1,5 @@
 ## config
-config能为`Pait`提供一些配置支持, 不过由于`Pait`是以一个装饰器机制运行着，所以不是路由函数运行时来读取配置，而是`config`主动去覆盖路由函数对应的`Pait`属性，所以它有一个限制，就是需要在app被运行之前，`load_app`之后初始化, 同时整个运行时只允许初始化一次，如下代码：
+config能为`Pait`提供一些配置支持, 整个运行时只允许初始化一次，建议在添加完所有路由并且调用`load_app`后再进行初始化，如下代码：
 ```Python
 from starlette.applications import Starlette
 from pait.g import config
@@ -31,9 +31,9 @@ config.init_config(author="so1n")
 - apply_func_list: 按照一定规则适配路由函数属性的函数列表
 
 ## apply func介绍
-在使用`Pait`的过程中可能会依据路由函数对应的生命周期来应用不同的`Pait`属性，比如对于`status`为design的路由函数，往往会使用Mock插件，而对于`status`为test的路由函数，往往会使用响应结果检查的插件等等。如果每次都是手动去改会非常麻烦，这时候就可以使用apply func功能。
+在使用`Pait`的过程中可能会依据路由函数对应的生命周期来应用不同的`Pait`属性，比如对于`status`为`design`的路由函数，往往会使用Mock插件，而对于`status`为`test`的路由函数，往往会使用响应结果检查的插件等等。每次都是手动去改会非常麻烦，这时候就可以使用apply func功能。
 
-`Pait`提供了一系列的apply func，每个apply func只有应用一种`Pait`属性，他们都是接收2个参数，第一个参数是路由函数`Pait`对应属性要要应用的值，第二个参数是匹配规则，匹配规则封装在一个`MatchRule`对象中，对象如下：
+`Pait`提供了一系列的apply func，每个apply func只会应用一种`Pait`属性，他们都是接收2个参数，第一个参数是路由函数`Pait`对应属性要要应用的值，第二个参数是匹配规则，匹配规则封装在一个`MatchRule`对象中，这个对象的Key是指路由函数`Pait`属性的Key，其中`all`代表所有路由函数都匹配(默认值)，而其它的参数以`!`开头的代表是反向匹配，比如`MatchRule("!status", "test")`代表是匹配`status`的值不是`test`的路由函数，而target则是对应的值，Key目前支持的值如下：
 ```Python
 MatchKeyLiteral = Literal[
     "all",              # 所有路由函数都会匹配
@@ -48,20 +48,23 @@ MatchKeyLiteral = Literal[
     "!method_list",
     "!path",
 ]
-
-
-@dataclass
-class MatchRule(object):
-    key: MatchKeyLiteral = "all"
-    target: Any = None
 ```
-这个对象的Key是指路由函数`Pait`属性的Key，其中`all`代表所有路由函数都匹配，以`!`开头的代表是反向匹配，比如`MatchRule("!status", "test")`代表是匹配`status`的值不是`test`的路由函数，而target则是对应的值。
 
+此外，在0.8.1版本后，支持`&`和`|`的多规则匹配，如下：
+```Python
+from pait.extra.config import MatchRule
+from pait.model.status import PaitStatus
+
+# 匹配status为test或者是dev
+MatchRule("status", PaitStatus.test) | MatchRule("status", PaitStatus.dev)
+# 匹配path为/api/user且 method_list为GET或者group为gRPC
+MatchRule("path", "/api/user") & (MatchRule("method_list", "GET") | MatchRule("group", "gRPC"))
+```
 !!! note Note
     需要注意的是，apply func提供的是追加功能，并不会覆盖掉之前的值。
 
 ### apply_extra_openapi_model
-在使用Web框架的时候，经常会使用中间件等其它用到请求参数的应用，比如有一个中间件，他会根据App版本号来进行限制，版本号小于1的都返回404。这种情况`Pait`无法托管到这个中间件使用的请求值，导致导出的OpanAPI文件，会缺少这个请求值，这时可以使用`apply_extra_openapi_model`来解决这个问题，它的使用方法如下：
+在使用Web框架的时候，经常会使用中间件等其它用到请求参数的应用，比如有一个中间件，他会根据App版本号来进行限制，版本号小于1的都返回404。这种情况`Pait`无法托管到这个中间件使用的请求值，导致导出的OpanAPI文件会缺少这个请求值，这时可以使用`apply_extra_openapi_model`来解决这个问题，它的使用方法如下：
 ```Python
 from pait.field import Header
 from pait.extra.config import apply_extra_openapi_model
@@ -117,8 +120,8 @@ config.init_config(apply_func_list=[apply_default_pydantic_model_config(MyBaseCo
 ### apply_multi_plugin
 插件是`Pait`的重要组成部分，其中有些插件只适用了接口的某些生命周期，所以比较推荐以下这样的写法，根据路由函数的状态来判断要应用哪些插件，如下:
 ```Python
-from pait.app.starlette.plugin.mock_response import AsyncMockPlugin
-from pait.app.starlette.plugin.check_json_resp import AsyncCheckJsonRespPlugin
+from pait.app.starlette.plugin.mock_response import MockPlugin
+from pait.app.starlette.plugin.check_json_resp import CheckJsonRespPlugin
 from pait.extra.config import apply_multi_plugin
 from pait.g import config
 from pait.model.core import MatchRule
@@ -129,12 +132,12 @@ config.init_config(
     apply_func_list=[
         apply_multi_plugin(
             # 为了能复用插件，这里只允许lambda写法，也可以使用pait自带的create_factory
-            [lambda: AsyncMockPlugin.build()],
+            [lambda: MockPlugin.build()],
             # 限定status为design的使用Mock插件
             match_rule=MatchRule(key="status", target=PaitStatus.design)
         ),
         apply_multi_plugin(
-            [lambda: AsyncCheckJsonRespPlugin.build()],
+            [lambda: CheckJsonRespPlugin.build()],
             # 限定status为test的使用响应体检查插件
             match_rule=MatchRule(key="status", target=PaitStatus.test)
         ),
