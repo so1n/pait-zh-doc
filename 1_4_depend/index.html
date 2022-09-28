@@ -725,7 +725,7 @@
 <a id="__codelineno-1-3" name="__codelineno-1-3"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo&quot;</span> --header <span class="s2">&quot;token:u123456&quot;</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="o">{</span><span class="s2">&quot;data&quot;</span>:<span class="s2">&quot;Can not found by token:u123456&quot;</span><span class="o">}</span>
 </code></pre></div></p>
-<p>此外，<code>Pait</code>能支持多层Depend嵌套的，但是一般不推荐嵌套的层数太多，以上面的代码为例子，假设Token要经过一层特别的校验，且该校验逻辑会被复用，则代码可以改写为：
+<p>此外，<code>Pait</code>能支持多层Depend嵌套的(虽然不推荐)，以上面的代码为例子，假设Token要经过一层特别的校验，且该校验逻辑会被复用，则代码可以改写成如下代码：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>
@@ -927,7 +927,7 @@
 <a id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">})</span>
 </code></pre></div>
 但是Python是不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们变量名都改为<code>_</code>。</p>
-<p>为此，<code>Pait</code>通过可选参数<code>pre_depend_list</code>来提供了<code>Pre-Depends</code>功能，用户只需要把函数传入到Pait的pre_depend_list可选参数即可，
+<p>为此，<code>Pait</code>通过可选参数<code>pre_depend_list</code>来提供了<code>Pre-Depends</code>功能，用户只需要把函数传入到<code>Pait</code>的<code>pre_depend_list</code>可选参数即可，
 代码的逻辑和功能均不会被受到影响，这样修改后代码会变为如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>

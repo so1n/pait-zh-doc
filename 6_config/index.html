@@ -838,7 +838,7 @@
 <a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="n">config</span><span class="o">.</span><span class="n">init_config</span><span class="p">(</span><span class="n">apply_func_list</span><span class="o">=</span><span class="p">[</span><span class="n">apply_response_model</span><span class="p">([</span><span class="n">DefaultResponseModel</span><span class="p">])])</span>
 </code></pre></div></p>
 <h3 id="apply_block_http_method_set">apply_block_http_method_set</h3>
-<p>由于<code>Pait</code>只是一个装饰器，他只能捕获到路由函数本身的属性，像Url, Http方法之类的需要后续调用<code>load_app</code>来补全，但是很多Web框架会自动为路由函数补上<code>HEAD</code>，<code>OPTIONS</code>等Http方法，即使开发者在注册路由时并没有填写，这样会导致导出来的OpenAPI数据会很多，这时可以使用<code>apply_block_http_method_set</code>来禁用一些方法不被<code>Pait</code>捕获，使用方法如下：
+<p>由于<code>Pait</code>只是一个装饰器，他只能捕获到路由函数本身的属性，像Url, Http方法之类的需要后续调用<code>load_app</code>来补全，但是很多Web框架会自动为路由函数补上<code>HEAD</code>，<code>OPTIONS</code>等Http方法，即使开发者在注册路由时并没有填写，导致生成的OpenAPI数据也有<code>HEAD</code>和<code>OPTIONS</code>等HTTP方法的数据，这时可以使用<code>apply_block_http_method_set</code>来禁用一些方法不被<code>Pait</code>捕获，使用方法如下：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">pait.extra.config</span> <span class="kn">import</span> <span class="n">apply_block_http_method_set</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">pait.g</span> <span class="kn">import</span> <span class="n">config</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3"></a>

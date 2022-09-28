@@ -358,7 +358,7 @@
         
           <li class="md-nav__item">
   <a href="#24gtgeltlemultiple_of" class="md-nav__link">
-    2.4.数字校验之gt，ge，lt，le，multiple_of
+    2.4.数值类型校验之gt，ge，lt，le，multiple_of
   </a>
   
 </li>
@@ -723,7 +723,7 @@
         
           <li class="md-nav__item">
   <a href="#24gtgeltlemultiple_of" class="md-nav__link">
-    2.4.数字校验之gt，ge，lt，le，multiple_of
+    2.4.数值类型校验之gt，ge，lt，le，multiple_of
   </a>
   
 </li>
@@ -782,8 +782,8 @@
 <p>除了上文提到的Body外， <code>Field</code>还拥有其它的种类， 它们的名称和作用如下:</p>
 <ul>
 <li>Body: 获取当前请求的json数据</li>
-<li>Cookie: 获取当前请求的cookie数据(注意， 目前Cookie数据会被转化为一个Python字典， 这意味着Cookie的Key不能重复。同时， 在Field为Cookie时， type最好是str)</li>
-<li>File：获取当前请求的file对象，该对象与原文Web框架的file对象一致</li>
+<li>Cookie: 获取当前请求的cookie数据(注意， 目前Cookie数据会被转化为Python的dict对象， 这意味着Cookie的Key不能重复。建议当Field为Cookie时，参数的类型为str)</li>
+<li>File：获取当前请求的file对象，该对象与原Web框架的file对象一致</li>
 <li>Form：获取当前请求的form数据，如果有多个重复Key，只会返回第一个值</li>
 <li>Header: 获取当前请求的header数据</li>
 <li>Path: 获取当前请求的path数据，如<code>/api/{version}/test</code>，则会获取到version的数据</li>
@@ -878,8 +878,8 @@
 <a id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="o">}</span>
 </code></pre></div></p>
 <h2 id="2field">2.Field的功能</h2>
-<p>从上面的例子可以看到， 请求中没有带上<code>email</code>参数， 但是该接口返回的响应值中<code>email</code>的值是<code>example@xxx.com</code>，
-这是因为在填写<code>email</code>的<code>field</code>时，我把<code>example@xxx.com</code>填写到default值中，这样<code>Pait</code>会在获取不到该变量的对应值的情况下，也能把默认值赋给对应的变量。</p>
+<p>从上面的例子可以看到请求体并没有<code>email</code>参数， 但是接口返回的响应值中<code>email</code>的值是<code>example@xxx.com</code>，
+这是因为在填写<code>email</code>的<code>field</code>时，把<code>example@xxx.com</code>填写到default中，这样<code>Pait</code>无法通过请求体获取到该变量的的情况下，也能把默认值赋给变量。</p>
 <p>除了默认值之外， <code>field</code>也有很多的功能，这些功能大部分来源于<code>field</code>所继承的<code>pydantic.Field</code>。</p>
 <h3 id="21default">2.1.default</h3>
 <p><code>Pait</code>通过该参数支持默认值， 如果没有默认值可以直接不填写该参数的值。</p>
@@ -919,10 +919,11 @@
 <a id="__codelineno-2-33" name="__codelineno-2-33"></a>    <span class="p">]</span>
 <a id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="p">)</span>
 <a id="__codelineno-2-35" name="__codelineno-2-35"></a>
-<a id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="n">app</span><span class="o">.</span><span class="n">add_exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">api_exception</span><span class="p">)</span>
-<a id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<a id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="c1"># 添加异常的处理，当捕获到异常时也能把异常信息通过HTTP返回给调用者</span>
+<a id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="n">app</span><span class="o">.</span><span class="n">add_exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">api_exception</span><span class="p">)</span>
+<a id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
-使用<code>curl</code>调用可以发现，对于有默认值得接口<code>/api/demo</code>，当没有传参数demo_value时，默认返回123, 传参数456时，返回值是456:
+使用<code>curl</code>调用可以发现，对于有默认值的接口<code>/api/demo</code>，当没有传参数demo_value时，默认返回123, 传参数456时，返回值是456:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo&quot;</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="m">123</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value=456&quot;</span>
@@ -933,7 +934,7 @@
 <a id="__codelineno-4-2" name="__codelineno-4-2"></a>Can not found demo_value value
 </code></pre></div></p>
 <h3 id="22default_factory">2.2.default_factory</h3>
-<p>该参数用于默认值是函数的情况，可以用来填写类似于<code>datetime.datetime.now</code>接收请求才生成的默认值。</p>
+<p>该参数用于默认值是函数的情况，可以用来填写类似于<code>datetime.datetime.now</code>等接收请求才生成的默认值。</p>
 <p>示例代码如下，第一个接口的默认值是当前时间， 第二个接口的默认值是uuid，他们每次调用的返回值都是收到请求时生成的:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">import</span> <span class="nn">datetime</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">import</span> <span class="nn">uuid</span>
@@ -980,7 +981,7 @@
 <a id="__codelineno-6-8" name="__codelineno-6-8"></a>ef84f04fa9fc4ea9a8b44449c76146b8
 </code></pre></div></p>
 <h3 id="23alias">2.3.alias</h3>
-<p>参数的别名，一些参数可能被命名为<code>Content-Type</code>, 但是Python不支持这种命名方式， 此时可以使用别名。</p>
+<p>参数的别名，通常情况下会以参数名为key从请求体中获取数据，但是一些参数名如<code>Content-Type</code>是Python不支持的变量命名方式， 此时可以使用别名。</p>
 <p>示例代码如下:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
@@ -1002,11 +1003,11 @@
 <a id="__codelineno-7-18" name="__codelineno-7-18"></a>
 <a id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
-使用<code>curl</code>调用可以发现，<code>Pait</code>正常的从Header中提取<code>Content-Type</code>的值并赋给了content_type:
+使用<code>curl</code>调用可以发现，<code>Pait</code>正常的从Header中提取<code>Content-Type</code>的值并赋给了变量content_type并通过响应返回给调用者:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo&quot;</span> -H <span class="s2">&quot;Content-Type:123&quot;</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="m">123</span>
 </code></pre></div></p>
-<h3 id="24gtgeltlemultiple_of">2.4.数字校验之gt，ge，lt，le，multiple_of</h3>
+<h3 id="24gtgeltlemultiple_of">2.4.数值类型校验之gt，ge，lt，le，multiple_of</h3>
 <p>这几个值都是校验数字是否合法，仅用于数值的类型，他们的作用各不相同：</p>
 <ul>
 <li>gt：仅用于数值的类型，会校验数值是否大于该值，同时也会在OpenAPI添加<code>exclusiveMinimum</code>属性。</li>
@@ -1015,7 +1016,7 @@
 <li>le：仅用于数值的类型，会校验数值是否小于等于该值，同时也会在OpenAPI添加<code>exclusiveMaximum</code>属性。</li>
 <li>multiple_of：仅用于数字， 会校验该数字是否是指定值得倍数。</li>
 </ul>
-<p>示例代码如下，这个示例代码只有一个接口，但是接受了三个参数<code>demo_value1</code>, <code>demo_value2</code>, <code>demo_value3</code>，他们分别只接收符合大于1小于10；等于1以及3的倍数的三个数：
+<p>示例代码如下，这个示例代码只有一个接口，但是接受了三个参数<code>demo_value1</code>, <code>demo_value2</code>, <code>demo_value3</code>，他们分别只接收符合大于1小于10，等于1以及3的倍数的三个参数：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
 <a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>

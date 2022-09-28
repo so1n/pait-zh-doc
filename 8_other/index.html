@@ -708,10 +708,10 @@
   <h1>其它</h1>
 
 <h2 id="_1">隐式引入与显式引入</h2>
-<p><code>pait</code>对多个框架都提供支持, 如果一个项目中只安装了其中的一个框架, 那么可以使用隐式引入:
+<p><code>pait</code>支持多个框架, 如果项目对应的依赖环境中只安装了其中的一个框架, 那么可以使用隐式引入:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">pait.app</span> <span class="kn">import</span> <span class="n">add_doc_route</span><span class="p">,</span> <span class="n">load_app</span><span class="p">,</span> <span class="n">pait</span>
 </code></pre></div>
-但是如果同时安装了多个框架, 那么上面的引入会抛出错误, 建议使用显示引入, 如:
+但是如果同时安装了多个框架, 那么上面的引入会抛出错误, 建议使用显示引入，如下:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">add_doc_route</span><span class="p">,</span> <span class="n">load_app</span><span class="p">,</span> <span class="n">pait</span>
 </code></pre></div></p>
 <h2 id="dataload_app">data与load_app</h2>
@@ -741,7 +741,7 @@ data里面有很多路由函数的信息, 但是会缺少关键的参数如<code
 <p>同步类型的web框架请参照 <a href="https://github.com/so1n/pait/blob/master/pait/app/flask.py">pait.app.flask</a></p>
 <p>异步类型的web框架请参照 <a href="https://github.com/so1n/pait/blob/master/pait/app/starlette.py">pait.app.starlette</a></p>
 <h2 id="ide">IDE支持</h2>
-<p>pait的类型校验和转换以及类型拓展得益于<code>Pydantic</code>,同时也从<code>pydantic</code>或得到IDE的支持，目前支持<code>Pycharm</code>和<code>Mypy</code></p>
+<p>pait的类型校验和转换以及类型拓展得益于<code>Pydantic</code>,同时也从<code>pydantic</code>获得到IDE的支持，目前支持<code>Pycharm</code>和<code>Mypy</code></p>
 <ul>
 <li>
 <p><a href="https://pydantic-docs.helpmanual.io/pycharm_plugin/">PyCharm plugin</a></p>

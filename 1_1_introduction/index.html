@@ -652,14 +652,14 @@
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
 </td></tr></table>
-代码中其中第11行是<code>Pait</code>的核心，<code>Pait</code>的所有运行功能都在这个装饰器中实现，在这个核心中，会通过<code>inspect</code>获取到函数对应的函数签名，并通过函数签名生成一个<code>pydantic.BaseModel</code>对象, 然后通过该对象校验和转换请求点值并根据函数签名返回给函数对应的参数。</p>
+代码中其中第11行是<code>Pait</code>的核心，<code>Pait</code>的所有运行功能都在这个装饰器中实现。首先<code>Pait</code>会通过<code>inspect</code>获取到函数对应的函数签名，并通过函数签名生成一个<code>pydantic.BaseModel</code>对象, 然后通过该对象校验和转换请求点值并根据函数签名返回给函数对应的参数。</p>
 <p>而13,14行代码则是开发者自己填写的参数， 开发者在编写函数时， 只要把函数的参数都写成类似于<code>&lt;name&gt;:&lt;type&gt;=&lt;default&gt;</code>格式的关键参数即可，这种写法除了符合<code>Python</code>的关键参数标准外， <code>Pait</code>还会赋予其它的意义：</p>
 <ul>
 <li><code>name</code>为参数名， 在大多数情况下会作为Key来中请求资源获取对应的值</li>
 <li><code>type</code>为值对应的类型，<code>Pait</code>会用它来做参数校验和转化</li>
 <li><code>default</code>则是<code>Pait</code>的<code>field</code>对象，不同的<code>field</code>代表从不同的请求类型获取值， 而对象的属性则告诉<code>Pait</code>该如何去预处理从请求中获取的值。</li>
 </ul>
-<p>以上面的<code>uid</code>参数为例子，<code>Pait</code>会通过Body从请求中的获取Json数据，接着以Key为uid从Json数据中获取对应的的值并转化或验证是否为<code>int</code>类型， 最后再判断该值是否处于10-1000之间，如果不是就直接报错， 如果是则赋值给<code>uid</code>这个变量。</p>
+<p>以上面的<code>uid</code>参数为例子，<code>Pait</code>会通过Body从请求中的获取Json数据，接着以uid为Key从Json数据中获取对应的的值并转化或验证是否为<code>int</code>类型， 最后再判断该值是否处于10-1000之间，如果不是就直接报错， 如果是则赋值给<code>uid</code>这个变量。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>直接使用Body()时, mypy会检查到类型不匹配, 而Body.i()则可兼容这个问题， 一般情况下建议直接使用Body.i()。</p>

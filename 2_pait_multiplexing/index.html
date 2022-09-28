@@ -652,7 +652,7 @@
   <h1>Pait的复用</h1>
 
 <p>在上面的章节中，介绍了通过直接使用<code>Pait</code>装饰器来使用参数转换与类型校验功能，也有简单的介绍通过<code>pre_depend_list</code>参数来使用<code>Pait</code>的Pre-Depend功能，
-而在后面的章节中（特别是文档章节）会介绍<code>Pait</code>的其它功能，这些功能用需要通过指定的参数来启用，但是很多接口本身都有一些共性从而它们在使用<code>Pait</code>时填写的参数的一样的，
+而在后面的章节中（如API文档）会介绍<code>Pait</code>的其它功能，这些功能用需要通过指定的参数来启用，不过很多接口本身都有一些共性导致它们在使用<code>Pait</code>时填写的参数的一样的，
 比如当一个开发者编写了几个接口时，可能会这样写:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">Response</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
@@ -677,8 +677,8 @@
 <p>在上面的使用中，我们都是通过:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
 </code></pre></div>
-来引入一个<code>Pait</code>装饰器，这是一个最方便的使用方法，不过它本身是Web框架对应<code>Pait</code>类的单例，在考虑使用<code>Pait</code>的复用时，则需要通过Web框架对应<code>Pait</code>类入手，
-来重新实例化一个自己定制的<code>Pait</code>，然后把接口的<code>Pait</code>替换为自己定义的<code>Pait</code>，比如下面的示例：
+来引入一个<code>Pait</code>装饰器，这是一个最方便的使用方法，不过它本身是Web框架对应<code>Pait</code>类的单例，在考虑<code>Pait</code>的复用时，需要通过Web框架对应<code>Pait</code>类入手，
+重新实例化一个自己定制的<code>Pait</code>，然后把接口的<code>Pait</code>替换为自己定义的<code>Pait</code>，比如下面的示例：
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">Response</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">pait.model.status</span> <span class="kn">import</span> <span class="n">PaitStatus</span>
@@ -766,6 +766,29 @@
 <a id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_server_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
 <a id="__codelineno-7-18" name="__codelineno-7-18"></a>    <span class="k">pass</span>
 </code></pre></div></p>
+<p>除了覆盖原有的值外，部分属性还支持追加值，如下代码：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="n">global_pait</span><span class="p">:</span> <span class="n">Pait</span> <span class="o">=</span> <span class="n">Pait</span><span class="p">(</span><span class="n">author</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;so1n&quot;</span><span class="p">,),</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="n">user_pait</span><span class="p">:</span> <span class="n">Pait</span> <span class="o">=</span> <span class="n">global_pait</span><span class="o">.</span><span class="n">create_sub_pait</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="nd">@user_pait</span><span class="p">()</span>  <span class="c1"># group=&quot;user&quot;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">user_login</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10"></a>    <span class="k">pass</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11"></a>
+<a id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="hll">
+</span><a id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="nd">@user_pait</span><span class="p">(</span><span class="n">append_author</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Other Author&quot;</span><span class="p">,))</span>  <span class="c1"># group=&quot;user&quot;</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">user_logout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15"></a>    <span class="k">pass</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16"></a>
+<a id="__codelineno-8-17" name="__codelineno-8-17"></a>
+<a id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="nd">@global_pait</span><span class="p">()</span>  <span class="c1"># group=&quot;global&quot;</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_server_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20"></a>    <span class="k">pass</span>
+</code></pre></div>
+其中高亮部分使用到了<code>append_xxx</code>系列的参数来追加值，从而使<code>user_logout</code>的<code>author</code>值变为<code>("so1n", "Other Author")</code>。</p>
 
               
             </article>

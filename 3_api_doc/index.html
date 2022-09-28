@@ -799,11 +799,13 @@
 <a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">PaitMd</span><span class="p">(</span><span class="n">pait_dict</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
 </code></pre></div></p>
 <h2 id="3openapi">3.OpenAPI路由</h2>
-<p>如文档首页示例，<code>Pait</code>还支持OpenAPI路由, 同时支持<code>Redoc</code>和<code>Swagger</code>的页面展示, 而这些只需要调用<code>add_doc_route</code>函数即可为<code>app</code>实例增加三个路由:</p>
+<p>如文档首页示例，<code>Pait</code>还支持OpenAPI路由, 同时支持<code>Redoc</code>和<code>Swagger</code>的页面展示, 而这些只需要调用<code>add_doc_route</code>函数即可为<code>app</code>实例增加如下路由:</p>
 <ul>
 <li><code>/openapi.json</code>  获取OpenAPI的json响应</li>
 <li>/redoc           使用<code>Redoc</code>展示接口文档数据</li>
 <li>/swagger         使用<code>Swagger</code>展示接口文档数据</li>
+<li>/rapidoc         使用<code>rapi</code>展示接口文档数据</li>
+<li>/rapipdf         提供一个可以下载<code>rapi</code>pdf文档的页面</li>
 </ul>
 <p>具体例子如下:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
