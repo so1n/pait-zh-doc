@@ -6,12 +6,18 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pait is a Python api tool. Pait enables your Python web framework to have type checking, parameter type conversion, interface document generation and can display your documents through Redoc or Swagger (power by inspect, pydantic)">
+        <meta name="description" content="Pait(π tool) - Python Modern API Tools, easier to use web frameworks/write API routing">
       
       
+      
+      
+        <link rel="prev" href="../1_4_depend/">
+      
+      
+        <link rel="next" href="../2_pait_multiplexing/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
     
     
       
@@ -19,12 +25,13 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.644de097.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.85bb2934.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
-        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a6bdf11c.min.css">
       
+      
+
     
     
     
@@ -37,10 +44,11 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -48,12 +56,16 @@
   
     
     
+      
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -70,16 +82,16 @@
       
     </div>
     
-      <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
       </div>
     
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="页眉">
     <a href=".." title="Pait" class="md-header__button md-logo" aria-label="Pait" data-md-component="logo">
       
@@ -87,7 +99,7 @@
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -106,12 +118,38 @@
       </div>
     </div>
     
+      
+        <form class="md-header__option" data-md-component="palette">
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+            
+              <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+            
+              <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+        </form>
+      
+    
     
       <div class="md-header__option">
         <div class="md-select">
           
           <button class="md-header__button md-icon" aria-label="选择当前语言">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7 1.62-4.33L19.12 17h-3.24z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7 1.62-4.33L19.12 17h-3.24Z"/></svg>
           </button>
           <div class="md-select__inner">
             <ul class="md-select__list">
@@ -121,13 +159,13 @@
                     English
                   </a>
                 </li>
-                
+              
                 <li class="md-select__item">
                   <a href="/pait-zh-doc" hreflang="zh" class="md-select__link">
                     中文
                   </a>
                 </li>
-                
+              
             </ul>
           </div>
         </div>
@@ -135,7 +173,7 @@
     
     
       <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
@@ -143,15 +181,21 @@
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="查找">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -160,7 +204,7 @@
           <div class="md-search-result__meta">
             正在初始化搜索引擎
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -172,7 +216,7 @@
         <a href="https://github.com/so1n/pait" title="前往仓库" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     so1n/pait
@@ -216,7 +260,7 @@
       <a href="https://github.com/so1n/pait" title="前往仓库" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     so1n/pait
@@ -254,17 +298,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_2">
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
           类型转换与参数校验
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="类型转换与参数校验" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           类型转换与参数校验
@@ -292,7 +337,7 @@
   
     <li class="md-nav__item">
       <a href="../1_2_how_to_use_field/" class="md-nav__link">
-        如何使用Field
+        如何使用Field对象
       </a>
     </li>
   
@@ -336,7 +381,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
       
@@ -454,17 +499,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_6">
+        <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
           插件
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="插件" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           插件
@@ -659,17 +705,18 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>异常提示</h1>
 
 <p><code>Pait</code>内部有很多参数校验逻辑，出现错误的情况也有很多种，为了方便的捕获和了解异常，<code>Pait</code>拥有一个简单的异常机制。
 <code>Pait</code>的异常都是继承于<code>PaitBaseException</code>，在发生异常时可以通过:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">PaitBaseException</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">PaitBaseException</span><span class="p">)</span>
 </code></pre></div>
 来判断异常是否属于<code>Pait</code>的异常。</p>
 <div class="admonition note">
@@ -682,31 +729,31 @@
 在上述条件中有一个校验不通过都会抛出异常，但是该异常的堆栈只会在<code>Pait</code>里流转，从而让使用<code>Pait</code>的开发者无法了解异常是哪个路由函数抛出的，这样排查问题是十分困难的。
 所以<code>Pait</code>通过<code>TipException</code>对异常进行一个包装，在抛错信息里告诉用户说哪个路由函数抛错，抛错的位置在哪里，
 如果用户使用了类似于<code>Pycharm</code>的IDE,还可以通过点击路径跳转到对应的地方，一个异常示例如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a>  File <span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/exceptions.py&quot;</span>, line <span class="m">71</span>, <span class="k">in</span> __call__
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a>    await self.app<span class="o">(</span>scope, receive, sender<span class="o">)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4"></a>  File <span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/routing.py&quot;</span>, line <span class="m">583</span>, <span class="k">in</span> __call__
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a>    await route.handle<span class="o">(</span>scope, receive, send<span class="o">)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6"></a>  File <span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/routing.py&quot;</span>, line <span class="m">243</span>, <span class="k">in</span> handle
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a>    await self.app<span class="o">(</span>scope, receive, send<span class="o">)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8"></a>  File <span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/routing.py&quot;</span>, line <span class="m">54</span>, <span class="k">in</span> app
-<a id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="nv">response</span> <span class="o">=</span> await func<span class="o">(</span>request<span class="o">)</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a>  File <span class="s2">&quot;/home/so1n/github/pait/pait/core.py&quot;</span>, line <span class="m">232</span>, <span class="k">in</span> dispatch
-<a id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="k">return</span> await first_plugin<span class="o">(</span>*args, **kwargs<span class="o">)</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12"></a>  File <span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>, line <span class="m">448</span>, <span class="k">in</span> __call__
-<a id="__codelineno-1-13" name="__codelineno-1-13"></a>    async with self:
-<a id="__codelineno-1-14" name="__codelineno-1-14"></a>  File <span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>, line <span class="m">456</span>, <span class="k">in</span> __aenter__
-<a id="__codelineno-1-15" name="__codelineno-1-15"></a>    raise e from gen_tip_exc<span class="o">(</span>self.call_next, e<span class="o">)</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16"></a>  File <span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>, line <span class="m">453</span>, <span class="k">in</span> __aenter__
-<a id="__codelineno-1-17" name="__codelineno-1-17"></a>    await self._gen_param<span class="o">()</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18"></a>  File <span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>, line <span class="m">439</span>, <span class="k">in</span> _gen_param
-<a id="__codelineno-1-19" name="__codelineno-1-19"></a>    self.args, self.kwargs <span class="o">=</span> await self.param_handle<span class="o">(</span>func_sig, func_sig.param_list<span class="o">)</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20"></a>  File <span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>, line <span class="m">396</span>, <span class="k">in</span> param_handle
-<a id="__codelineno-1-21" name="__codelineno-1-21"></a>    await asyncio.gather<span class="o">(</span>*<span class="o">[</span>_param_handle<span class="o">(</span>parameter<span class="o">)</span> <span class="k">for</span> parameter <span class="k">in</span> param_list<span class="o">])</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22"></a>  File <span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>, line <span class="m">393</span>, <span class="k">in</span> _param_handle
-<a id="__codelineno-1-23" name="__codelineno-1-23"></a>    raise gen_tip_exc<span class="o">(</span>_object, closer_e, parameter<span class="o">)</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24"></a>pait.exceptions.TipException: Can not found content__type value <span class="k">for</span> &lt;<span class="k">function</span> raise_tip_route at 0x7f512ccdebf8&gt;   Customer Traceback:
-<a id="__codelineno-1-25" name="__codelineno-1-25"></a>    File <span class="s2">&quot;/home/so1n/github/pait/example/param_verify/starlette_example.py&quot;</span>, line <span class="m">88</span>, <span class="k">in</span> raise_tip_route.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Traceback<span class="w"> </span><span class="o">(</span>most<span class="w"> </span>recent<span class="w"> </span>call<span class="w"> </span>last<span class="o">)</span>:
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/exceptions.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">71</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>__call__
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>await<span class="w"> </span>self.app<span class="o">(</span>scope,<span class="w"> </span>receive,<span class="w"> </span>sender<span class="o">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/routing.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">583</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>__call__
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span>await<span class="w"> </span>route.handle<span class="o">(</span>scope,<span class="w"> </span>receive,<span class="w"> </span>send<span class="o">)</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/routing.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">243</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>handle
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span>await<span class="w"> </span>self.app<span class="o">(</span>scope,<span class="w"> </span>receive,<span class="w"> </span>send<span class="o">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/.venv/lib/python3.7/site-packages/starlette/routing.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">54</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>app
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nv">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>await<span class="w"> </span>func<span class="o">(</span>request<span class="o">)</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/pait/core.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">232</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>dispatch
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span>await<span class="w"> </span>first_plugin<span class="o">(</span>*args,<span class="w"> </span>**kwargs<span class="o">)</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">448</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>__call__
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span>async<span class="w"> </span>with<span class="w"> </span>self:
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">456</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>__aenter__
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span>raise<span class="w"> </span>e<span class="w"> </span>from<span class="w"> </span>gen_tip_exc<span class="o">(</span>self.call_next,<span class="w"> </span>e<span class="o">)</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">453</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>__aenter__
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span>await<span class="w"> </span>self._gen_param<span class="o">()</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">439</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>_gen_param
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span>self.args,<span class="w"> </span>self.kwargs<span class="w"> </span><span class="o">=</span><span class="w"> </span>await<span class="w"> </span>self.param_handle<span class="o">(</span>func_sig,<span class="w"> </span>func_sig.param_list<span class="o">)</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">396</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>param_handle
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span>await<span class="w"> </span>asyncio.gather<span class="o">(</span>*<span class="o">[</span>_param_handle<span class="o">(</span>parameter<span class="o">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>parameter<span class="w"> </span><span class="k">in</span><span class="w"> </span>param_list<span class="o">])</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">  </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/pait/param_handle.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">393</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>_param_handle
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span>raise<span class="w"> </span>gen_tip_exc<span class="o">(</span>_object,<span class="w"> </span>closer_e,<span class="w"> </span>parameter<span class="o">)</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>pait.exceptions.TipException:<span class="w"> </span>Can<span class="w"> </span>not<span class="w"> </span>found<span class="w"> </span>content__type<span class="w"> </span>value<span class="w"> </span><span class="k">for</span><span class="w"> </span>&lt;<span class="k">function</span><span class="w"> </span>raise_tip_route<span class="w"> </span>at<span class="w"> </span>0x7f512ccdebf8&gt;<span class="w">   </span>Customer<span class="w"> </span>Traceback:
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">    </span>File<span class="w"> </span><span class="s2">&quot;/home/so1n/github/pait/example/param_verify/starlette_example.py&quot;</span>,<span class="w"> </span>line<span class="w"> </span><span class="m">88</span>,<span class="w"> </span><span class="k">in</span><span class="w"> </span>raise_tip_route.
 </code></pre></div>
 可以看到异常是通过<code>gen_tip_exc</code>抛出来的，而抛出来的异常信息则包含路由函数所在位置，和异常信息，此外，可以通过<code>TipException.exc</code>获取到原本的异常。</p>
 <h2 id="_1">参数异常</h2>
@@ -717,132 +764,105 @@
 <li>FieldValueTypeException  该异常表示程序启动时，<code>Pait</code>发现<code>Field</code>里的<code>default</code>，<code>example</code>等填写的值不合法，开发者需要根据提示进行改正。</li>
 </ul>
 <p>这三种异常都是继承于<code>PaitBaseParamException</code>，它的源码如下：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">class</span> <span class="nc">PaitBaseParamException</span><span class="p">(</span><span class="n">PaitBaseException</span><span class="p">):</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">param</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">msg</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span> <span class="nc">PaitBaseParamException</span><span class="p">(</span><span class="n">PaitBaseException</span><span class="p">):</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">param</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">msg</span>
 </code></pre></div>
 从代码可以看出<code>PaitBaseParamException</code>在抛异常时只会抛出错误信息，但是在需要根据异常返回一些指定响应时，可以通过<code>param</code>知道是哪个参数出错。</p>
 <h2 id="_2">异常使用示例</h2>
 <p>在CRUD业务中，路由函数发生的异常都要被捕获，然后返回一个协定好的错误信息供前端使用，下面是一个异常捕获的示例代码：
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span><span class="p">,</span> <span class="n">exceptions</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">ValidationError</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12"></a>
-<a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="hll"><span class="k">async</span> <span class="k">def</span> <span class="nf">api_exception</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
-</span><a id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">TipException</span><span class="p">):</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15"></a>        <span class="c1"># 提取原本的异常</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="n">exc</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="n">exc</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17"></a>
-<a id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PaitBaseParamException</span><span class="p">):</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19"></a>        <span class="c1"># 提取参数信息和错误信息，告知用户哪个参数发生错误</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20"></a>        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;error param:</span><span class="si">{</span><span class="n">exc</span><span class="o">.</span><span class="n">param</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">exc</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21"></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">):</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22"></a>        <span class="c1"># 解析Pydantic异常，返回校验失败的参数信息</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23"></a>        <span class="n">error_param_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">exc</span><span class="o">.</span><span class="n">errors</span><span class="p">():</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25"></a>            <span class="n">error_param_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">])</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26"></a>        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;check error param: </span><span class="si">{</span><span class="n">error_param_list</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27"></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PaitBaseException</span><span class="p">):</span>
-<a id="__codelineno-3-28" name="__codelineno-3-28"></a>        <span class="c1"># 标准的Pait异常，通常很少出现，直接返回异常信息</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29"></a>        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
-<a id="__codelineno-3-30" name="__codelineno-3-30"></a>
-<a id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="c1"># 路由函数的错误信息</span>
-<a id="__codelineno-3-32" name="__codelineno-3-32"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
-<a id="__codelineno-3-33" name="__codelineno-3-33"></a>
-<a id="__codelineno-3-34" name="__codelineno-3-34"></a>
-<a id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
-<a id="__codelineno-3-37" name="__codelineno-3-37"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">})</span>
-<a id="__codelineno-3-38" name="__codelineno-3-38"></a>
-<a id="__codelineno-3-39" name="__codelineno-3-39"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="n">Route</span><span class="p">(</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">demo</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])])</span>
-<a id="__codelineno-3-40" name="__codelineno-3-40"></a><span class="n">app</span><span class="o">.</span><span class="n">add_exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">api_exception</span><span class="p">)</span>
-<a id="__codelineno-3-41" name="__codelineno-3-41"></a>
-<a id="__codelineno-3-42" name="__codelineno-3-42"></a>
-<a id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span><span class="p">,</span> <span class="n">exceptions</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="hll"><span class="k">async</span> <span class="k">def</span> <span class="nf">api_exception</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
+</span><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">TipException</span><span class="p">):</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>        <span class="c1"># 提取原本的异常</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>        <span class="n">exc</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="n">exc</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PaitBaseParamException</span><span class="p">):</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>        <span class="c1"># 提取参数信息和错误信息，告知用户哪个参数发生错误</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;error param:</span><span class="si">{</span><span class="n">exc</span><span class="o">.</span><span class="n">param</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">exc</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">):</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>        <span class="c1"># 解析Pydantic异常，返回校验失败的参数信息</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>        <span class="n">error_param_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">exc</span><span class="o">.</span><span class="n">errors</span><span class="p">():</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>            <span class="n">error_param_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">])</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;check error param: </span><span class="si">{</span><span class="n">error_param_list</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PaitBaseException</span><span class="p">):</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>        <span class="c1"># 标准的Pait异常，通常很少出现，直接返回异常信息</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>    <span class="c1"># 路由函数的错误信息</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="nd">@pait</span><span class="p">()</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">})</span>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="n">Route</span><span class="p">(</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">demo</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])])</span>
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="n">app</span><span class="o">.</span><span class="n">add_exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">api_exception</span><span class="p">)</span>
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>
+<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </code></pre></div>
 该代码的响应使用了常见的后端返回Json数据协议:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="p">{</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2"></a>  <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3"></a>  <span class="nt">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4"></a>  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{}</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">&quot;msg&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
 </code></pre></div>
 其中<code>code</code>为0时代表响应正常，不为0则为异常且<code>msg</code>包括了一个错误信息供前端展示，而<code>data</code>是正常响应时的结构体。</p>
 <p>然后通过<code>Starlette</code>框架的异常机制，把自定义的<code>api_exception</code>函数挂载到<code>Starlette</code>的异常处理回调中，
 <code>api_exception</code>函数里面包含了使用<code>Pait</code>时遇到的几种异常的处理，然后按照协议返回数据给调用端，通过<code>curl</code>调用可以发现：</p>
 <ul>
 <li>缺少参数时，会返回找不到参数的错误信息
-    <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo&quot;</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:-1,<span class="s2">&quot;msg&quot;</span>:<span class="s2">&quot;error param:demo_value, Can not found demo_value value&quot;</span><span class="o">}</span>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>➜<span class="w">  </span>~<span class="w"> </span>curl<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/api/demo&quot;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:-1,<span class="s2">&quot;msg&quot;</span>:<span class="s2">&quot;error param:demo_value, Can not found demo_value value&quot;</span><span class="o">}</span>
 </code></pre></div></li>
 <li>参数校验出错时，会返回校验出错的参数名
-    <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value=a&quot;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:-1,<span class="s2">&quot;msg&quot;</span>:<span class="s2">&quot;check error param: [&#39;demo_value&#39;]&quot;</span><span class="o">}</span>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>➜<span class="w">  </span>~<span class="w"> </span>curl<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value=a&quot;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:-1,<span class="s2">&quot;msg&quot;</span>:<span class="s2">&quot;check error param: [&#39;demo_value&#39;]&quot;</span><span class="o">}</span>
 </code></pre></div></li>
 <li>参数正常时返回正常的数据
-    <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a>➜  ~ curl <span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value=3&quot;</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:0,<span class="s2">&quot;msg&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;data&quot;</span>:3<span class="o">}</span>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>➜<span class="w">  </span>~<span class="w"> </span>curl<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value=3&quot;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="o">{</span><span class="s2">&quot;code&quot;</span>:0,<span class="s2">&quot;msg&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;data&quot;</span>:3<span class="o">}</span>
 </code></pre></div></li>
 </ul>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             回到页面顶部
-          </a>
+          </button>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="页脚">
-      
-        
-        <a href="../1_4_depend/" class="md-footer__link md-footer__link--prev" aria-label="上一页: Depend" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                上一页
-              </span>
-              Depend
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../2_pait_multiplexing/" class="md-footer__link md-footer__link--next" aria-label="下一页: Pait的复用" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                下一页
-              </span>
-              Pait的复用
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -860,11 +880,13 @@
   
     
     
+    
+    
       
       
     
     <a href="https://github.com/so1n" target="_blank" rel="noopener" title="github.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
     </a>
   
 </div>
@@ -877,10 +899,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.top", "content.code.annotate"], "search": "../assets/javascripts/workers/search.5e67fbfe.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": {"provider": "mike"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.top", "navigation.path", "search.highlight", "search.share", "search.suggest"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c44cc438.min.js"></script>
+      <script src="../assets/javascripts/bundle.b4d07000.min.js"></script>
       
     
   </body>
