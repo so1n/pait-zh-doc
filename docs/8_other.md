@@ -1,10 +1,10 @@
 ## 隐式引入与显式引入
-`pait`对多个框架都提供支持, 如果一个项目中只安装了其中的一个框架, 那么可以使用隐式引入:
+`pait`支持多个框架, 如果项目对应的依赖环境中只安装了其中的一个框架, 那么可以使用隐式引入:
 ```Python3
 from pait.app import add_doc_route, load_app, pait
 
 ```
-但是如果同时安装了多个框架, 那么上面的引入会抛出错误, 建议使用显示引入, 如:
+但是如果同时安装了多个框架, 那么上面的引入会抛出错误, 建议使用显示引入，如下:
 ```Python3
 from pait.app.starlette import add_doc_route, load_app, pait
 
@@ -38,7 +38,7 @@ data里面有很多路由函数的信息, 但是会缺少关键的参数如`url`
 异步类型的web框架请参照 [pait.app.starlette](https://github.com/so1n/pait/blob/master/pait/app/starlette.py)
 
 ## IDE支持
-pait的类型校验和转换以及类型拓展得益于`Pydantic`,同时也从`pydantic`或得到IDE的支持，目前支持`Pycharm`和`Mypy`
+pait的类型校验和转换以及类型拓展得益于`Pydantic`,同时也从`pydantic`获得到IDE的支持，目前支持`Pycharm`和`Mypy`
 
 - [PyCharm plugin](https://pydantic-docs.helpmanual.io/pycharm_plugin/)
 

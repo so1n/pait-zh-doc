@@ -1,4 +1,4 @@
-`Pait`的核心是一个装饰器，这个装饰器只做被装饰函数的处理和插件的初始化，真正负责功能实现的都是这些被装饰器初始化的插件，其中上面所述`Pait`的类型转换与参数校验功能是`Pait`的一个核心插件。
+`Pait`的核心是一个装饰器，这个装饰器只做被装饰函数的处理和插件的初始化，真正负责功能实现的都是这些被装饰器初始化的插件，其中`Pait`的类型转换与参数校验功能是`Pait`的一个核心插件。
 
 ## 简单介绍
 开发者可以通过`Pait`传入需要的插件，然后程序在启动的时候，会以拦截器的形式把插件按照顺序进行初始化，如果该插件是前置形插件，那么它会被放置在类型转换与参数校验插件之前，否则就会放在后面。
@@ -51,7 +51,7 @@ required_plugin = create_factory(RequiredPlugin.build)(required_dict={"email": [
 
 # 直接调用create_factory的返回，这时候插件会注入到路由函数中并进行一些初始化，同时也不影响其它路由函数的使用
 @pait(post_plugin_list=[required_plugin()])
-def demo_1(): 
+def demo_1():
     pass
 
 @pait(post_plugin_list=[required_plugin()])

@@ -3,22 +3,7 @@
 它被设计成可以用于多个Python的Web应用开发框架(目前适配了`Flask`, `Starlette`, `Sanic`, `Tornado`)，`Pait`设计灵感见文章[《给python接口加上一层类型检》](https://so1n.me/2019/04/15/%E7%BB%99python%E6%8E%A5%E5%8F%A3%E5%8A%A0%E4%B8%8A%E4%B8%80%E5%B1%82%E7%B1%BB%E5%9E%8B%E6%A3%80/)
 。
 
-!!! note Note
-    type hint check 100%
-
-    test coverage 95%+ (排除api_doc)
-
-    python version >= 3.7 (支持延迟注释)
-
-    以下代码没有特别说明, 都默认以starlette框架为例
-
-# 愿景
-- 1.代码即文档。
-
-- 2.使开发者可以通过最少的代码实现最全的功能。
-
-
-# 功能
+## 功能
  - [x] 参数校验和自动转化(参数校验依赖于`Pydantic`)
  - [x] 参数关系依赖校验
  - [x] 自动生成openapi文件
@@ -26,117 +11,100 @@
  - [x] 支持mock响应
  - [x] TestClient支持, 支持测试用例的响应结果校验
  - [x] 支持插件拓展
- - [x] 支持gRPC GateWay路由 
- - [ ] 本地api文档管理
+ - [x] 支持gRPC GateWay路由
+ - [ ] 自动API测试
+ - [ ] WebSocket支持
 
-# 要求
-Python3.7+
+## 安装
+!!! note
+    仅支持Python3.7+版本
 
-在项目中使用TypeHints
-
-# 安装
 ```bash
-pip3 install pait
+pip install pait --pre
+```
+如果使用到`gRPC`相关功能，则需要通过以下命令安装`gRPC`依赖:
+```bash
+pip install pait[grpc] --pre
 ```
 
-# 示例
-## 参数校验与文档生成
-`Pait`使用方法很简单， 以`starlette`框架为例子：
-``` py hl_lines="24 26 27" linenums="1" 
-from typing import Type
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+## 使用
+### 参数校验与文档生成
+`Pait`的主要功能是提供参数校验和文档生成，使用方法非常简单，只需添加几行如下高亮代码就可以：
+=== "Flask"
 
-from pait.app.starlette import pait, add_doc_route
-from pait.field import Body
-from pait.model.response import PaitResponseModel
-from pydantic import BaseModel, Field
+    ```py linenums="1" title="docs_source_code/introduction/flask_demo.py" hl_lines="21 23-24 31"
 
+    --8<-- "docs_source_code/introduction/flask_demo.py"
+    ```
 
-class DemoResponseModel(PaitResponseModel):
-    """响应结构体模型，可以供Pait使用"""
-    class ResponseModel(BaseModel):
-        uid: int = Field()
-        user_name: str = Field()
+=== "Starlette"
 
-    description: str = "demo response"
-    response_data: Type[BaseModel] = ResponseModel
+    ```py linenums="1" title="docs_source_code/introduction/starlette_demo.py" hl_lines="24 26-27 33"
+    --8<-- "docs_source_code/introduction/starlette_demo.py"
+    ```
 
+=== "Sanic"
 
-# 使用pait装饰器装饰函数
-@pait(response_model_list=[DemoResponseModel])
-async def demo_post(
-    uid: int = Body.i(description="user id", gt=10, lt=1000),
-    user_name: str = Body.i(description="user name", min_length=2, max_length=4)
-) -> JSONResponse:
-    # 获取对应的值进行返回
-    return JSONResponse({'uid': uid, 'user_name': user_name})
+    ```py linenums="1" title="docs_source_code/introduction/sanic_demo.py" hl_lines="23 25-26 33"
+    --8<-- "docs_source_code/introduction/sanic_demo.py"
+    ```
 
+=== "Tornado"
 
-app = Starlette(routes=[Route('/api', demo_post, methods=['POST'])])
-# 注册OpenAPI接口
-add_doc_route(app)
-uvicorn.run(app)
-```
-这段代码添加高亮部分的代码，就完成了一个简单的`Pait`的使用，其中第24行使用了`pait`的装饰器，这样`Pait`就可以管理到路由的输入和输出了，同时通过`response_model_list`声明这个路由函数的输出格式是什么。 而第26,27行则声明这个路由需要的参数，以及他们的参数要从哪里获取以及参数的限制规则是什么，第35行则是注册了一个`Swagger`的路由，接着运行代码，并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) ,就可以看到有个SwaggerUI的页面，目前这个页面有两组接口：
+    ```py linenums="1" title="docs_source_code/introduction/tornado_demo.py" hl_lines="23 26-27 34"
+    --8<-- "docs_source_code/introduction/tornado_demo.py"
+    ```
+
+其中第一段高亮代码中的`@pait`会装饰路由函数， 然后`@pait`会自动从路由函数提取数据，但是没办法了解到路由函数的响应内容是什么，所以需要通过`response_model_list`参数声明了路由函数的响应对象是`DemoResponseModel`，`DemoResponseModel`对象的`description`和`response_data`分别用于描述路由函数的响应对象文档和响应对象的结构类型。
+
+而第二段高亮代码中路由函数的参数是一种符合`Pait`规范的参数，在初始化时`@pait`会主动去解析路由函数并根据路由函数的函数签名生成依赖注入规则，当请求命中路由函数时，`Pait`会根据依赖注入规则从`Request`对象获取到对应的值并将其注入到路由函数中。
+
+最后的高亮代码主要的工作是注册`OpenAPI`路由，为Web框架提供接口文档功能。
+
+在一切准备就绪后开始运行代码，并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) 就可以看到SwaggerUI的页面，目前这个页面显示了两组接口：
 ![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/1648292884021Pait%20doc-%E9%A6%96%E9%A1%B5%E7%A4%BA%E4%BE%8B%E6%8E%A5%E5%8F%A3-Swagger%E9%A6%96%E9%A1%B5.png)
 
-其中一组是`Pait doc`自带的3个接口，另外一组是`default`，里面有我们刚创建的`/api`接口，点开`/api`接口，然后会弹出该接口的详情：
+其中一组是`Pait doc`自带的`OpenAPI`接口，另外一组是`default`，里面有刚创建的`/api`接口，点开`/api`接口后会弹出该接口的详情：
 ![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/1648292937018Pait%20doc-%E9%A6%96%E9%A1%B5%E7%A4%BA%E4%BE%8B%E6%8E%A5%E5%8F%A3-api%E6%8E%A5%E5%8F%A3.png)
 
-详情里的数据是由`Pait`通过读取函数签名以及传入的`DemoResponseModel`生成的， 接着可以点击`try it out`，并输入参数并点击`Excute`，既可以看到Curl命令生成结果以及服务器响应结果:
+详情里的数据是由`Pait`通过读取路由的函数签名以及传入的`DemoResponseModel`对象生成的， 接着可以点击`try it out`按钮，然后输入参数并点击`Excute`，就可以看到`curl`命令生成结果以及服务器响应结果:
 ![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/1648292980016Pait%20doc-%E9%A6%96%E9%A1%B5%E7%A4%BA%E4%BE%8B%E6%8E%A5%E5%8F%A3-Swagger%E8%AF%B7%E6%B1%82.png)
 
-从结果可以看出，路由函数正常工作，而路由函数的参数是`Pait`自动从Json Body中提取uid和user_name的值并传入的。
 
-## 插件
-除了参数校验和文档生成外，`Pait`还拥有一个插件系统，通过插件系统可以拓展其它功能，比如Mock响应功能，它能根据ResponseModel来自动返回数据，即使这个路由没有数据返回，比如下面的代码：
-```py hl_lines="8 11 17 26" linenums="1" 
-from typing import Type
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.responses import JSONResponse
-from starlette.routing import Route
-
-from pait.app.starlette import pait, add_doc_route
-from pait.app.starlette.plugin.mock_response import MockPlugin 
-from pait.field import Body
-from pait.model.response import PaitResponseModel
-from pydantic import BaseModel, Field
+!!! note
+    想要了解更多？ 马上进入[类型转换与参数校验](/1_1_introduction/)章节
 
 
-class DemoResponseModel(PaitResponseModel):
-    """响应结构体模型，可以供Pait使用"""
-    class ResponseModel(BaseModel):
-        uid: int = Field(example=999)
-        user_name: str = Field()
+### 插件
+`Pait`除了参数校验和`OpenAPI`功能外，还可以通过插件系统拓展功能，比如Mock响应功能，它能根据ResponseModel来自动返回数据，即使这个路由没有数据返回，比如下面的代码：
+=== "Flask"
 
-    description: str = "demo response"
-    response_data: Type[BaseModel] = ResponseModel
+    ```py linenums="1" title="docs_source_code/introduction/flask_demo_with_mock_plugin.py" hl_lines="15 22"
 
+    --8<-- "docs_source_code/introduction/flask_demo_with_mock_plugin.py"
+    ```
 
-# 使用pait装饰器装饰函数
-@pait(
-    post_plugin_list=[MockPlugin.build()],
-    response_model_list=[DemoResponseModel]
-)
-async def demo_post(
-    uid: int = Body.i(description="user id", gt=10, lt=1000),
-    user_name: str = Body.i(description="user name", min_length=2, max_length=4)
-) -> JSONResponse:
-    pass
+=== "Starlette"
 
+    ```py linenums="1" title="docs_source_code/introduction/starlette_demo_with_mock_plugin.py" hl_lines="18 25"
+    --8<-- "docs_source_code/introduction/starlette_demo_with_mock_plugin.py"
+    ```
 
-app = Starlette(routes=[Route('/api', demo_post, methods=['POST'])])
-# 注册OpenAPI接口
-add_doc_route(app)
-uvicorn.run(app)
+=== "Sanic"
 
+    ```py linenums="1" title="docs_source_code/introduction/sanic_demo_with_mock_plugin.py" hl_lines="17 24"
+    --8<-- "docs_source_code/introduction/sanic_demo_with_mock_plugin.py"
+    ```
 
-```
-该代码是根据上面的代码进行更改，它移除了返回响应，同时引入了高亮部分的代码，其中第17行中的`uid: int = Field(example=999)`指定了了example值为999，接着运行代码，并运行上面Swagger返回的`Curl`命令:
+=== "Tornado"
+
+    ```py linenums="1" title="docs_source_code/introduction/tornado_demo_with_mock_plugin.py" hl_lines="16 24"
+    --8<-- "docs_source_code/introduction/tornado_demo_with_mock_plugin.py"
+    ```
+
+该代码是根据`参数校验与文档生成`的代码进行更改，它移除了路由函数的返回响应功能，同时引入了高亮部分的代码， 其中`DemoResponseModel`中的`uid: int = Field(example=999)`指定了响应结构中uid的example值为999， 而`@pait`添加了一个名为`MockPlugin`的插件，他可以根据`response_model_list`生成一个mock响应。
+
+在一切准备就绪后开始运行代码，并重新点击`Swagger`页面的`Excute`按钮或者在终端运行`Swagger`页面生成的`curl`命令:
 ```bash
 ➜  ~ curl -X 'POST' \
   'http://127.0.0.1:8000/api' \
@@ -146,18 +114,23 @@ uvicorn.run(app)
   "uid": 666,
   "user_name": "so1n"
 }'
-{"uid":999,"user_name":""}
 ```
-可以看到，该接口仍然可以返回响应，该响应是由Mock插件自动生成的，响应中`uid`的值是999，与我们代码中`uid: int = Field(example=999)`设定的值一致，而`user_name`的值则是默认的空字符串。
+无论在`Swagger`页面或者终端中都可以看到如下输出：
+```bash
+{"uid":999,"username":""}
+```
+通过返回结果可以看到，路由函数虽然没有执行任何操作，但是该接口仍然可以返回响应。这个响应结果是Mock插件自动生成的，响应结果中`uid`的值是999，与响应模型中`uid: int = Field(example=999)`设定的值一致，而`username`由于没有设定`example`值，所以响应结果中它的值是默认的空字符串。
 
 
-除此之外，`Pait`还有其它的插件和其它功能，将在后续的文档中详细介绍。
+!!! note
+    除了`MockPlugin`插件外，`Pait`还有其它的插件和功能，将在后续的[文档](/5_1_introduction/)中详细介绍。
 
-# 性能
-`Pait`是基于`Python`自带的`inspect`实现函数签名提取， 基于`Pydantic`实现参数校验和类型转换，同时还使用了很多预加载设计，所以`Pait`的运行时性能表现十分优越。不过目前的`Pait`还在成长中， 还有许多需要优化的地方，欢迎通过[issues](https://github.com/so1n/pait/issues)一起优化。
+## 性能
+`Pait`采用`Python`的标准库`inspect`实现函数签名提取， 并基于`Pydantic`实现参数校验和类型转换，同时还运用了很多预加载设计，所以`Pait`的运行时性能表现十分优越。
+不过目前的`Pait`还在成长中， 还有许多需要优化的地方，欢迎通过[issues](https://github.com/so1n/pait/issues)反馈`Pait`相关问题并一起优化。
 
-# 使用示例
-`Pait`针对每一个支持的Web框架都有完善的代码示例， 可以通过访问示例代码了解最佳实践:
+## 使用示例
+每个`Pait`支持的Web框架都有完善的代码示例， 可以通过访问示例代码了解最佳实践:
 
 - [flask example](https://github.com/so1n/pait/blob/master/example/param_verify/flask_example.py)
 

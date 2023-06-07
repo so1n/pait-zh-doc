@@ -84,7 +84,7 @@ if __name__ == "__main__":
 - pait: 用于装饰路由函数的`pait`装饰器对象。
 - make_response: 负责把路由函数返回的Dict对象转为对应Web框架的Json响应对象。
 - url_handler: 用于更改gRPC自带的URL，默认会把gRPC方法的`.`改为`-`。
-- gen_response_model_handle(0.8版本新增): 用于生成路由函数对应的Pait响应对象函数，默认的生成函数如下： 
+- gen_response_model_handle(0.8版本新增): 用于生成路由函数对应的Pait响应对象函数，默认的生成函数如下：
     ```py
     def _gen_response_model_handle(grpc_model: GrpcModel) -> Type[PaitBaseResponseModel]:
         class CustomerJsonResponseModel(PaitJsonResponseModel):
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     ```py
     def grpc_timestamp_int_handler(cls: Any, v: int) -> Timestamp:
         t: Timestamp = Timestamp()
-    
+
         if v:
             t.FromDatetime(datetime.datetime.fromtimestamp(v))
         return t
@@ -298,7 +298,7 @@ message CreateUserRequest {
 该方法通过获取Protobuf文件的注释来拓展`pydantic.BaseModel`对象的信息，比如[user.proto](https://github.com/so1n/pait/blob/master/example/example_grpc/example_proto/user/user.proto)文件的`CreateUserRequest`，它的注释如下：
 ```proto
 message CreateUserRequest {
-  // 通常Protobuf的Message都有默认值，如果指定miss_default为true，则不会使用gRPC的默认值 
+  // 通常Protobuf的Message都有默认值，如果指定miss_default为true，则不会使用gRPC的默认值
   // pait: {"miss_default": true, "example": "10086", "title": "UID", "description": "user union id"}
   string uid = 1;
   // pait: {"description": "user name"}
@@ -436,7 +436,7 @@ class CustomerGrpcGatewayRoute(GrpcGatewayRoute):
                     # logout_user接口需要一个token参数
                     request_dict["token"] = token
                 else:
-                    # 其它接口需要通过校验Token来判断用户是否合法 
+                    # 其它接口需要通过校验Token来判断用户是否合法
                     result: user_pb2.GetUidByTokenResult = await user_pb2_grpc.UserStub(
                         self.channel
                     ).get_uid_by_token(user_pb2.GetUidByTokenRequest(token=token))

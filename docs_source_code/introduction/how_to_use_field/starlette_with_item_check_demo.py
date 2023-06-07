@@ -1,0 +1,35 @@
+from typing import List
+
+import uvicorn
+from pait import field
+from pait.app.starlette import pait
+from pait.exceptions import TipException
+from pydantic import ValidationError
+from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+from starlette.routing import Route
+
+
+async def api_exception(request: Request, exc: Exception) -> JSONResponse:
+    if isinstance(exc, TipException):
+        exc = exc.exc
+    if isinstance(exc, ValidationError):
+        return JSONResponse({"data": exc.errors()})
+    return JSONResponse({"data": str(exc)})
+
+
+@pait()
+async def demo(
+    demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2),
+) -> JSONResponse:
+    return JSONResponse({"data": demo_value})
+
+
+app = Starlette(
+    routes=[
+        Route("/api/demo", demo, methods=["GET"]),
+    ]
+)
+app.add_exception_handler(Exception, api_exception)
+uvicorn.run(app)

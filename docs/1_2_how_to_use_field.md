@@ -1,210 +1,173 @@
-`field`在`Pait`中起到了至关重要的作用， `Pait`除了使用`field`用于获取数据来源外， 还通过它实现了很多其它的功能， 在本章中只着重说明参数校验这一块。
+`Field`对象在`Pait`中起到了至关重要的作用， `Pait`除了通过`Field`对象获取数据来源外， 还可以实现其它的功能， 不过本章中只着重说明参数校验。
 
 ## 1.Field的种类
 
-除了上文提到的Body外， `Field`还拥有其它的种类， 它们的名称和作用如下:
+除了[介绍](/1_1_introduction/)提到的`Body`外， 还有其他不同含义的`Field`对象， 它们的名称和作用如下:
 
 - Body: 获取当前请求的json数据
-- Cookie: 获取当前请求的cookie数据(注意， 目前Cookie数据会被转化为一个Python字典， 这意味着Cookie的Key不能重复。同时， 在Field为Cookie时， type最好是str)
-- File：获取当前请求的file对象，该对象与原文Web框架的file对象一致
+- Cookie: 获取当前请求的cookie数据(注意， 目前Cookie数据会被转化为Python的dict对象， 这意味着Cookie的Key不能重复。建议当Field为Cookie时，参数的类型为str)
+- File：获取当前请求的file对象，该对象与原Web框架的file对象一致
 - Form：获取当前请求的form数据，如果有多个重复Key，只会返回第一个值
 - Header: 获取当前请求的header数据
+- Json: 获取当前请求的json数据(与Body一样)
 - Path: 获取当前请求的path数据，如`/api/{version}/test`，则会获取到version的数据
 - Query: 获取当前请求的Url参数对应的数据，如果有多个重复Key，只会返回第一个值
 - MultiForm：获取当前请求的form数据， 返回Key对应的数据列表
 - MultiQuery：获取当前请求的Url参数对应的数据， 返回Key对应的数据列表
 
-各个种类的具体使用方法很简单，只要填入`<name>:<type>=<default>`中的`default`位置即可，以这段代码为例子(为了确保能复制粘贴后运行，没有演示field.File):
-```Python
-from typing import List, Optional
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+各个种类的具体使用方法很简单，只要填入`<name>:<type>=<default>`中的`default`位置即可，以这段代码为例子:
 
-from pait.app.starlette import pait
-from pait import field
+=== "Flask"
 
-@pait()
-async def demo(
-    form_a: str = field.Form.i(),
-    form_b: str = field.Form.i(),
-    multi_form_c: List[str] = field.MultiForm.i(),
-    cookie: dict = field.Cookie.i(raw_return=True),
-    multi_user_name: List[str] = field.MultiQuery.i(min_length=2, max_length=4),
-    age: int = field.Path.i(gt=1, lt=100),
-    uid: int = field.Query.i(gt=10, lt=1000),
-    user_name: str = field.Query.i(min_length=2, max_length=4),
-    email: Optional[str] = field.Query.i(default="example@xxx.com"),
-    accept: str = field.Header.i()
-) -> JSONResponse:
-    """Test the use of all BaseField-based"""
-    return JSONResponse(
-        {
-            "code": 0,
-            "msg": "",
-            "data": {
-                "accept": accept,
-                "form_a": form_a,
-                "form_b": form_b,
-                "form_c": multi_form_c,
-                "cookie": cookie,
-                "multi_user_name": multi_user_name,
-                "age": age,
-                "uid": uid,
-                "user_name": user_name,
-                "email": email,
-            },
-        }
-    )
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_demo.py"
 
-app = Starlette(
-    routes=[
-        Route("/api/demo/{age}", demo, methods=["POST"]),
-    ]
-)
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_demo.py"
+    ```
 
+=== "Starlette"
 
-uvicorn.run(app)
-```
-这段代码来自于[pait base field example](https://github.com/so1n/pait/blob/master/example/param_verify/starlette_example.py#L163), 并做了一些小改动，该接口的主要责任就是把参数通过json的格式返回给调用者。
-接下来使用`curl`命令进行一次请求测试， 通过输出结果可以发现，`Pait`都能通过`field`的种类准确的拿到对应的值， 并赋值到变量中。
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_demo.py"
+    ```
+
+=== "Sanic"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_demo.py"
+    ```
+
+=== "Tornado"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_demo.py"
+    ```
+
+!!! note
+    为了确保演示的代码能够在不同的机器上顺利运行，这里没有演示`File`字段的用法，具体用法请参考不同Web框架示例代码中的`field_route.py`文件中`/api/pait-base-field`对应的路由函数。
+
+这段代码来演示了通过不同种类`Field`从请求对象获取请求者的参数，并组装成一定的格式返回。
+接下来运行对应的代码，然后使用`curl`命令在终端进行一次请求测试，命令如下:
 ```bash
 curl -X 'POST' \
-  'http://127.0.0.1:8000/api/demo/12?uid=99&user_name=so1n&multi_user_name=so1n' \
-  -H 'accept: application/json' \
-  -H 'Cookie: cookie=cookie=test cookie' \
+  'http://127.0.0.1:8000/api/demo/18?multi_user_name=aaa,bbb&uid=10086&user_name=so1n&&sex=man' \
+  -H 'accept: */*' \
+  -H 'Cookie: cookie=' \
   -H 'Content-Type: multipart/form-data' \
-  -F 'form_a=a' \
-  -F 'form_b=b' \
-  -F 'multi_form_c=string,string'
-
+  -F 'a=data-a' \
+  -F 'b=data-b' \
+  -F 'c=data-c-1,data-c-2'
+```
+正常情况下，会看到如下输出:
+```json
 {
     "code": 0,
     "msg": "",
     "data": {
-        "accept": "application/json",
-        "form_a": "a",
-        "form_b": "b",
+        "form_a": "data-a",
+        "form_b": "data-b",
         "form_c": [
-            "string,string"
+            "data-c-1,data-c-2"
         ],
         "cookie": {
-            "cookie": "cookie=test cookie"
+            "cookie": ""
         },
         "multi_user_name": [
-            "so1n"
+            "aaa,bbb"
         ],
-        "age": 12,
-        "uid": 99,
+        "age": 18,
+        "uid": 10086,
         "user_name": "so1n",
-        "email": "example@xxx.com"
+        "email": "example@xxx.com",
+        "sex": "man"
     }
 }
 ```
-## 2.Field的功能
-从上面的例子可以看到， 请求中没有带上`email`参数， 但是该接口返回的响应值中`email`的值是`example@xxx.com`，
-这是因为在填写`email`的`field`时，我把`example@xxx.com`填写到default值中，这样`Pait`会在获取不到该变量的对应值的情况下，也能把默认值赋给对应的变量。
+通过输出结果可以发现，`Pait`都能通过`Field`的种类准确的从请求对象获取对应的值。
 
-除了默认值之外， `field`也有很多的功能，这些功能大部分来源于`field`所继承的`pydantic.Field`。
+## 2.Field的功能
+从上面的例子可以看出，`curl`命令的`url`并没有携带`email`参数， 但是接口返回的响应值中的`email`却不为空，且值是`example@xxx.com`，
+这是因为`email`字段的`Field`的`default`属性被设置为`example@xx.com`， 这样`Pait`会在无法通过请求体获取到`email`值的的情况下，也能把默认值赋给变量。
+
+除了默认值之外， `Field`也有很多的功能，这些功能大部分来源于`Field`所继承的`pydantic.Field`。
 
 
 ### 2.1.default
-`Pait`通过该参数支持默认值， 如果没有默认值可以直接不填写该参数的值。
+`Pait`通过读取`Field`的`default`属性来获取该参数的默认值，当`Field`的`default`属性不为空且请求体没有对应的值时，`Pait`就会把`default`的值注入到对应的变量中。
 
-示例代码如下，两个接口都直接返回获取到的值`demo_value`，其中`demo`接口带有默认值， 默认值为字符串123，而`demo1`接口没有默认值:
-```py hl_lines="20 25"
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import PlainTextResponse
-from starlette.routing import Route
+下面是简单的示例代码，示例代码中的两个接口都直接返回获取到的值`demo_value`，其中`demo`接口带有默认值， 默认值为字符串123，而`demo1`接口没有默认值:
+=== "Flask"
 
-from pait.app.starlette import pait
-from pait import field
-from pait.exceptions import TipException
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_default_demo.py"
 
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_default_demo.py"
+    ```
 
-async def api_exception(request: Request, exc: Exception) -> PlainTextResponse:
-    """提取异常信息， 并以响应返回"""
-    if isinstance(exc, TipException):
-        exc = exc.exc
-    return PlainTextResponse(str(exc))
+=== "Starlette"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_default_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_default_demo.py"
+    ```
 
-@pait()
-async def demo(demo_value: str = field.Query.i(default="123")) -> PlainTextResponse:
-    return PlainTextResponse(demo_value)
+=== "Sanic"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_default_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_default_demo.py"
+    ```
 
-@pait()
-async def demo1(demo_value: str = field.Query.i()) -> PlainTextResponse:
-    return PlainTextResponse(demo_value)
+=== "Tornado"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_default_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_default_demo.py"
+    ```
 
-app = Starlette(
-    routes=[
-        Route("/api/demo", demo, methods=["GET"]),
-        Route("/api/demo1", demo1, methods=["GET"]),
-    ]
-)
-
-app.add_exception_handler(Exception, api_exception)
-uvicorn.run(app)
-```
-使用`curl`调用可以发现，对于有默认值得接口`/api/demo`，当没有传参数demo_value时，默认返回123, 传参数456时，返回值是456:
+在运行代码，并使用`curl`调用后可以发现，当没有传demo_value参数时，`/api/demo`接口默认返回123, 而`/api/demo1`接口会抛出找不到`demo_value`值的错误:
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo"
 123
-➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value=456"
-456
-```
-而没有带参数的请求会看到有个报错， 提示没有找到`demo_value`的值:
-```bash
 ➜  curl "http://127.0.0.1:8000/api/demo1"
 Can not found demo_value value
 ```
 
-### 2.2.default_factory
-该参数用于默认值是函数的情况，可以用来填写类似于`datetime.datetime.now`接收请求才生成的默认值。
-
-示例代码如下，第一个接口的默认值是当前时间， 第二个接口的默认值是uuid，他们每次调用的返回值都是收到请求时生成的:
-```py hl_lines="14 21"
-import datetime
-import uuid
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.responses import PlainTextResponse
-from starlette.routing import Route
-
-from pait.app.starlette import pait
-from pait import field
-
-
-@pait()
-async def demo(
-    now: datetime.datetime = field.Query.i(default_factory=datetime.datetime.now)
-) -> PlainTextResponse:
-    return PlainTextResponse(now)
-
-
-@pait()
-async def demo1(
-    demo_value: str = field.Query.i(default_factory=lambda: uuid.uuid4().hex)
-) -> PlainTextResponse:
-    return PlainTextResponse(demo_value)
-
-
-app = Starlette(
-    routes=[
-        Route("/api/demo", demo, methods=["GET"]),
-        Route("/api/demo1", demo1, methods=["GET"]),
-    ]
-)
-
-uvicorn.run(app)
+当传的demo_value参数为456时，`/api/demo`接口和`/api/demo1`接口都会返回456:
+```bash
+➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value=456"
+456
+➜  ~ curl "http://127.0.0.1:8000/api/demo1?demo_value=456"
+456
 ```
-使用`curl`调用可以发现每次返回的结果都是不一样的:
+
+!!! note
+    错误处理使用了`TipException`，可以通过[异常提示](/1_5_introduction/)了解`TipException`的作用。
+
+### 2.2.default_factory
+`default_factory`的作用与`default`类似，只不过`default_factory`接收的值是函数，只有当请求命中路由函数且`Pait`无法从请求对象中找到变量需要的值时才会被执行并注入到变量中。
+
+示例代码如下，第一个接口的默认值是当前时间， 第二个接口的默认值是uuid，他们每次的返回值都是收到请求时生成的:
+=== "Flask"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_default_factory_demo.py"
+
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_default_factory_demo.py"
+    ```
+
+=== "Starlette"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_default_factory_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_default_factory_demo.py"
+    ```
+
+=== "Sanic"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_default_factory_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_default_factory_demo.py"
+    ```
+
+=== "Tornado"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_default_factory_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_default_factory_demo.py"
+    ```
+在运行代码并使用`curl`调用可以发现接口每次返回的结果都是不一样的:
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo"
 2022-02-07T14:54:29.127519
@@ -216,38 +179,40 @@ uvicorn.run(app)
 ef84f04fa9fc4ea9a8b44449c76146b8
 ```
 ### 2.3.alias
-参数的别名，一些参数可能被命名为`Content-Type`, 但是Python不支持这种命名方式， 此时可以使用别名。
+通常情况下`Pait`会以参数名为key从请求体中获取数据，但是一些参数名如`Content-Type`是Python不支持的变量命名方式， 此时可以使用`alias`来为变量设置别名，如下示例代码:
+=== "Flask"
 
-示例代码如下:
-```py hl_lines="12"
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.responses import PlainTextResponse
-from starlette.routing import Route
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_alias_demo.py"
 
-from pait.app.starlette import pait
-from pait import field
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_alias_demo.py"
+    ```
 
+=== "Starlette"
 
-@pait()
-async def demo(
-    content_type: str = field.Header.i(alias="Content-Type")
-) -> PlainTextResponse:
-    return PlainTextResponse(content_type)
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_alias_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_alias_demo.py"
+    ```
 
+=== "Sanic"
 
-app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_alias_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_alias_demo.py"
+    ```
 
-uvicorn.run(app)
-```
-使用`curl`调用可以发现，`Pait`正常的从Header中提取`Content-Type`的值并赋给了content_type:
+=== "Tornado"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_alias_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_alias_demo.py"
+    ```
+
+运行代码并使用`curl`调用可以发现，`Pait`正常的从请求体的Header中提取`Content-Type`的值并赋给了`content_type`变量，所以路由函数能正常返回值`123`:
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo" -H "Content-Type:123"
 123
 ```
 
-### 2.4.数字校验之gt，ge，lt，le，multiple_of
-这几个值都是校验数字是否合法，仅用于数值的类型，他们的作用各不相同：
+### 2.4.数值类型校验之gt，ge，lt，le，multiple_of
+`gt`，`ge`，`lt`，`le`，`multiple_of`都属于`pydantic`的数值类型校验， 仅用于数值的类型，他们的作用各不相同：
 
 - gt：仅用于数值的类型，会校验数值是否大于该值，同时也会在OpenAPI添加`exclusiveMinimum`属性。
 - ge：仅用于数值的类型，会校验数值是否大于等于该值，同时也会在OpenAPI添加`exclusiveMinimum`属性。
@@ -255,125 +220,105 @@ uvicorn.run(app)
 - le：仅用于数值的类型，会校验数值是否小于等于该值，同时也会在OpenAPI添加`exclusiveMaximum`属性。
 - multiple_of：仅用于数字， 会校验该数字是否是指定值得倍数。
 
-示例代码如下，这个示例代码只有一个接口，但是接受了三个参数`demo_value1`, `demo_value2`, `demo_value3`，他们分别只接收符合大于1小于10；等于1以及3的倍数的三个数：
-```py hl_lines="23-25"
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+使用方法如下:
+=== "Flask"
 
-from pait.app.starlette import pait
-from pait import field
-from pait.exceptions import TipException
-from pydantic import ValidationError
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_num_check_demo.py"
 
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_num_check_demo.py"
+    ```
 
-async def api_exception(request: Request, exc: Exception) -> JSONResponse:
-    """提取异常信息， 并以响应返回"""
-    if isinstance(exc, ValidationError):
-        # 解析Pydantic的抛错
-        return JSONResponse({"data": exc.errors()})
-    return JSONResponse({"data": str(exc)})
+=== "Starlette"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_num_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_num_check_demo.py"
+    ```
 
-@pait()
-async def demo(
-    demo_value1: int = field.Query.i(gt=1, lt=10),
-    demo_value2: int = field.Query.i(ge=1, le=1),
-    demo_value3: int = field.Query.i(multiple_of=3),
-) -> JSONResponse:
-    return JSONResponse({"data": [demo_value1, demo_value2, demo_value3]})
+=== "Sanic"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_num_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_num_check_demo.py"
+    ```
 
-app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
-app.add_exception_handler(Exception, api_exception)
+=== "Tornado"
 
-uvicorn.run(app)
-```
-使用`curl`调用可以发现第一个请求符合要求并得到了想要的响应结果，第二个请求则三个参数都错了，并返回`Pydantic.ValidationError`的错误信息，从错误信息可以简单的看出来三个参数都不符合接口设置的限定条件：
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_num_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_num_check_demo.py"
+    ```
+
+这份示例代码只有一个接口，但是接受了三个参数`demo_value1`, `demo_value2`, `demo_value3`，他们分别只接收符合大于1小于10，等于1以及3的倍数的三个参数,
+在运行代码并使用`curl`调用可以发现第一个请求符合要求并得到了想要的响应结果，
+第二，三，四个请求分别是`demo_value1`，`demo_value2`，`demo_value3`的值不在要求的范围内，所以`Pait`会生成`Pydantic.ValidationError`的错误信息，从错误信息可以简单的看出来三个参数都不符合接口设置的限定条件：
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=2&demo_value2=1&demo_value3=3"
 {"data":[2,1,3]}
-➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=11&demo_value2=2&demo_value3=2"
+➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=11&demo_value2=1&demo_value3=3"
 {
     "data": [
         {
-            "loc": [
-                "demo_value1"
-            ],
+            "ctx": {"limit_value": 10},
+            "loc": ["query", "demo_value1"],
             "msg": "ensure this value is less than 10",
-            "type": "value_error.number.not_lt",
-            "ctx": {
-                "limit_value": 10
-            }
-        },
+            "type": "value_error.number.not_lt"
+        }
+    ]
+}
+➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=2&demo_value2=2&demo_value3=3"
+{
+    "data": [
         {
-            "loc": [
-                "demo_value2"
-            ],
+            "ctx": {"limit_value": 1},
+            "loc": ["query", "demo_value2"],
             "msg": "ensure this value is less than or equal to 1",
-            "type": "value_error.number.not_le",
-            "ctx": {
-                "limit_value": 1
-            }
-        },
+            "type": "value_error.number.not_le"
+        }
+    ]
+}
+➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=2&demo_value2=1&demo_value3=4"
+{
+    "data": [
         {
-            "loc": [
-                "demo_value3"
-            ],
+            "ctx": {"multiple_of": 3},
+            "loc": ["query", "demo_value3"],
             "msg": "ensure this value is a multiple of 3",
-            "type": "value_error.number.not_multiple",
-            "ctx": {
-                "multiple_of": 3
-            }
+            "type": "value_error.number.not_multiple"
         }
     ]
 }
 ```
 ### 2.5.数组校验之min_items，max_items
-这几个值都是校验数组是否合法，仅用于数组的类型，他们的作用各不相同：
+`min_items`，`max_items`都属于`pydantic`的`Sequence`类型校验，仅用于`Sequence`的类型，他们的作用各不相同：
 
-- min_items：仅用于数组类型，会校验字列表是否满足大于等于指定的值。
-- max_items： 仅用于数组类型，会校验字列表是否满足小于等于指定的值。
+- min_items：仅用于`Sequence`类型，会校验`Sequence`是否满足大于等于指定的值。
+- max_items： 仅用于`Sequence`类型，会校验`Sequence`是否满足小于等于指定的值。
 
 示例代码如下，该接口通过`field.MultiQuery`从请求Url中获取参数`demo_value`的数组，并返回给调用端，其中数组的长度限定在大于等于1且小于等于2之间：
-```py hl_lines="25"
-from typing import List
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+=== "Flask"
 
-from pait.app.starlette import pait
-from pait import field
-from pait.exceptions import TipException
-from pydantic import ValidationError
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_item_check_demo.py"
 
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_item_check_demo.py"
+    ```
 
-async def api_exception(request: Request, exc: Exception) -> JSONResponse:
-    """提取异常信息， 并以响应返回"""
-    if isinstance(exc, TipException):
-        exc = exc.exc
-    if isinstance(exc, ValidationError):
-        return JSONResponse({"data": exc.errors()})
-    return JSONResponse({"data": str(exc)})
+=== "Starlette"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_item_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_item_check_demo.py"
+    ```
 
-@pait()
-async def demo(
-    demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2)
-) -> JSONResponse:
-    return JSONResponse({"data": demo_value})
+=== "Sanic"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_item_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_item_check_demo.py"
+    ```
 
-app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
-app.add_exception_handler(Exception, api_exception)
+=== "Tornado"
 
-uvicorn.run(app)
-```
-与2.4一样，通过`curl`调用可以发现合法的参数会放行，不合法的参数会抛错：
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_item_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_item_check_demo.py"
+    ```
+
+与2.4一样，通过`curl`调用可以发现合法的参数会放行，不合法的参数则会抛错：
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value=1"
 {"data":[1]}
@@ -396,48 +341,38 @@ uvicorn.run(app)
 }
 ```
 ### 2.6.字符串校验之min_length，max_length，regex
-这几个值都是校验字符串是否合法，仅用于字符串的类型，他们的作用各不相同：
+`min_length`，`max_length`，`regex`都属于`pydantic`的字符串类型校验，仅用于字符串的类型，他们的作用各不相同：
 
 - min_length：仅用于字符串类型，会校验字符串的长度是否满足大于等于指定的值。
 - max_length：仅用于字符串类型，会校验字符串的长度是否满足小于等于指定的值。
 - regex：仅用于字符串类型，会校验字符串是否符合该正则表达式。
 
 示例代码如下， 该接口需要从Url中获取一个值， 这个值得长度大小为6，且必须为英文字母u开头：
-```py hl_lines="24"
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+=== "Flask"
 
-from pait.app.starlette import pait
-from pait import field
-from pait.exceptions import TipException
-from pydantic import ValidationError
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_string_check_demo.py"
 
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_string_check_demo.py"
+    ```
 
-async def api_exception(request: Request, exc: Exception) -> JSONResponse:
-    """提取异常信息， 并以响应返回"""
-    if isinstance(exc, TipException):
-        exc = exc.exc
-    if isinstance(exc, ValidationError):
-        return JSONResponse({"data": exc.errors()})
-    return JSONResponse({"data": str(exc)})
+=== "Starlette"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_string_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_string_check_demo.py"
+    ```
 
-@pait()
-async def demo(
-    demo_value: str = field.Query.i(min_length=6, max_length=6, regex="^u")
-) -> JSONResponse:
-    return JSONResponse({"data": demo_value})
+=== "Sanic"
 
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_string_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_string_check_demo.py"
+    ```
 
-app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
-app.add_exception_handler(Exception, api_exception)
+=== "Tornado"
 
-uvicorn.run(app)
-```
-使用`curl`进行三次请求，第一次为正常数据，第二次为不符合正则表达式，第三次为长度不符合：
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_string_check_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_string_check_demo.py"
+    ```
+运行代码并使用`curl`进行三次请求，通过结果可以看出，第一次为正常数据，第二次为不符合正则表达式，第三次为长度不符合：
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value=u66666"
 {"data":"u66666"}
@@ -450,43 +385,74 @@ uvicorn.run(app)
 该参数的默认值为`False`，如果为`True`，则`Pait`不会根据参数名或者`alias`为key从请求数据获取值， 而是把整个请求值返回给对应的变量。
 
 示例代码如下， 该接口为一个POST接口， 它需要两个值，第一个值为整个客户端传过来的Json参数， 而第二个值为客户端传过来的Json参数中Key为a的值：
+=== "Flask"
 
-```py hl_lines="12-13"
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_raw_return_demo.py"
 
-from pait.app.starlette import pait
-from pait import field
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_raw_return_demo.py"
+    ```
 
+=== "Starlette"
 
-@pait()
-async def demo(
-    demo_value1: dict = field.Body.i(raw_return=True),
-    a: str = field.Body.i(),
-) -> JSONResponse:
-    return JSONResponse({
-        "demo_value": demo_value1,
-        "a": a
-    })
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_raw_return_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_raw_return_demo.py"
+    ```
 
+=== "Sanic"
 
-app = Starlette(routes=[Route("/api/demo", demo, methods=["POST"])])
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_raw_return_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_raw_return_demo.py"
+    ```
 
-uvicorn.run(app)
-```
-使用`curl`调用， 可以发现结果符合预期：
+=== "Tornado"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_raw_return_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_raw_return_demo.py"
+    ```
+
+运行代码并使用`curl`调用， 可以发现结果符合预期：
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo" -X POST -d '{"a": "1", "b": "2"}' --header "Content-Type: application/json"
 {"demo_value":{"a":"1","b":"2"},"a":"1"}
 ```
 
-### 2.8.其它功能
-除了上述功能外， `Pait`还有其它属性， 但是都只与OpenAPI有关， 所以本章只做简单介绍：
+### 2.8.自定义查询不到值的异常
+在正常情况下，如果请求对象中没有`Pait`需要的数据，那么`Pait`会抛出xxx异常，该异常是通过`not_value_exception`定义的，支持开发者通过`not_value_exception`定义
 
-- link：用于支持OpenApi的link功能。
-- media_type：Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。
-- example：用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如`datetime.datetim.now`，推荐与[faker](https://github.com/joke2k/faker)一起使用。
-- openapi_serialization：用于该值在OpenAPI的Schema的序列化方式。
-- description: 用于OpenAPI的参数描述
+=== "Flask"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_not_found_exc_demo.py"
+
+    --8<-- "docs_source_code/introduction/how_to_use_field/flask_with_not_found_exc_demo.py"
+    ```
+
+=== "Starlette"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/starlette_with_not_found_exc_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/starlette_with_not_found_exc_demo.py"
+    ```
+
+=== "Sanic"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/sanic_with_not_found_exc_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/sanic_with_not_found_exc_demo.py"
+    ```
+
+=== "Tornado"
+
+    ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_not_found_exc_demo.py""
+    --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_not_found_exc_demo.py"
+    ```
+
+### 2.8.其它功能
+除了上述功能外，`Pait`还有其它功能，可以到对应模块文档了解：
+
+| 属性                   | 文档      | 描述                                                                                                               |
+|----------------------|---------|------------------------------------------------------------------------------------------------------------------|
+| links                | OpenAPI | 用于支持OpenAPI的link功能                                                                                               |
+| media_type           | OpenAPI | Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。                                                              |
+| openapi_serialization | OpenAPI | 用于该值在OpenAPI的Schema的序列化方式。                                                                                       |
+| example              | OpenAPI | 用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如`datetime.datetim.now`，推荐与[faker](https://github.com/joke2k/faker)一起使用。 |
+| description          | OpenAPI | 用于OpenAPI的参数描述                                                                                                   |
+| openapi_include      | OpenAPI | 定义该字段不被OpenAPI读取                                                                                                 |                                                                                                 |
+| extra_param_list     | Plugin  | 定义插件的行为                                                                                                          |

@@ -9,8 +9,8 @@ isinstance(exc, PaitBaseException)
     由于`Pait`是使用`Pydantic`进行校验， 所以在运行时会因为校验不通过而抛出`Pydantic`相关异常，
     可以通过[Error Handling](https://pydantic-docs.helpmanual.io/usage/models/#error-handling)了解如何使用`Pydantic`异常
 ## TipException异常
-`Pait`的核心是一个装饰器，在运行的时候`Pait`核心会检查参数是否存在，参数是否合法，以及参数是否通过`Pydantic`的校验，
-在上述条件中有一个校验不通过时都会抛出异常，但是该异常的堆栈只会在`Pait`的核心装饰器里流转，这样子对于使用`Pait`的开发者来说很难找出出现问题的路由函数在哪，这样排查问题是十分困难的。
+在运行的时候，`Pait`会检查参数是否存在，参数是否合法，以及参数是否通过`Pydantic`的校验，
+在上述条件中有一个校验不通过都会抛出异常，但是该异常的堆栈只会在`Pait`里流转，从而让使用`Pait`的开发者无法了解异常是哪个路由函数抛出的，这样排查问题是十分困难的。
 所以`Pait`通过`TipException`对异常进行一个包装，在抛错信息里告诉用户说哪个路由函数抛错，抛错的位置在哪里，
 如果用户使用了类似于`Pycharm`的IDE,还可以通过点击路径跳转到对应的地方，一个异常示例如下：
 ```bash
@@ -45,7 +45,7 @@ pait.exceptions.TipException: Can not found content__type value for <function ra
 ## 参数异常
 目前`Pait`有3种参数异常，分别有:
 
-- NotFoundFieldException  该异常表示匹配不到对应的`Field`， 通常开发者在正常使用时，不会遇到该异常。
+- NotFoundFieldException  该异常表示匹配不到对应的`Field`， 开发者在正常使用时，不会遇到该异常。
 - NotFoundValueException  该异常表示无法从请求数据中找到对应的值，这是一个常见的异常，一般是请求数据缺少部分参数。
 - FieldValueTypeException  该异常表示程序启动时，`Pait`发现`Field`里的`default`，`example`等填写的值不合法，开发者需要根据提示进行改正。
 

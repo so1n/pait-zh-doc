@@ -98,14 +98,16 @@ PaitMd(pait_dict).content
 ```
 
 ## 3.OpenAPI路由
-如文档首页示例，`Pait`还支持OpenAPI路由, 同时支持`Redoc`和`Swagger`的页面展示, 而这些只需要调用`add_doc_route`函数即可为`app`实例增加三个路由:
+如文档首页示例，`Pait`还支持OpenAPI路由, 同时支持`Redoc`和`Swagger`的页面展示, 而这些只需要调用`add_doc_route`函数即可为`app`实例增加如下路由:
 
 - `/openapi.json`  获取OpenAPI的json响应
 - /redoc           使用`Redoc`展示接口文档数据
 - /swagger         使用`Swagger`展示接口文档数据
+- /rapidoc         使用`rapi`展示接口文档数据
+- /rapipdf         提供一个可以下载`rapi`pdf文档的页面
 
 具体例子如下:
-```Python3
+```Python
 import uvicorn  # type: ignore
 from pydantic import BaseModel, Field
 from starlette.applications import Starlette

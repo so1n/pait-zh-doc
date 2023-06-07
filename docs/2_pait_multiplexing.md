@@ -1,5 +1,5 @@
 在上面的章节中，介绍了通过直接使用`Pait`装饰器来使用参数转换与类型校验功能，也有简单的介绍通过`pre_depend_list`参数来使用`Pait`的Pre-Depend功能，
-而在后面的章节中（特别是文档章节）会介绍`Pait`的其它功能，这些功能用需要通过指定的参数来启用，但是很多接口本身都有一些共性从而它们在使用`Pait`时填写的参数的一样的，
+而在后面的章节中（如API文档）会介绍`Pait`的其它功能，这些功能用需要通过指定的参数来启用，不过很多接口本身都有一些共性导致它们在使用`Pait`时填写的参数的一样的，
 比如当一个开发者编写了几个接口时，可能会这样写:
 ```Python
 from starlette.responses import Response
@@ -28,8 +28,8 @@ async def demo2() -> Response:
 ```Python
 from pait.app.starlette import pait
 ```
-来引入一个`Pait`装饰器，这是一个最方便的使用方法，不过它本身是Web框架对应`Pait`类的单例，在考虑使用`Pait`的复用时，则需要通过Web框架对应`Pait`类入手，
-来重新实例化一个自己定制的`Pait`，然后把接口的`Pait`替换为自己定义的`Pait`，比如下面的示例：
+来引入一个`Pait`装饰器，这是一个最方便的使用方法，不过它本身是Web框架对应`Pait`类的单例，在考虑`Pait`的复用时，需要通过Web框架对应`Pait`类入手，
+重新实例化一个自己定制的`Pait`，然后把接口的`Pait`替换为自己定义的`Pait`，比如下面的示例：
 ```py hl_lines="6 8 13 18"
 from starlette.responses import Response
 from pait.app.starlette import Pait
@@ -125,3 +125,28 @@ async def user_logout() -> JSONResponse:
 async def get_server_timestamp() -> JSONResponse:
     pass
 ```
+
+除了覆盖原有的值外，部分属性还支持追加值，如下代码：
+```py hl_lines="12"
+from pait.app.starlette import Pait
+from starlette.responses import JSONResponse
+
+global_pait: Pait = Pait(author=("so1n",), group="global")
+user_pait: Pait = global_pait.create_sub_pait(group="user")
+
+
+@user_pait()  # group="user"
+async def user_login() -> JSONResponse:
+    pass
+
+
+@user_pait(append_author=("Other Author",))  # group="user"
+async def user_logout() -> JSONResponse:
+    pass
+
+
+@global_pait()  # group="global"
+async def get_server_timestamp() -> JSONResponse:
+    pass
+```
+其中高亮部分使用到了`append_xxx`系列的参数来追加值，从而使`user_logout`的`author`值变为`("so1n", "Other Author")`。

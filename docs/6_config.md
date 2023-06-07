@@ -42,7 +42,7 @@ MatchKeyLiteral = Literal[
     "tag",              # 路由函数的tag包含对应值得都会匹配
     "method_list",      # 路由函数的http请求方法包含对应值得都会匹配
     "path",             # 路由函数的url与输入的正则匹配到的都会匹配
-    "!status", 
+    "!status",
     "!group",
     "!tag",
     "!method_list",
@@ -89,13 +89,13 @@ from pait.model.response import PaitHtmlResponseModel
 
 class DefaultResponseModel(PaitHtmlResponseModel):
     is_core = False
-    
+
 
 # 由于中间件都是应用到所有的路由函数，所以直接使用MatchRule的默认值。
 config.init_config(apply_func_list=[apply_response_model([DefaultResponseModel])])
 ```
 ### apply_block_http_method_set
-由于`Pait`只是一个装饰器，他只能捕获到路由函数本身的属性，像Url, Http方法之类的需要后续调用`load_app`来补全，但是很多Web框架会自动为路由函数补上`HEAD`，`OPTIONS`等Http方法，即使开发者在注册路由时并没有填写，这样会导致导出来的OpenAPI数据会很多，这时可以使用`apply_block_http_method_set`来禁用一些方法不被`Pait`捕获，使用方法如下：
+由于`Pait`只是一个装饰器，他只能捕获到路由函数本身的属性，像Url, Http方法之类的需要后续调用`load_app`来补全，但是很多Web框架会自动为路由函数补上`HEAD`，`OPTIONS`等Http方法，即使开发者在注册路由时并没有填写，导致生成的OpenAPI数据也有`HEAD`和`OPTIONS`等HTTP方法的数据，这时可以使用`apply_block_http_method_set`来禁用一些方法不被`Pait`捕获，使用方法如下：
 ```Python
 from pait.extra.config import apply_block_http_method_set
 from pait.g import config

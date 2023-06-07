@@ -61,7 +61,7 @@ uvicorn.run(app)
 {"data":"Can not found by token:u123456"}
 ```
 
-此外，`Pait`能支持多层Depend嵌套的，但是一般不推荐嵌套的层数太多，以上面的代码为例子，假设Token要经过一层特别的校验，且该校验逻辑会被复用，则代码可以改写为：
+此外，`Pait`能支持多层Depend嵌套的(虽然不推荐)，以上面的代码为例子，假设Token要经过一层特别的校验，且该校验逻辑会被复用，则代码可以改写成如下代码：
 ```py hl_lines="19-22 25"
 import uvicorn  # type: ignore
 from starlette.applications import Starlette
@@ -277,7 +277,7 @@ async def demo(_: str = field.Depends.i(get_user_by_token)) -> JSONResponse:
 ```
 但是Python是不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们变量名都改为`_`。
 
-为此，`Pait`通过可选参数`pre_depend_list`来提供了`Pre-Depends`功能，用户只需要把函数传入到Pait的pre_depend_list可选参数即可，
+为此，`Pait`通过可选参数`pre_depend_list`来提供了`Pre-Depends`功能，用户只需要把函数传入到`Pait`的`pre_depend_list`可选参数即可，
 代码的逻辑和功能均不会被受到影响，这样修改后代码会变为如下：
 ```py hl_lines="25 26"
 import uvicorn  # type: ignore
