@@ -16,13 +16,13 @@ class _Handler(RequestHandler):
 
 class DemoHandler(_Handler):
     @pait()
-    def get(self, demo_value: str = field.Query.t(default="123")) -> None:
+    async def get(self, demo_value: str = field.Query.t(default="123")) -> None:
         self.write(demo_value)
 
 
 class Demo1Handler(_Handler):
     @pait()
-    def get(self, demo_value: str = field.Query.t()) -> None:
+    async def get(self, demo_value: str = field.Query.t()) -> None:
         self.write(demo_value)
 
 

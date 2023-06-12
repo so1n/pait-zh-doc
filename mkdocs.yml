@@ -44,7 +44,7 @@ nav:
     - Depend: '1_4_depend.md'
     - 异常提示: '1_5_exception.md'
   - Pait的复用: '2_pait_multiplexing.md'
-  - API文档: '3_api_doc.md'
+  - OpenAPI: '3_openapi.md'
   - 单元测试支持: '4_unit_test_helper.md'
   - 插件:
       - 介绍: '5_1_introduction.md'
@@ -71,14 +71,19 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/so1n
 plugins:
+    # - typeset
     - search:
         lang:
             - en
 markdown_extensions:
   - admonition
+  - attr_list
   - def_list
   - meta
   - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.details
   - pymdownx.inlinehilite
   - pymdownx.snippets

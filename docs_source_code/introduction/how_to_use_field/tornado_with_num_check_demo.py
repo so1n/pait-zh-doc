@@ -21,7 +21,7 @@ class _Handler(RequestHandler):
 
 class DemoHandler(_Handler):
     @pait()
-    def get(
+    async def get(
         self,
         demo_value1: int = field.Query.i(gt=1, lt=10),
         demo_value2: int = field.Query.i(ge=1, le=1),

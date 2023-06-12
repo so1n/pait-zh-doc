@@ -19,13 +19,13 @@ class _Handler(RequestHandler):
 
 class DemoHandler(_Handler):
     @pait()
-    def get(self, demo_value: datetime.datetime = field.Query.t(default_factory=datetime.datetime.now)) -> None:
+    async def get(self, demo_value: datetime.datetime = field.Query.t(default_factory=datetime.datetime.now)) -> None:
         self.write(str(demo_value))
 
 
 class Demo1Handler(_Handler):
     @pait()
-    def get(self, demo_value: str = field.Query.t(default_factory=lambda: uuid.uuid4().hex)) -> None:
+    async def get(self, demo_value: str = field.Query.t(default_factory=lambda: uuid.uuid4().hex)) -> None:
         self.write(demo_value)
 
 

@@ -21,7 +21,7 @@ class _Handler(RequestHandler):
 
 class DemoHandler(_Handler):
     @pait()
-    def get(self, demo_value: str = field.Query.i(min_length=6, max_length=6, regex="^u")) -> None:
+    async def get(self, demo_value: str = field.Query.i(min_length=6, max_length=6, regex="^u")) -> None:
         self.write({"data": demo_value})
 
 

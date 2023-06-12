@@ -15,7 +15,7 @@ async def api_exception(request: Request, exc: Exception) -> HTTPResponse:
 
 
 @pait()
-def demo(
+async def demo(
     demo_value: dict = field.Body.i(raw_return=True),
     a: str = field.Body.i(),
 ) -> HTTPResponse:

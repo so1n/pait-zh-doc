@@ -49,37 +49,37 @@
 接下来运行对应的代码，然后使用`curl`命令在终端进行一次请求测试，命令如下:
 ```bash
 curl -X 'POST' \
-  'http://127.0.0.1:8000/api/demo/18?multi_user_name=aaa,bbb&uid=10086&user_name=so1n&&sex=man' \
+  'http://127.0.0.1:8000/api/demo/18?multi_user_name=aaa&multi_user_name=bbb&uid=999&user_name=so1n&sex=man' \
   -H 'accept: */*' \
-  -H 'Cookie: cookie=' \
-  -H 'Content-Type: multipart/form-data' \
-  -F 'a=data-a' \
-  -F 'b=data-b' \
-  -F 'c=data-c-1,data-c-2'
+  -H 'Cookie: cookie=aaa,aaa' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'a=aaa&b=bbb&c=ccc1&c=ccc2'
 ```
 正常情况下，会看到如下输出:
 ```json
 {
     "code": 0,
-    "msg": "",
     "data": {
-        "form_a": "data-a",
-        "form_b": "data-b",
-        "form_c": [
-            "data-c-1,data-c-2"
-        ],
-        "cookie": {
-            "cookie": ""
-        },
-        "multi_user_name": [
-            "aaa,bbb"
-        ],
         "age": 18,
-        "uid": 10086,
-        "user_name": "so1n",
+        "cookie": {
+            "cookie": "aaa,aaa"
+        },
         "email": "example@xxx.com",
-        "sex": "man"
-    }
+        "form_a": "aaa",
+        "form_b": "bbb",
+        "form_c": [
+            "ccc1",
+            "ccc2"
+        ],
+        "multi_user_name": [
+            "aaa",
+            "bbb"
+        ],
+        "sex": "man",
+        "uid": 999,
+        "user_name": "so1n"
+    },
+    "msg": ""
 }
 ```
 通过输出结果可以发现，`Pait`都能通过`Field`的种类准确的从请求对象获取对应的值。
@@ -140,7 +140,7 @@ Can not found demo_value value
     错误处理使用了`TipException`，可以通过[异常提示](/1_5_introduction/)了解`TipException`的作用。
 
 ### 2.2.default_factory
-`default_factory`的作用与`default`类似，只不过`default_factory`接收的值是函数，只有当请求命中路由函数且`Pait`无法从请求对象中找到变量需要的值时才会被执行并注入到变量中。
+`default_factory`的作用与`default`类似，只不过`default_factory`接收的值是函数，只有当请求命中路由函数且`Pait`无法从请求对象中找到变量需要的值时才会被执行并将返回值注入到变量中。
 
 示例代码如下，第一个接口的默认值是当前时间， 第二个接口的默认值是uuid，他们每次的返回值都是收到请求时生成的:
 === "Flask"
@@ -417,7 +417,8 @@ ef84f04fa9fc4ea9a8b44449c76146b8
 ```
 
 ### 2.8.自定义查询不到值的异常
-在正常情况下，如果请求对象中没有`Pait`需要的数据，那么`Pait`会抛出xxx异常，该异常是通过`not_value_exception`定义的，支持开发者通过`not_value_exception`定义
+在正常情况下，如果请求对象中没有`Pait`需要的数据，那么`Pait`会抛出`NotFoundValueException`异常。
+不过`Pait`可以支持开发者通过`not_value_exception`定义自定义异常，如下代码中路由函数有两个变量，第一个变量`demo_value1`没有设置任何`Field`的属性，而第二个变量`demo_value2`设置了`not_value_exception`属性为`RuntimeError("not found data")`：
 
 === "Flask"
 
@@ -443,16 +444,25 @@ ef84f04fa9fc4ea9a8b44449c76146b8
     ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_not_found_exc_demo.py""
     --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_not_found_exc_demo.py"
     ```
+运行代码，并在终端执行如下`curl`命令，可以看到`demo_value1`变量缺值和`demo_value2`缺值的响应是不同的：
+```bash
+➜ ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=1&demo_value2=2"
+{"data": {"demo_value1": "1", "demo_value2": "2"}}
+➜ ~ curl "http://127.0.0.1:8000/api/demo?demo_value2=2"
+{"data": "Can not found demo_value1 value"}
+➜ ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=1"
+{"data": "not found data"}
+```
 
 ### 2.8.其它功能
 除了上述功能外，`Pait`还有其它功能，可以到对应模块文档了解：
 
-| 属性                   | 文档      | 描述                                                                                                               |
-|----------------------|---------|------------------------------------------------------------------------------------------------------------------|
-| links                | OpenAPI | 用于支持OpenAPI的link功能                                                                                               |
-| media_type           | OpenAPI | Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。                                                              |
-| openapi_serialization | OpenAPI | 用于该值在OpenAPI的Schema的序列化方式。                                                                                       |
-| example              | OpenAPI | 用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如`datetime.datetim.now`，推荐与[faker](https://github.com/joke2k/faker)一起使用。 |
-| description          | OpenAPI | 用于OpenAPI的参数描述                                                                                                   |
-| openapi_include      | OpenAPI | 定义该字段不被OpenAPI读取                                                                                                 |                                                                                                 |
-| extra_param_list     | Plugin  | 定义插件的行为                                                                                                          |
+| 属性                   | 文档                           | 描述                                                                                                               |
+|----------------------|------------------------------|------------------------------------------------------------------------------------------------------------------|
+| links                | [OpenAPI](/3_openapi/)       | 用于支持OpenAPI的link功能                                                                                               |
+| media_type           | [OpenAPI](/3_openapi/)       | Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。                                                              |
+| openapi_serialization | [OpenAPI](/3_openapi/)       | 用于该值在OpenAPI的Schema的序列化方式。                                                                                       |
+| example              | [OpenAPI](/3_openapi/)       | 用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如`datetime.datetim.now`，推荐与[faker](https://github.com/joke2k/faker)一起使用。 |
+| description          | [OpenAPI](/3_openapi/)       | 用于OpenAPI的参数描述                                                                                                   |
+| openapi_include      | [OpenAPI](/3_openapi/)       | 定义该字段不被OpenAPI读取                                                                                                 |                                                                                                 |
+| extra_param_list     | [Plugin](/5_1_introduction/) | 定义插件的行为                                                                                                          |

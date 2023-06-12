@@ -15,7 +15,7 @@ async def api_exception(request: Request, exc: Exception) -> HTTPResponse:
 
 
 @pait()
-def demo(
+async def demo(
     demo_value1: int = field.Query.i(gt=1, lt=10),
     demo_value2: int = field.Query.i(ge=1, le=1),
     demo_value3: int = field.Query.i(multiple_of=3),

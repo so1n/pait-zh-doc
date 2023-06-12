@@ -23,7 +23,7 @@ class _Handler(RequestHandler):
 
 class DemoHandler(_Handler):
     @pait()
-    def get(self, demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2)) -> None:
+    async def get(self, demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2)) -> None:
         self.write({"data": demo_value})
 
 

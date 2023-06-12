@@ -21,7 +21,7 @@ class _Handler(RequestHandler):
 
 class DemoHandler(_Handler):
     @pait()
-    def post(
+    async def post(
         self,
         demo_value: dict = field.Body.i(raw_return=True),
         a: str = field.Body.i(),

@@ -17,7 +17,7 @@ async def api_exception(request: Request, exc: Exception) -> HTTPResponse:
 
 
 @pait()
-def demo(demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2)) -> HTTPResponse:
+async def demo(demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items=2)) -> HTTPResponse:
     return json({"data": demo_value})
 
 

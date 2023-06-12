@@ -15,7 +15,7 @@ async def api_exception(request: Request, exc: Exception) -> HTTPResponse:
 
 
 @pait()
-def demo(demo_value: str = field.Query.i(min_length=6, max_length=6, regex="^u")) -> HTTPResponse:
+async def demo(demo_value: str = field.Query.i(min_length=6, max_length=6, regex="^u")) -> HTTPResponse:
     return json({"data": demo_value})
 
 

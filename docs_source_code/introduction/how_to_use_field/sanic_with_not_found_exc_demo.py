@@ -15,11 +15,11 @@ async def api_exception(request: Request, exc: Exception) -> HTTPResponse:
 
 
 @pait()
-def demo(
-    demo_value: str = field.Query.i(),
-    demo_value1: str = field.Query.i(not_value_exception=RuntimeError("not found data")),
+async def demo(
+    demo_value1: str = field.Query.i(),
+    demo_value2: str = field.Query.i(not_value_exception=RuntimeError("not found data")),
 ) -> HTTPResponse:
-    return json({"data": {"demo_value": demo_value, "demo_value1": demo_value1}})
+    return json({"data": {"demo_value1": demo_value1, "demo_value2": demo_value2}})
 
 
 app = Sanic("demo")

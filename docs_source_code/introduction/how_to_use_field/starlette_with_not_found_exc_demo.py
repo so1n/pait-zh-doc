@@ -19,10 +19,10 @@ async def api_exception(request: Request, exc: Exception) -> JSONResponse:
 
 @pait()
 async def demo(
-    demo_value: str = field.Query.i(),
-    demo_value1: str = field.Query.i(not_value_exception=RuntimeError("not found data")),
+    demo_value1: str = field.Query.i(),
+    demo_value2: str = field.Query.i(not_value_exception=RuntimeError("not found data")),
 ) -> JSONResponse:
-    return JSONResponse({"data": {"demo_value": demo_value, "demo_value1": demo_value1}})
+    return JSONResponse({"data": {"demo_value1": demo_value1, "demo_value2": demo_value2}})
 
 
 app = Starlette(

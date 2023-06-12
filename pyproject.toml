@@ -8,7 +8,8 @@ packages = [{include = "pait_zh_doc"}]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pait = {version = "1.0.0a3", extras = ["grpc"]}
+pait = {version = "1.0.0a5", extras = ["grpc"]}
+redis = "4.5.3"
 
 [tool.poetry.group.framework.dependencies]
 werkzeug = "1.0.1"

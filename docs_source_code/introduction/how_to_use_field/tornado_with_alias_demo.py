@@ -7,7 +7,7 @@ from tornado.web import Application, RequestHandler
 
 class DemoHandler(RequestHandler):
     @pait()
-    def get(self, content_type: str = field.Header.t(alias="Content-Type")) -> None:
+    async def get(self, content_type: str = field.Header.t(alias="Content-Type")) -> None:
         self.write(content_type)
 
 

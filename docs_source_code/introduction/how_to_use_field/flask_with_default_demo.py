@@ -1,4 +1,3 @@
-import uvicorn  # type: ignore
 from flask import Flask
 from pait import field
 from pait.app.flask import pait
