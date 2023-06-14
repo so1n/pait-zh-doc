@@ -528,8 +528,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../3_api_doc/" class="md-nav__link">
-        API文档
+      <a href="../3_openapi/" class="md-nav__link">
+        OpenAPI
       </a>
     </li>
   
@@ -1275,37 +1275,37 @@
 <p>这段代码来演示了通过不同种类<code>Field</code>从请求对象获取请求者的参数，并组装成一定的格式返回。
 接下来运行对应的代码，然后使用<code>curl</code>命令在终端进行一次请求测试，命令如下:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="s1">&#39;http://127.0.0.1:8000/api/demo/18?multi_user_name=aaa,bbb&amp;uid=10086&amp;user_name=so1n&amp;&amp;sex=man&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="s1">&#39;http://127.0.0.1:8000/api/demo/18?multi_user_name=aaa&amp;multi_user_name=bbb&amp;uid=999&amp;user_name=so1n&amp;sex=man&#39;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: */*&#39;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Cookie: cookie=&#39;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>-F<span class="w"> </span><span class="s1">&#39;a=data-a&#39;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>-F<span class="w"> </span><span class="s1">&#39;b=data-b&#39;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span>-F<span class="w"> </span><span class="s1">&#39;c=data-c-1,data-c-2&#39;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Cookie: cookie=aaa,aaa&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;a=aaa&amp;b=bbb&amp;c=ccc1&amp;c=ccc2&#39;</span>
 </code></pre></div>
 正常情况下，会看到如下输出:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">&quot;msg&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="nt">&quot;form_a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data-a&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">        </span><span class="nt">&quot;form_b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data-b&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">        </span><span class="nt">&quot;form_c&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">            </span><span class="s2">&quot;data-c-1,data-c-2&quot;</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="p">],</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="nt">&quot;cookie&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">            </span><span class="nt">&quot;cookie&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="p">},</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">        </span><span class="nt">&quot;multi_user_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">            </span><span class="s2">&quot;aaa,bbb&quot;</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="p">],</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">        </span><span class="nt">&quot;age&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10086</span><span class="p">,</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">        </span><span class="nt">&quot;user_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;so1n&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">        </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example@xxx.com&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">        </span><span class="nt">&quot;sex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;man&quot;</span>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="p">}</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">        </span><span class="nt">&quot;age&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="nt">&quot;cookie&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">            </span><span class="nt">&quot;cookie&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aaa,aaa&quot;</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">        </span><span class="p">},</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example@xxx.com&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="nt">&quot;form_a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="nt">&quot;form_b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bbb&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="nt">&quot;form_c&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">            </span><span class="s2">&quot;ccc1&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">            </span><span class="s2">&quot;ccc2&quot;</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="p">],</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="nt">&quot;multi_user_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">            </span><span class="s2">&quot;aaa&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">            </span><span class="s2">&quot;bbb&quot;</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">        </span><span class="p">],</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">        </span><span class="nt">&quot;sex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;man&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">        </span><span class="nt">&quot;uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">999</span><span class="p">,</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">        </span><span class="nt">&quot;user_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;so1n&quot;</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">    </span><span class="nt">&quot;msg&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="p">}</span>
 </code></pre></div>
 通过输出结果可以发现，<code>Pait</code>都能通过<code>Field</code>的种类准确的从请求对象获取对应的值。</p>
 <h2 id="2field">2.Field的功能</h2>
@@ -1344,35 +1344,33 @@
 <span class="normal"><a href="#__codelineno-6-24">24</a></span>
 <span class="normal"><a href="#__codelineno-6-25">25</a></span>
 <span class="normal"><a href="#__codelineno-6-26">26</a></span>
-<span class="normal"><a href="#__codelineno-6-27">27</a></span>
-<span class="normal"><a href="#__codelineno-6-28">28</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="kn">from</span> <span class="nn">pait.app.flask</span> <span class="kn">import</span> <span class="n">pait</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="kn">from</span> <span class="nn">pait.exceptions</span> <span class="kn">import</span> <span class="n">TipException</span>
+<span class="normal"><a href="#__codelineno-6-27">27</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="kn">from</span> <span class="nn">pait.app.flask</span> <span class="kn">import</span> <span class="n">pait</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="kn">from</span> <span class="nn">pait.exceptions</span> <span class="kn">import</span> <span class="n">TipException</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a>
 <a id="__codelineno-6-6" name="__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7"></a>
-<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="k">def</span> <span class="nf">api_exception</span><span class="p">(</span><span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">TipException</span><span class="p">):</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10"></a>        <span class="n">exc</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="n">exc</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11"></a>    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="k">def</span> <span class="nf">api_exception</span><span class="p">(</span><span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">TipException</span><span class="p">):</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a>        <span class="n">exc</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="n">exc</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a>    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a>
 <a id="__codelineno-6-12" name="__codelineno-6-12"></a>
-<a id="__codelineno-6-13" name="__codelineno-6-13"></a>
-<a id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-6-16" name="__codelineno-6-16"></a>    <span class="k">return</span> <span class="n">demo_value</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="nd">@pait</span><span class="p">()</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15"></a>    <span class="k">return</span> <span class="n">demo_value</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16"></a>
 <a id="__codelineno-6-17" name="__codelineno-6-17"></a>
-<a id="__codelineno-6-18" name="__codelineno-6-18"></a>
-<a id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="k">def</span> <span class="nf">demo1</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21"></a>    <span class="k">return</span> <span class="n">demo_value</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="nd">@pait</span><span class="p">()</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="k">def</span> <span class="nf">demo1</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20"></a>    <span class="k">return</span> <span class="n">demo_value</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21"></a>
 <a id="__codelineno-6-22" name="__codelineno-6-22"></a>
-<a id="__codelineno-6-23" name="__codelineno-6-23"></a>
-<a id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
-<a id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">demo</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
-<a id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/api/demo1&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">demo1</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
-<a id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="n">app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)(</span><span class="n">api_exception</span><span class="p">)</span>
-<a id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">demo</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/api/demo1&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">demo1</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="n">app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)(</span><span class="n">api_exception</span><span class="p">)</span>
+<a id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 </div>
 <div class="tabbed-block">
@@ -1553,13 +1551,13 @@
 <a id="__codelineno-9-16" name="__codelineno-9-16"></a>
 <a id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-9-18" name="__codelineno-9-18"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-9-19" name="__codelineno-9-19"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-9-20" name="__codelineno-9-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">demo_value</span><span class="p">)</span>
 <a id="__codelineno-9-21" name="__codelineno-9-21"></a>
 <a id="__codelineno-9-22" name="__codelineno-9-22"></a>
 <a id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="k">class</span> <span class="nc">Demo1Handler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-9-24" name="__codelineno-9-24"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-9-25" name="__codelineno-9-25"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-25" name="__codelineno-9-25"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-9-26" name="__codelineno-9-26"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">demo_value</span><span class="p">)</span>
 <a id="__codelineno-9-27" name="__codelineno-9-27"></a>
 <a id="__codelineno-9-28" name="__codelineno-9-28"></a>
@@ -1588,7 +1586,7 @@
 <p>错误处理使用了<code>TipException</code>，可以通过<a href="/1_5_introduction/">异常提示</a>了解<code>TipException</code>的作用。</p>
 </div>
 <h3 id="22default_factory">2.2.default_factory</h3>
-<p><code>default_factory</code>的作用与<code>default</code>类似，只不过<code>default_factory</code>接收的值是函数，只有当请求命中路由函数且<code>Pait</code>无法从请求对象中找到变量需要的值时才会被执行并注入到变量中。</p>
+<p><code>default_factory</code>的作用与<code>default</code>类似，只不过<code>default_factory</code>接收的值是函数，只有当请求命中路由函数且<code>Pait</code>无法从请求对象中找到变量需要的值时才会被执行并将返回值注入到变量中。</p>
 <p>示例代码如下，第一个接口的默认值是当前时间， 第二个接口的默认值是uuid，他们每次的返回值都是收到请求时生成的:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:4"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><input id="__tabbed_3_4" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Flask</label><label for="__tabbed_3_2">Starlette</label><label for="__tabbed_3_3">Sanic</label><label for="__tabbed_3_4">Tornado</label></div>
 <div class="tabbed-content">
@@ -1856,13 +1854,13 @@
 <a id="__codelineno-15-19" name="__codelineno-15-19"></a>
 <a id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-15-21" name="__codelineno-15-21"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-15-22" name="__codelineno-15-22"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-15-22" name="__codelineno-15-22"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-15-23" name="__codelineno-15-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">demo_value</span><span class="p">))</span>
 <a id="__codelineno-15-24" name="__codelineno-15-24"></a>
 <a id="__codelineno-15-25" name="__codelineno-15-25"></a>
 <a id="__codelineno-15-26" name="__codelineno-15-26"></a><span class="k">class</span> <span class="nc">Demo1Handler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-15-27" name="__codelineno-15-27"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-15-28" name="__codelineno-15-28"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-15-28" name="__codelineno-15-28"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-15-29" name="__codelineno-15-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">demo_value</span><span class="p">)</span>
 <a id="__codelineno-15-30" name="__codelineno-15-30"></a>
 <a id="__codelineno-15-31" name="__codelineno-15-31"></a>
@@ -2020,7 +2018,7 @@
 <a id="__codelineno-20-7" name="__codelineno-20-7"></a>
 <a id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">RequestHandler</span><span class="p">):</span>
 <a id="__codelineno-20-9" name="__codelineno-20-9"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-20-10" name="__codelineno-20-10"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-20-11" name="__codelineno-20-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content_type</span><span class="p">)</span>
 <a id="__codelineno-20-12" name="__codelineno-20-12"></a>
 <a id="__codelineno-20-13" name="__codelineno-20-13"></a>
@@ -2076,36 +2074,34 @@
 <span class="normal"><a href="#__codelineno-22-25">25</a></span>
 <span class="normal"><a href="#__codelineno-22-26">26</a></span>
 <span class="normal"><a href="#__codelineno-22-27">27</a></span>
-<span class="normal"><a href="#__codelineno-22-28">28</a></span>
-<span class="normal"><a href="#__codelineno-22-29">29</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="kn">import</span> <span class="nn">uvicorn</span>  <span class="c1"># type: ignore</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span>
-<a id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span>
-<a id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="kn">from</span> <span class="nn">pait.app.flask</span> <span class="kn">import</span> <span class="n">pait</span>
-<a id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="kn">from</span> <span class="nn">pait.exceptions</span> <span class="kn">import</span> <span class="n">TipException</span>
-<a id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="normal"><a href="#__codelineno-22-28">28</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="kn">from</span> <span class="nn">pait</span> <span class="kn">import</span> <span class="n">field</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="kn">from</span> <span class="nn">pait.app.flask</span> <span class="kn">import</span> <span class="n">pait</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="kn">from</span> <span class="nn">pait.exceptions</span> <span class="kn">import</span> <span class="n">TipException</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6"></a>
 <a id="__codelineno-22-7" name="__codelineno-22-7"></a>
-<a id="__codelineno-22-8" name="__codelineno-22-8"></a>
-<a id="__codelineno-22-9" name="__codelineno-22-9"></a><span class="k">def</span> <span class="nf">api_exception</span><span class="p">(</span><span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a id="__codelineno-22-10" name="__codelineno-22-10"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">TipException</span><span class="p">):</span>
-<a id="__codelineno-22-11" name="__codelineno-22-11"></a>        <span class="n">exc</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="n">exc</span>
-<a id="__codelineno-22-12" name="__codelineno-22-12"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">):</span>
-<a id="__codelineno-22-13" name="__codelineno-22-13"></a>        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">exc</span><span class="o">.</span><span class="n">errors</span><span class="p">()})</span>
-<a id="__codelineno-22-14" name="__codelineno-22-14"></a>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="k">def</span> <span class="nf">api_exception</span><span class="p">(</span><span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-22-9" name="__codelineno-22-9"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">TipException</span><span class="p">):</span>
+<a id="__codelineno-22-10" name="__codelineno-22-10"></a>        <span class="n">exc</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="n">exc</span>
+<a id="__codelineno-22-11" name="__codelineno-22-11"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">):</span>
+<a id="__codelineno-22-12" name="__codelineno-22-12"></a>        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">exc</span><span class="o">.</span><span class="n">errors</span><span class="p">()})</span>
+<a id="__codelineno-22-13" name="__codelineno-22-13"></a>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)})</span>
+<a id="__codelineno-22-14" name="__codelineno-22-14"></a>
 <a id="__codelineno-22-15" name="__codelineno-22-15"></a>
-<a id="__codelineno-22-16" name="__codelineno-22-16"></a>
-<a id="__codelineno-22-17" name="__codelineno-22-17"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-22-18" name="__codelineno-22-18"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
-<a id="__codelineno-22-19" name="__codelineno-22-19"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">gt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-<a id="__codelineno-22-20" name="__codelineno-22-20"></a>    <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-<a id="__codelineno-22-21" name="__codelineno-22-21"></a>    <span class="n">demo_value3</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">multiple_of</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
-<a id="__codelineno-22-22" name="__codelineno-22-22"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-22-23" name="__codelineno-22-23"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">demo_value1</span><span class="p">,</span> <span class="n">demo_value2</span><span class="p">,</span> <span class="n">demo_value3</span><span class="p">]}</span>
+<a id="__codelineno-22-16" name="__codelineno-22-16"></a><span class="nd">@pait</span><span class="p">()</span>
+<a id="__codelineno-22-17" name="__codelineno-22-17"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
+<a id="__codelineno-22-18" name="__codelineno-22-18"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">gt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<a id="__codelineno-22-19" name="__codelineno-22-19"></a>    <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<a id="__codelineno-22-20" name="__codelineno-22-20"></a>    <span class="n">demo_value3</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">multiple_of</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+<a id="__codelineno-22-21" name="__codelineno-22-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a id="__codelineno-22-22" name="__codelineno-22-22"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">demo_value1</span><span class="p">,</span> <span class="n">demo_value2</span><span class="p">,</span> <span class="n">demo_value3</span><span class="p">]}</span>
+<a id="__codelineno-22-23" name="__codelineno-22-23"></a>
 <a id="__codelineno-22-24" name="__codelineno-22-24"></a>
-<a id="__codelineno-22-25" name="__codelineno-22-25"></a>
-<a id="__codelineno-22-26" name="__codelineno-22-26"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
-<a id="__codelineno-22-27" name="__codelineno-22-27"></a><span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">demo</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
-<a id="__codelineno-22-28" name="__codelineno-22-28"></a><span class="n">app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)(</span><span class="n">api_exception</span><span class="p">)</span>
-<a id="__codelineno-22-29" name="__codelineno-22-29"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+<a id="__codelineno-22-25" name="__codelineno-22-25"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
+<a id="__codelineno-22-26" name="__codelineno-22-26"></a><span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">demo</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<a id="__codelineno-22-27" name="__codelineno-22-27"></a><span class="n">app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)(</span><span class="n">api_exception</span><span class="p">)</span>
+<a id="__codelineno-22-28" name="__codelineno-22-28"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 </div>
 <div class="tabbed-block">
@@ -2226,7 +2222,7 @@
 <a id="__codelineno-24-15" name="__codelineno-24-15"></a>
 <a id="__codelineno-24-16" name="__codelineno-24-16"></a>
 <a id="__codelineno-24-17" name="__codelineno-24-17"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-24-18" name="__codelineno-24-18"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
+<a id="__codelineno-24-18" name="__codelineno-24-18"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
 <a id="__codelineno-24-19" name="__codelineno-24-19"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">gt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
 <a id="__codelineno-24-20" name="__codelineno-24-20"></a>    <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
 <a id="__codelineno-24-21" name="__codelineno-24-21"></a>    <span class="n">demo_value3</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">multiple_of</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
@@ -2299,7 +2295,7 @@
 <a id="__codelineno-25-21" name="__codelineno-25-21"></a>
 <a id="__codelineno-25-22" name="__codelineno-25-22"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-25-23" name="__codelineno-25-23"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-25-24" name="__codelineno-25-24"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+<a id="__codelineno-25-24" name="__codelineno-25-24"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
 <a id="__codelineno-25-25" name="__codelineno-25-25"></a>        <span class="bp">self</span><span class="p">,</span>
 <a id="__codelineno-25-26" name="__codelineno-25-26"></a>        <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">gt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
 <a id="__codelineno-25-27" name="__codelineno-25-27"></a>        <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
@@ -2542,7 +2538,7 @@
 <a id="__codelineno-29-17" name="__codelineno-29-17"></a>
 <a id="__codelineno-29-18" name="__codelineno-29-18"></a>
 <a id="__codelineno-29-19" name="__codelineno-29-19"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-29-20" name="__codelineno-29-20"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">MultiQuery</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_items</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_items</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">HTTPResponse</span><span class="p">:</span>
+<a id="__codelineno-29-20" name="__codelineno-29-20"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">MultiQuery</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_items</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_items</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">HTTPResponse</span><span class="p">:</span>
 <a id="__codelineno-29-21" name="__codelineno-29-21"></a>    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">})</span>
 <a id="__codelineno-29-22" name="__codelineno-29-22"></a>
 <a id="__codelineno-29-23" name="__codelineno-29-23"></a>
@@ -2610,7 +2606,7 @@
 <a id="__codelineno-30-23" name="__codelineno-30-23"></a>
 <a id="__codelineno-30-24" name="__codelineno-30-24"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-30-25" name="__codelineno-30-25"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-30-26" name="__codelineno-30-26"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">MultiQuery</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_items</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_items</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-30-26" name="__codelineno-30-26"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">MultiQuery</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_items</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_items</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-30-27" name="__codelineno-30-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">})</span>
 <a id="__codelineno-30-28" name="__codelineno-30-28"></a>
 <a id="__codelineno-30-29" name="__codelineno-30-29"></a>
@@ -2811,7 +2807,7 @@
 <a id="__codelineno-34-15" name="__codelineno-34-15"></a>
 <a id="__codelineno-34-16" name="__codelineno-34-16"></a>
 <a id="__codelineno-34-17" name="__codelineno-34-17"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-34-18" name="__codelineno-34-18"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^u&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">HTTPResponse</span><span class="p">:</span>
+<a id="__codelineno-34-18" name="__codelineno-34-18"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^u&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">HTTPResponse</span><span class="p">:</span>
 <a id="__codelineno-34-19" name="__codelineno-34-19"></a>    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">})</span>
 <a id="__codelineno-34-20" name="__codelineno-34-20"></a>
 <a id="__codelineno-34-21" name="__codelineno-34-21"></a>
@@ -2875,7 +2871,7 @@
 <a id="__codelineno-35-21" name="__codelineno-35-21"></a>
 <a id="__codelineno-35-22" name="__codelineno-35-22"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-35-23" name="__codelineno-35-23"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-35-24" name="__codelineno-35-24"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^u&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-35-24" name="__codelineno-35-24"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="s2">&quot;^u&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-35-25" name="__codelineno-35-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">})</span>
 <a id="__codelineno-35-26" name="__codelineno-35-26"></a>
 <a id="__codelineno-35-27" name="__codelineno-35-27"></a>
@@ -3073,7 +3069,7 @@
 <a id="__codelineno-39-15" name="__codelineno-39-15"></a>
 <a id="__codelineno-39-16" name="__codelineno-39-16"></a>
 <a id="__codelineno-39-17" name="__codelineno-39-17"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-39-18" name="__codelineno-39-18"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
+<a id="__codelineno-39-18" name="__codelineno-39-18"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
 <a id="__codelineno-39-19" name="__codelineno-39-19"></a>    <span class="n">demo_value</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">raw_return</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <a id="__codelineno-39-20" name="__codelineno-39-20"></a>    <span class="n">a</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
 <a id="__codelineno-39-21" name="__codelineno-39-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTTPResponse</span><span class="p">:</span>
@@ -3144,7 +3140,7 @@
 <a id="__codelineno-40-21" name="__codelineno-40-21"></a>
 <a id="__codelineno-40-22" name="__codelineno-40-22"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-40-23" name="__codelineno-40-23"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-40-24" name="__codelineno-40-24"></a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span>
+<a id="__codelineno-40-24" name="__codelineno-40-24"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">post</span><span class="p">(</span>
 <a id="__codelineno-40-25" name="__codelineno-40-25"></a>        <span class="bp">self</span><span class="p">,</span>
 <a id="__codelineno-40-26" name="__codelineno-40-26"></a>        <span class="n">demo_value</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">raw_return</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <a id="__codelineno-40-27" name="__codelineno-40-27"></a>        <span class="n">a</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
@@ -3165,7 +3161,8 @@
 <a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="o">{</span><span class="s2">&quot;demo_value&quot;</span>:<span class="o">{</span><span class="s2">&quot;a&quot;</span>:<span class="s2">&quot;1&quot;</span>,<span class="s2">&quot;b&quot;</span>:<span class="s2">&quot;2&quot;</span><span class="o">}</span>,<span class="s2">&quot;a&quot;</span>:<span class="s2">&quot;1&quot;</span><span class="o">}</span>
 </code></pre></div></p>
 <h3 id="28">2.8.自定义查询不到值的异常</h3>
-<p>在正常情况下，如果请求对象中没有<code>Pait</code>需要的数据，那么<code>Pait</code>会抛出xxx异常，该异常是通过<code>not_value_exception</code>定义的，支持开发者通过<code>not_value_exception</code>定义</p>
+<p>在正常情况下，如果请求对象中没有<code>Pait</code>需要的数据，那么<code>Pait</code>会抛出<code>NotFoundValueException</code>异常。
+不过<code>Pait</code>可以支持开发者通过<code>not_value_exception</code>定义自定义异常，如下代码中路由函数有两个变量，第一个变量<code>demo_value1</code>没有设置任何<code>Field</code>的属性，而第二个变量<code>demo_value2</code>设置了<code>not_value_exception</code>属性为<code>RuntimeError("not found data")</code>：</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="9:4"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><input id="__tabbed_9_3" name="__tabbed_9" type="radio" /><input id="__tabbed_9_4" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Flask</label><label for="__tabbed_9_2">Starlette</label><label for="__tabbed_9_3">Sanic</label><label for="__tabbed_9_4">Tornado</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3214,10 +3211,10 @@
 <a id="__codelineno-42-16" name="__codelineno-42-16"></a>
 <a id="__codelineno-42-17" name="__codelineno-42-17"></a><span class="nd">@pait</span><span class="p">()</span>
 <a id="__codelineno-42-18" name="__codelineno-42-18"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
-<a id="__codelineno-42-19" name="__codelineno-42-19"></a>    <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
-<a id="__codelineno-42-20" name="__codelineno-42-20"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
+<a id="__codelineno-42-19" name="__codelineno-42-19"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
+<a id="__codelineno-42-20" name="__codelineno-42-20"></a>    <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
 <a id="__codelineno-42-21" name="__codelineno-42-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a id="__codelineno-42-22" name="__codelineno-42-22"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">,</span> <span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">}}</span>
+<a id="__codelineno-42-22" name="__codelineno-42-22"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">,</span> <span class="s2">&quot;demo_value2&quot;</span><span class="p">:</span> <span class="n">demo_value2</span><span class="p">}}</span>
 <a id="__codelineno-42-23" name="__codelineno-42-23"></a>
 <a id="__codelineno-42-24" name="__codelineno-42-24"></a>
 <a id="__codelineno-42-25" name="__codelineno-42-25"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
@@ -3281,10 +3278,10 @@
 <a id="__codelineno-43-19" name="__codelineno-43-19"></a>
 <a id="__codelineno-43-20" name="__codelineno-43-20"></a><span class="nd">@pait</span><span class="p">()</span>
 <a id="__codelineno-43-21" name="__codelineno-43-21"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
-<a id="__codelineno-43-22" name="__codelineno-43-22"></a>    <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
-<a id="__codelineno-43-23" name="__codelineno-43-23"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
+<a id="__codelineno-43-22" name="__codelineno-43-22"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
+<a id="__codelineno-43-23" name="__codelineno-43-23"></a>    <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
 <a id="__codelineno-43-24" name="__codelineno-43-24"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
-<a id="__codelineno-43-25" name="__codelineno-43-25"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">,</span> <span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">}})</span>
+<a id="__codelineno-43-25" name="__codelineno-43-25"></a>    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">,</span> <span class="s2">&quot;demo_value2&quot;</span><span class="p">:</span> <span class="n">demo_value2</span><span class="p">}})</span>
 <a id="__codelineno-43-26" name="__codelineno-43-26"></a>
 <a id="__codelineno-43-27" name="__codelineno-43-27"></a>
 <a id="__codelineno-43-28" name="__codelineno-43-28"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span>
@@ -3341,11 +3338,11 @@
 <a id="__codelineno-44-15" name="__codelineno-44-15"></a>
 <a id="__codelineno-44-16" name="__codelineno-44-16"></a>
 <a id="__codelineno-44-17" name="__codelineno-44-17"></a><span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-44-18" name="__codelineno-44-18"></a><span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
-<a id="__codelineno-44-19" name="__codelineno-44-19"></a>    <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
-<a id="__codelineno-44-20" name="__codelineno-44-20"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
+<a id="__codelineno-44-18" name="__codelineno-44-18"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span>
+<a id="__codelineno-44-19" name="__codelineno-44-19"></a>    <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
+<a id="__codelineno-44-20" name="__codelineno-44-20"></a>    <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
 <a id="__codelineno-44-21" name="__codelineno-44-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HTTPResponse</span><span class="p">:</span>
-<a id="__codelineno-44-22" name="__codelineno-44-22"></a>    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">,</span> <span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">}})</span>
+<a id="__codelineno-44-22" name="__codelineno-44-22"></a>    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">,</span> <span class="s2">&quot;demo_value2&quot;</span><span class="p">:</span> <span class="n">demo_value2</span><span class="p">}})</span>
 <a id="__codelineno-44-23" name="__codelineno-44-23"></a>
 <a id="__codelineno-44-24" name="__codelineno-44-24"></a>
 <a id="__codelineno-44-25" name="__codelineno-44-25"></a><span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
@@ -3412,12 +3409,12 @@
 <a id="__codelineno-45-21" name="__codelineno-45-21"></a>
 <a id="__codelineno-45-22" name="__codelineno-45-22"></a><span class="k">class</span> <span class="nc">DemoHandler</span><span class="p">(</span><span class="n">_Handler</span><span class="p">):</span>
 <a id="__codelineno-45-23" name="__codelineno-45-23"></a>    <span class="nd">@pait</span><span class="p">()</span>
-<a id="__codelineno-45-24" name="__codelineno-45-24"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+<a id="__codelineno-45-24" name="__codelineno-45-24"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
 <a id="__codelineno-45-25" name="__codelineno-45-25"></a>        <span class="bp">self</span><span class="p">,</span>
-<a id="__codelineno-45-26" name="__codelineno-45-26"></a>        <span class="n">demo_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
-<a id="__codelineno-45-27" name="__codelineno-45-27"></a>        <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
+<a id="__codelineno-45-26" name="__codelineno-45-26"></a>        <span class="n">demo_value1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(),</span>
+<a id="__codelineno-45-27" name="__codelineno-45-27"></a>        <span class="n">demo_value2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">Query</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">not_value_exception</span><span class="o">=</span><span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;not found data&quot;</span><span class="p">)),</span>
 <a id="__codelineno-45-28" name="__codelineno-45-28"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-45-29" name="__codelineno-45-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value&quot;</span><span class="p">:</span> <span class="n">demo_value</span><span class="p">,</span> <span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">}})</span>
+<a id="__codelineno-45-29" name="__codelineno-45-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">({</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;demo_value1&quot;</span><span class="p">:</span> <span class="n">demo_value1</span><span class="p">,</span> <span class="s2">&quot;demo_value2&quot;</span><span class="p">:</span> <span class="n">demo_value2</span><span class="p">}})</span>
 <a id="__codelineno-45-30" name="__codelineno-45-30"></a>
 <a id="__codelineno-45-31" name="__codelineno-45-31"></a>
 <a id="__codelineno-45-32" name="__codelineno-45-32"></a><span class="n">app</span><span class="p">:</span> <span class="n">Application</span> <span class="o">=</span> <span class="n">Application</span><span class="p">([(</span><span class="sa">r</span><span class="s2">&quot;/api/demo&quot;</span><span class="p">,</span> <span class="n">DemoHandler</span><span class="p">)])</span>
@@ -3428,6 +3425,14 @@
 </div>
 </div>
 </div>
+<p>运行代码，并在终端执行如下<code>curl</code>命令，可以看到<code>demo_value1</code>变量缺值和<code>demo_value2</code>缺值的响应是不同的：
+<div class="highlight"><pre><span></span><code><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>➜<span class="w"> </span>~<span class="w"> </span>curl<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value1=1&amp;demo_value2=2&quot;</span>
+<a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a><span class="o">{</span><span class="s2">&quot;data&quot;</span>:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;demo_value1&quot;</span>:<span class="w"> </span><span class="s2">&quot;1&quot;</span>,<span class="w"> </span><span class="s2">&quot;demo_value2&quot;</span>:<span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="o">}}</span>
+<a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a>➜<span class="w"> </span>~<span class="w"> </span>curl<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value2=2&quot;</span>
+<a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a><span class="o">{</span><span class="s2">&quot;data&quot;</span>:<span class="w"> </span><span class="s2">&quot;Can not found demo_value1 value&quot;</span><span class="o">}</span>
+<a id="__codelineno-46-5" name="__codelineno-46-5" href="#__codelineno-46-5"></a>➜<span class="w"> </span>~<span class="w"> </span>curl<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/api/demo?demo_value1=1&quot;</span>
+<a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a><span class="o">{</span><span class="s2">&quot;data&quot;</span>:<span class="w"> </span><span class="s2">&quot;not found data&quot;</span><span class="o">}</span>
+</code></pre></div></p>
 <h3 id="28_1">2.8.其它功能</h3>
 <p>除了上述功能外，<code>Pait</code>还有其它功能，可以到对应模块文档了解：</p>
 <table>
@@ -3441,37 +3446,37 @@
 <tbody>
 <tr>
 <td>links</td>
-<td>OpenAPI</td>
+<td><a href="/3_openapi/">OpenAPI</a></td>
 <td>用于支持OpenAPI的link功能</td>
 </tr>
 <tr>
 <td>media_type</td>
-<td>OpenAPI</td>
+<td><a href="/3_openapi/">OpenAPI</a></td>
 <td>Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。</td>
 </tr>
 <tr>
 <td>openapi_serialization</td>
-<td>OpenAPI</td>
+<td><a href="/3_openapi/">OpenAPI</a></td>
 <td>用于该值在OpenAPI的Schema的序列化方式。</td>
 </tr>
 <tr>
 <td>example</td>
-<td>OpenAPI</td>
+<td><a href="/3_openapi/">OpenAPI</a></td>
 <td>用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如<code>datetime.datetim.now</code>，推荐与<a href="https://github.com/joke2k/faker">faker</a>一起使用。</td>
 </tr>
 <tr>
 <td>description</td>
-<td>OpenAPI</td>
+<td><a href="/3_openapi/">OpenAPI</a></td>
 <td>用于OpenAPI的参数描述</td>
 </tr>
 <tr>
 <td>openapi_include</td>
-<td>OpenAPI</td>
+<td><a href="/3_openapi/">OpenAPI</a></td>
 <td>定义该字段不被OpenAPI读取</td>
 </tr>
 <tr>
 <td>extra_param_list</td>
-<td>Plugin</td>
+<td><a href="/5_1_introduction/">Plugin</a></td>
 <td>定义插件的行为</td>
 </tr>
 </tbody>
