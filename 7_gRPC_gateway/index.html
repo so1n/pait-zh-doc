@@ -21,7 +21,7 @@
     
     
       
-        <title>gRPC Gateway - Pait</title>
+        <title>gRPC Gateway[Editing] - Pait</title>
       
     
     
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              gRPC Gateway
+              gRPC Gateway[Editing]
             
           </span>
         </div>
@@ -398,8 +398,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../2_pait_multiplexing/" class="md-nav__link">
-        Pait的复用
+      <a href="../2_how_to_use_pait/" class="md-nav__link">
+        如何使用Pait
       </a>
     </li>
   
@@ -414,7 +414,7 @@
   
     <li class="md-nav__item">
       <a href="../3_openapi/" class="md-nav__link">
-        OpenAPI
+        OpenAPI[Editing]
       </a>
     </li>
   
@@ -429,7 +429,7 @@
   
     <li class="md-nav__item">
       <a href="../4_unit_test_helper/" class="md-nav__link">
-        单元测试支持
+        单元测试支持[Editing]
       </a>
     </li>
   
@@ -453,14 +453,14 @@
       
       
         <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
-          插件
+          插件[Editing]
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
-          插件
+          插件[Editing]
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -563,7 +563,7 @@
   
     <li class="md-nav__item">
       <a href="../6_config/" class="md-nav__link">
-        config
+        config[Editing]
       </a>
     </li>
   
@@ -585,12 +585,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          gRPC Gateway
+          gRPC Gateway[Editing]
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        gRPC Gateway
+        gRPC Gateway[Editing]
       </a>
       
         
@@ -705,7 +705,7 @@
   
     <li class="md-nav__item">
       <a href="../8_other/" class="md-nav__link">
-        其它
+        其它[Editing]
       </a>
     </li>
   
@@ -832,7 +832,7 @@
                   
 
 
-  <h1>gRPC Gateway</h1>
+  <h1>gRPC Gateway[Editing]</h1>
 
 <h2 id="1">1.介绍</h2>
 <p>gRPC基于HTTP/2.0进行通信，理论上很容易自动转换成一个RESTful接口，所以<code>Go gRPC</code>很容易的就能实现<code>gRPC GatwWay</code>功能，如<a href="https://github.com/grpc-ecosystem/grpc-gateway">grpc-gateway</a>。但是<code>Python gRPC</code>却很难做到，因为它不像<code>Go gRPC</code>一样是使用Go语言编写的库，而是用C语言编写的，同时<code>Python gRPC</code>提供的API比较少，所以<code>Python</code>要写一个转发HTTP请求到gRPC服务比较麻烦，而<code>Pait</code>提供的<code>gRPC GateWay</code>功能可以为开发者以最小的代码实现一个简单的<code>gRPC Gateway</code>。</p>
