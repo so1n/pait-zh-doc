@@ -333,7 +333,7 @@ def demo(_: str = field.Depends.i(get_user_by_token)) -> None:
 
 !!! note
     - 1.当使用`Pre-Depend`时，`Pait`会先按顺序执行`Pre-Depend`再执行路由函数，如果`Pre-Depend`执行出错则会直接抛错。
-    - 2.`Pre-Depend`绑定是`Pait`而不是路由函数，这意味着`Pre-Depend`可以跟随`Pait`一起复用，详见[Pait的复用](/2_pait_multiplexing/)。
+    - 2.`Pre-Depend`绑定是`Pait`而不是路由函数，这意味着`Pre-Depend`可以跟随`Pait`一起复用，详见[Pait的复用](/2_how_to_use_pait/)。
 
 
 ## 5.:warning:不要共享有限的资源

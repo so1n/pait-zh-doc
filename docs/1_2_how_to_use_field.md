@@ -459,10 +459,10 @@ ef84f04fa9fc4ea9a8b44449c76146b8
 
 | 属性                   | 文档                           | 描述                                                                                                               |
 |----------------------|------------------------------|------------------------------------------------------------------------------------------------------------------|
-| links                | [OpenAPI](/3_openapi/)       | 用于支持OpenAPI的link功能                                                                                               |
-| media_type           | [OpenAPI](/3_openapi/)       | Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。                                                              |
-| openapi_serialization | [OpenAPI](/3_openapi/)       | 用于该值在OpenAPI的Schema的序列化方式。                                                                                       |
-| example              | [OpenAPI](/3_openapi/)       | 用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如`datetime.datetim.now`，推荐与[faker](https://github.com/joke2k/faker)一起使用。 |
-| description          | [OpenAPI](/3_openapi/)       | 用于OpenAPI的参数描述                                                                                                   |
-| openapi_include      | [OpenAPI](/3_openapi/)       | 定义该字段不被OpenAPI读取                                                                                                 |                                                                                                 |
+| links                | [OpenAPI](/3_1_openapi/)     | 用于支持OpenAPI的link功能                                                                                               |
+| media_type           | [OpenAPI](/3_1_openapi/)     | Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。                                                              |
+| openapi_serialization | [OpenAPI](/3_1_openapi/)     | 用于该值在OpenAPI的Schema的序列化方式。                                                                                       |
+| example              | [OpenAPI](/3_1_openapi/)     | 用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如`datetime.datetim.now`，推荐与[faker](https://github.com/joke2k/faker)一起使用。 |
+| description          | [OpenAPI](/3_1_openapi/)     | 用于OpenAPI的参数描述                                                                                                   |
+| openapi_include      | [OpenAPI](/3_1_openapi/)     | 定义该字段不被OpenAPI读取                                                                                                 |                                                                                                 |
 | extra_param_list     | [Plugin](/5_1_introduction/) | 定义插件的行为                                                                                                          |

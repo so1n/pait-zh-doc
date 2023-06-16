@@ -10,6 +10,7 @@ packages = [{include = "pait_zh_doc"}]
 python = "^3.7"
 pait = {version = "1.0.0a5", extras = ["grpc"]}
 redis = "4.5.3"
+pyyaml = "^6.0"
 
 [tool.poetry.group.framework.dependencies]
 werkzeug = "1.0.1"
