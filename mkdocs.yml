@@ -58,7 +58,7 @@ nav:
       - 如何自定义插件: '5_x_how_tp_customize_the_plugin.md'
   - config[Editing]: "6_config.md"
   - gRPC Gateway[Editing]: "7_gRPC_gateway.md"
-  - 其它[Editing]: "8_other.md"
+  - 其它: "8_other.md"
 
 extra:
   version:

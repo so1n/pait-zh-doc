@@ -5,6 +5,11 @@
 - 实现安全校验的功能
 - 与别的系统交互(如数据库)。
 
+
+!!! note
+
+    `Depend`只做请求对象相关的依赖注入，无法完成请求对象之外的依赖注入功能，推荐通过DI工具来实现依赖注入功能，具体的DI工具见[Awesome Dependency Injection in Python](https://github.com/sfermigier/awesome-dependency-injection-in-python)。
+
 ## 1.Depend的使用
 一般的后端系统中都带有用户Token校验业务，这个业务是非常符合`Depend`的使用场景。
 在这个场景中，用户每次访问接口时都需要带上Token，服务端在收到用户的请求后会先判断Token是否合法，如果不合法则会返回错误，合法则会执行接口的逻辑。
