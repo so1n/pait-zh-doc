@@ -7,6 +7,7 @@ repos:
     rev: 5.9.3
     hooks:
       - id: isort
+        exclude: "^docs_source_code/unit_test_helper"
   - repo: https://github.com/psf/black
     rev: 23.1.0
     hooks:
@@ -15,6 +16,7 @@ repos:
     rev: 3.9.2
     hooks:
       - id: flake8
+        exclude: "^docs_source_code/unit_test_helper"
   - repo: https://github.com/myint/autoflake
     rev: v2.0.1
     hooks:

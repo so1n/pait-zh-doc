@@ -48,7 +48,7 @@ nav:
       - OpenAPI: '3_1_openapi.md'
       - OpenAPI路由: '3_2_openapi_route.md'
       - Security: '3_3_security.md'
-  - 单元测试支持[Editing]: '4_unit_test_helper.md'
+  - 单元测试支持: '4_unit_test_helper.md'
   - 插件[Editing]:
       - 介绍: '5_1_introduction.md'
       - 参数检查插件: '5_2_param_check_plugin.md'
