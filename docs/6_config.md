@@ -34,7 +34,7 @@ config.init_config(author=("so1n", ))
 
 !!! note
 
-    也可以认为这个功能属于路由组功能，毕竟最终的效果是类似的，但请不要把该功能认为是中间件。
+    该功能可以认为是路由组功能，但是请不要把它认为是中间件，因为它无法处理无法命中路由的请求。
 
 `Pait`提供了一系列的apply func，每个apply func只会应用一种`Pait`属性，每个apply func的格式如下：
 ```python

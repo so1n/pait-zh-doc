@@ -26,13 +26,14 @@
 
 该示例代码通过`AddDocRoute`即可为`app`实例绑定如下路由：
 
-|路由url| 描述                                                             | 特点                  |
-|---|----------------------------------------------------------------|---------------------|
-|/openapi.json| 获取OpenAPI的json响应                                               |                     |
-|/redoc| 使用[Redoc](https://github.com/Redocly/redoc)展示接口文档数据            | UI漂亮简单，但是不支持请求调用    |
-|/swagger| 使用[Swagger](https://github.com/swagger-api/swagger-ui)展示接口文档数据 | 通用的OpenAPI展示UI，功能齐全 |
-|/rapidoc| 使用[RapiDoc](https://github.com/rapi-doc/RapiDoc)展示接口文档数据                                          | 功能齐全；UI现代化；支持自定义的UI |
-|/rapipdf| 提供一个可以下载[RapiDoc](https://github.com/rapi-doc/RapiDoc)pdf文档的页面                                    | 对非英文的支持比较差          |
+| 路由url         | 描述                                                             | 特点                  |
+|---------------|----------------------------------------------------------------|---------------------|
+| /openapi.json | 获取OpenAPI的json响应                                               |                     |
+| /elements     | 使用[elements](https://github.com/stoplightio/elements)展示接口文档数据  | UI漂亮简单，支持请求调用       |
+| /redoc        | 使用[Redoc](https://github.com/Redocly/redoc)展示接口文档数据            | UI漂亮简单，但是不支持请求调用    |
+| /swagger      | 使用[Swagger](https://github.com/swagger-api/swagger-ui)展示接口文档数据 | 通用的OpenAPI展示UI，功能齐全 |
+| /rapidoc      | 使用[RapiDoc](https://github.com/rapi-doc/RapiDoc)展示接口文档数据       | 功能齐全；UI现代化；支持自定义的UI |
+| /rapipdf      | 提供一个可以下载[RapiDoc](https://github.com/rapi-doc/RapiDoc)pdf文档的页面 | 对非英文的支持比较差          |
 
 ## 1.OpenAPI路由的使用
 `AddDocRoute`可以方便的为`app`实例绑定OpenAPI路由，同时`AddDocRoute`提供了一些参数方便开发者自定义路由扩展以及解决生产环境的复杂化。
@@ -44,7 +45,7 @@
 | openapi_json_url_only_path | 生成的内部url是否只生成path部分(该参数生效时，scheme会失效)                                    |
 | prefix                     | 路由URL前缀                                                                  |
 | pin_code                   | 一种简单的安全校验机制                                                              |
-| title                      | 定义OpenAPI路由的Title,需要注意的是，调用多次`AddDocRoute`时，Title应该不同                    |
+| title                      | 定义OpenAPI路由的Title，需要注意的是，调用多次`AddDocRoute`时，它们的Title应该不同                 |
 | doc_fn_dict                | OpenAPI路由中ui页面的实现                                                        |
 | openapi                    | `Pait`的OpenAPI对象                                                         |
 | pait                       | `Pait`，OpenAPI会基于传递的`pait`去创建子`pait`并使用。详见[如何使用Pait](/2_how_to_use_pait) |
@@ -52,12 +53,11 @@
 | not_found_exc                | pin_code错误的异常                                                            |
 
 ### 1.1.scheme
-通过scheme参数可以显示的指定OpenAPI路由的HTTP Schema，比如HTTP和HTTPS。
-需要注意的是，HTTP Schema并不是指代当前服务使用的HTTP Schema，而是用于访问者时使用的HTTP Schema。
+通过scheme参数可以显式的指定OpenAPI路由的HTTP Schema，比如HTTP和HTTPS。
 
-比如当前服务指定的是HTTP方法，并不支持HTTPS，如果可以直接访问，那么用户会通过`http://127.0.0.1/openapi.json` 访问。
-不过为了增强服务安全，大部分情况下都会在服务前加上一层代理以支持HTTPS，如使用Nginx，这时用户只能通过`https://127.0.0.1/openapi.json` 访问，
-为了支持这种访问方法，在绑定OpenAPI路由时应该填写`scheme="https"`。
+需要注意的是，HTTP Schema并不是指代当前服务使用的HTTP Schema，而是用于访问者时使用的HTTP Schema。
+比如当前服务指定的是HTTP方法，并不支持HTTPS，不过为了增强服务安全，大部分情况下都会在服务前加上一层代理以支持HTTPS，如使用Nginx，
+这时用户只能通过`https://127.0.0.1/openapi.json` 访问， 为了支持这种访问方法，在绑定OpenAPI路由时应该填写`scheme="https"`。
 
 使用方法:
 === "Flask"
@@ -145,6 +145,7 @@ openapi_json_url_only_path默认为`False`时，生成的OpenAPI Json url为`htt
 - /swagger
 - /rapidoc
 - /rapipdf
+- /elements
 
 不过采用默认的`/`前缀是一种不太好的行为，建议在使用的时候通过`prefix`指定一个符合自己习惯的，比如`/api-doc`，那么`AddDocRoute`会以如下URL绑定到路由：
 
@@ -153,6 +154,7 @@ openapi_json_url_only_path默认为`False`时，生成的OpenAPI Json url为`htt
 - /api-doc/swagger
 - /api-doc/rapidoc
 - /api-doc/rapipdf
+- /api-doc/elements
 
 使用方法:
 === "Flask"
@@ -444,26 +446,26 @@ def demo(url: str, title: str = "") -> str:
 在编写API接口时，大部分接口都是需要登录的，也就是需要带上Token参数，如果每次都是从数据库查出对应的Token再粘贴会非常的麻烦，这时就可以使用模板变量，让`Pait`帮助用户自动填写变量的值，以上面的代码为例子，为其中的uid引入对应的模板变量，代码如下：
 === "Flask"
 
-    ```py linenums="1" title="docs_source_code/openapi/openapi_route/flask_demo.py" hl_lines="6 16"
+    ```py linenums="1" title="docs_source_code/openapi/openapi_route/flask_demo.py" hl_lines="4 10"
 
     --8<-- "docs_source_code/openapi/openapi_route/flask_demo.py"
     ```
 
 === "Starlette"
 
-    ```py linenums="1" title="docs_source_code/openapi/openapi_route/starlette_demo.py" hl_lines="9 19"
+    ```py linenums="1" title="docs_source_code/openapi/openapi_route/starlette_demo.py" hl_lines="4 13"
     --8<-- "docs_source_code/openapi/openapi_route/starlette_demo.py"
     ```
 
 === "Sanic"
 
-    ```py linenums="1" title="docs_source_code/openapi/openapi_route/sanic_demo.py" hl_lines="7 17"
+    ```py linenums="1" title="docs_source_code/openapi/openapi_route/sanic_demo.py" hl_lines="4 11"
     --8<-- "docs_source_code/openapi/openapi_route/sanic_demo.py"
     ```
 
 === "Tornado"
 
-    ```py linenums="1" title="docs_source_code/openapi/openapi_route/tornado_demo.py" hl_lines="8 19"
+    ```py linenums="1" title="docs_source_code/openapi/openapi_route/tornado_demo.py" hl_lines="3 11"
     --8<-- "docs_source_code/openapi/openapi_route/tornado_demo.py"
     ```
 

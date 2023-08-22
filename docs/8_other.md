@@ -13,7 +13,7 @@ from pait.app.tornado import pait, load_app, add_simple_route
 ```
 ## 2.内部方法
 `Pait`内部封装了一些通用的方法，通过这些方法，开发者可以在不考虑兼容不同的Web框架的情况下快速的开发出拓展包，或者对`Pait`进行拓展，
-OpenAPI路由和gRPCGateway就是基于这些方法开发的。
+OpenAPI路由和[grpc-gateway](https://github.com/python-pai/grpc-gateway)就是基于这些方法开发的。
 ### 2.1.data
 `data`是`Pait`的数据载体，`Pait`在装饰路由函数时生成的数据会按照一定的规则存放在`pait.g.data`中，以便为后续的配置，文档生成等功能提供支持。
 
@@ -165,7 +165,7 @@ response.HttpStatusCodeBaseModel.clone(resp_model=response.TextResponseModel, st
 ### 2.4.SimpleRoute
 `Pait`除了统一了不同Web框架的请求处理外，还通过SimpleRoute统一了不同Web框架的路由注册方法以及路由生成响应的方法。
 开发者通过SimpleRoute可以在不考虑兼容的情况下很方便的完成路由编写和注册功能，
-比如`gRPC Gateway`和OpenAPI路由功能完全使用SimpleRoute的方式编写路由，并由SimpleRoute注册到对应的Web框架中，节省了很多工作量。
+比如[grpc-gateway](https://github.com/python-pai/grpc-gateway)和OpenAPI路由功能完全使用SimpleRoute的方式编写路由，并由SimpleRoute注册到对应的Web框架中，节省了很多工作量。
 
 !!! note
 

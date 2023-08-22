@@ -26,9 +26,9 @@ def demo_route() -> None:
 def demo_route(uid: str) -> None:
     pass
 ```
-但是这种实现方法比较动态，代码检测工具很难检测出来，只能订好内部规范，才有可能防止开发人员错误的使用`check_token`装饰器，但没办法完全防止错误的使用，而使用`Pait`的`Depend`可以解决这个问题。
+但是这种实现方法比较动态，代码检测工具很难检测出来是否有问题，只有在订好内部规范的情况下，才有可能防止开发人员错误的使用`check_token`装饰器，但也没办法完全防止错误的使用，而使用`Pait`的`Depend`可以解决这个问题。
 
-`Pait`的`Depend`使用示例代码如下，其中第一段高亮代码是模仿数据库的调用方法，目前假设数据库只有用户`so1n`拥有token，且token值为"u12345"；
+`Pait`的`Depend`使用示例代码如下，其中第一段高亮代码是模仿数据库的调用方法，目前假设数据库只有用户`so1n`拥有token，且token值为"u12345"。
 第二段高亮代码是一个名为`get_user_by_token`的函数，它的作用是从Header中获取Token，并校验Token是否存在，如果存在则返回用户，不存在则抛错。这个函数是一个特殊的函数，它的参数填写规则与被`Pait`装饰的路由函数一致， 之前提到的任何写法都可以在这个函数中使用，同时该函数可以被`Pait`的`Depend`使用。
 第三段高亮则是路由函数填写的Token参数，比较特殊的是这里通过`field.Depend`来裹住`get_user_by_token`函数：
 === "Flask"
@@ -334,7 +334,7 @@ def demo(_: str = field.Depends.i(get_user_by_token)) -> None:
 ➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u123456"
 {"data":"Can not found by token:u123456"}
 ```
-可以看到能够正常执行校验逻辑。
+可以看到`Pre-Depend`能够正常。
 
 !!! note
     - 1.当使用`Pre-Depend`时，`Pait`会先按顺序执行`Pre-Depend`再执行路由函数，如果`Pre-Depend`执行出错则会直接抛错。
@@ -342,7 +342,7 @@ def demo(_: str = field.Depends.i(get_user_by_token)) -> None:
 
 
 ## 5.:warning:不要共享有限的资源
-`Depend`是共享相同逻辑的最佳实现，在其他的类似功能中可能会介绍如何共享有限的资源。
+`Depend`是共享相同逻辑的最佳实现，在其他的类似功能的框架文档中可能会介绍如何共享有限的资源，
 但是这种行为是不推荐的，因为此时共享的资源是给整个路由函数使用的，这意味着可能会影响到系统的并发数，或者拖垮整个系统。
 
 !!! note
@@ -351,7 +351,7 @@ def demo(_: str = field.Depends.i(get_user_by_token)) -> None:
 由于本节内容与`pait`的使用方法无关，所以只是以`Flask`框架为例子，举例说明共享有限资源的危害性，这个例子的有限资源是`Redis`的连接。
 
 !!! note
-    - 1.最佳的示范用例是`Mysql`的连接池，但是代码量会比较多，所以这里采用`Redis`进行演示，简要说明共享有限资源的危害。
+    - 1.最佳的示范用例是`MySQL`的连接池，但是代码量会比较多，所以这里采用`Redis`进行演示，简要说明共享有限资源的危害。
     - 2.通常情况下是不会直接去获取`Redis`的单一连接的，`Redis`也没有暴露出类似的接口，只是`execute_command`方法是先获取连接，再执行命令，最后释放连接的逻辑满足了获取连接的逻辑，所以以该方法来举例说明。
 
 
@@ -384,12 +384,13 @@ app = Flask("demo")
 app.add_url_rule("/api/demo", view_func=demo, methods=["GET"])
 app.run(port=8000)
 ```
-示例代码中每个路由函数都会执行部分逻辑导致执行时长需要5秒钟，这意味着它会占用一个`Redis`连接5秒，但同时有超过100个请求访问的时候，部分请求会获取不到`Redis`连接而阻塞在`get_redis`逻辑中，这也意味着当前系统的瓶颈是`Redis`连接池的上限，但是真正使用到`Redis`的逻辑只有`my_redis_conn("info")`，这是非坏的。
-
+示例代码中每个路由函数都会先执行获取`Redis`连接的操作再执行路由函数逻辑，最终再释放`Redis`连接。
+所以占用`Redis`连接的时间并不是使用的时间，而是获取连接的时间加上使用的时间，这意味着如果路由函数的逻辑比较复杂，那么会导致整个服务的并发数受限于`Redis`连接池的数量，
+比如上面的代码中，`demo`路由函数的逻辑是先调用`Redis`的`info`命令，然后模拟`IO`操作睡眠了5秒，而整个路由函数的执行时间也只是比5秒多一点点，这意味着，在获取`Redis`连接后，`Redis`的大部分时间都浪费在了等待`IO`操作上，这是非常糟糕的。
 
 要解决这个问题很简单，只要把共享资源变为共享获取资源的方法就可以了，比如这个例子一开始共享的是`Redis`连接这一个资源，现在有优化成共享获取`Redis`连接的逻辑，也就是从获取真正的`Redis`连接变为获取`Redis`连接的方法，然后在真正使用时才去获取连接，代码如下：
 
-```py linenums="1" hl_lines="12 18"
+```py linenums="1" hl_lines="12 18-20"
 import time
 from typing import Callable
 from flask import Flask, Response, jsonify
@@ -407,7 +408,9 @@ def get_redis() -> Callable:
 @pait()
 def demo(my_redis_conn: Callable = field.Depends.i(get_redis)) -> Response:
     # mock redis cli
-    my_redis_conn()("info")
+    conn = my_redis_conn()
+    conn("info")
+    del conn
     # mock io
     time.sleep(5)
     return jsonify()
@@ -418,5 +421,5 @@ app.add_url_rule("/api/demo", view_func=demo, methods=["GET"])
 app.run(port=8000)
 ```
 该代码主要变动有两个，第一个是第一段高亮代码，该代码的`get_redis`函数从返回一个`Redis`连接变为返回一个获取`Redis`连接的方法，
-第二个变动是第二段高亮代码，这里从直接调用`Redis`连接变为先获取`Redis`连接再进行调用。
-这样一来只有使用到了`Redis`才会去获取到`Redis`的连接，不会被其他逻辑影响，系统的并发瓶颈也就不会受到`Redis`连接池影响了。
+第二个变动是第二段高亮代码，这里从直接调用`Redis`连接变为先获取`Redis`连接再进行调用然后取消对`Redis`连接的占用。
+这样一来只有使用到了`Redis`才会去获取到`Redis`的连接，系统的并发瓶颈也就不会受到`Redis`连接池影响了。

@@ -45,8 +45,8 @@
 !!! note
     为了确保演示的代码能够在不同的机器上顺利运行，这里没有演示`File`字段的用法，具体用法请参考不同Web框架示例代码中的`field_route.py`文件中`/api/pait-base-field`对应的路由函数。
 
-这段代码来演示了通过不同种类`Field`从请求对象获取请求者的参数，并组装成一定的格式返回。
-接下来运行对应的代码，然后使用`curl`命令在终端进行一次请求测试，命令如下:
+示例代码演示了通过不同种类`Field`从请求对象获取请求者的参数，并组装成一定的格式返回。
+接下来运行示例代码，然后使用`curl`命令在终端进行一次请求测试，命令如下:
 ```bash
 curl -X 'POST' \
   'http://127.0.0.1:8000/api/demo/18?multi_user_name=aaa&multi_user_name=bbb&uid=999&user_name=so1n&sex=man' \
@@ -55,7 +55,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'a=aaa&b=bbb&c=ccc1&c=ccc2'
 ```
-正常情况下，会看到如下输出:
+正常情况下，会在终端看到如下输出:
 ```json
 {
     "code": 0,
@@ -246,7 +246,8 @@ ef84f04fa9fc4ea9a8b44449c76146b8
     --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_num_check_demo.py"
     ```
 
-这份示例代码只有一个接口，但是接受了三个参数`demo_value1`, `demo_value2`, `demo_value3`，他们分别只接收符合大于1小于10，等于1以及3的倍数的三个参数,
+这份示例代码只有一个接口，但是接受了三个参数`demo_value1`, `demo_value2`, `demo_value3`，他们分别只接收符合大于1小于10，等于1以及3的倍数的三个参数。
+
 在运行代码并使用`curl`调用可以发现第一个请求符合要求并得到了想要的响应结果，
 第二，三，四个请求分别是`demo_value1`，`demo_value2`，`demo_value3`的值不在要求的范围内，所以`Pait`会生成`Pydantic.ValidationError`的错误信息，从错误信息可以简单的看出来三个参数都不符合接口设置的限定条件：
 ```bash
@@ -291,6 +292,8 @@ ef84f04fa9fc4ea9a8b44449c76146b8
 
 - min_items：仅用于`Sequence`类型，会校验`Sequence`是否满足大于等于指定的值。
 - max_items： 仅用于`Sequence`类型，会校验`Sequence`是否满足小于等于指定的值。
+
+> 注：如果使用的Pydantic版本大于2.0.0，请使用`min_length`和`max_length`代替`min_items`和`max_items`。
 
 示例代码如下，该接口通过`field.MultiQuery`从请求Url中获取参数`demo_value`的数组，并返回给调用端，其中数组的长度限定在大于等于1且小于等于2之间：
 === "Flask"
@@ -346,6 +349,8 @@ ef84f04fa9fc4ea9a8b44449c76146b8
 - min_length：仅用于字符串类型，会校验字符串的长度是否满足大于等于指定的值。
 - max_length：仅用于字符串类型，会校验字符串的长度是否满足小于等于指定的值。
 - regex：仅用于字符串类型，会校验字符串是否符合该正则表达式。
+
+> 注：如果使用的Pydantic版本大于2.0.0，请使用`min_length`和`max_length`还可以校验序列类型。而`regex`字段会被`pattern`代替。
 
 示例代码如下， 该接口需要从Url中获取一个值， 这个值得长度大小为6，且必须为英文字母u开头：
 === "Flask"

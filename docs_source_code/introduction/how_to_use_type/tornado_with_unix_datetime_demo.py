@@ -7,6 +7,7 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler
 
 
+# 这里只展示Pydantic V1的UnixDatetime
 class UnixDatetime(datetime.datetime):
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:

@@ -43,7 +43,7 @@ nav:
     - 如何使用Type: '1_3_how_to_use_type.md'
     - Depend: '1_4_depend.md'
     - 异常提示: '1_5_exception.md'
-  - 如何使用Pait: '2_how_to_use_pait.md'
+  - 如何使用Pait装饰器: '2_how_to_use_pait.md'
   - OpenAPI:
       - OpenAPI: '3_1_openapi.md'
       - OpenAPI路由: '3_2_openapi_route.md'

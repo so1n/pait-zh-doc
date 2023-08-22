@@ -6,6 +6,7 @@ from pait import field
 from pait.app.flask import pait
 
 
+# 这里只展示Pydantic V1的UnixDatetime
 class UnixDatetime(datetime.datetime):
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:

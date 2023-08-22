@@ -1,4 +1,4 @@
-`Type`用于指明该变量值的最终类型是什么，如下的示例代码:
+变量的类型--`Type`用于指明该变量值的最终类型是什么，通过定义`Type`可以拓展变量的校验规则，在如下的示例代码:
 ```Python hl_lines="3-4"
 @pait()
 def demo(
@@ -7,7 +7,7 @@ def demo(
 ) -> dict:
     return {"a": a, "b": b}
 ```
-在程序运行的过程中，可以认为`Pait`会在内部将函数签名转换为如下的`Pydantic.BaseModel`:
+代码运行的过程中，可以认为`Pait`会在内部将函数签名转换为如下的`Pydantic.BaseModel`:
 ```Python
 from pydantic import BaseModel, Field
 
@@ -61,7 +61,8 @@ class Demo(BaseModel):
 通过输出的结果可以发现两个接口都能正常的工作，但是在这种用法下，Field的作用是限定于整个BaseModel的，无法为每一个属性使用单独的`field`，这时可以采用另外一种方法。
 
 ## 2.Type为特殊的Pydantic.BaseModel
-`Pait`的`Field`对象继承于`pydantic.FieldInfo`对象，同时也支持转为标准的`pydantic.FieldInfo`方法，所以可以把`Field`对象认为是一个携带资源来源标识的`pydantic.FieldInfo`对象，也是可以用于`pydantic.BaseModel`中，比如前文说到的`DemoModel`对象可以改写为如下代码:
+`Pait`的`Field`对象是一个携带资源来源标识的`pydantic.FieldInfo`对象，同时也支持转为标准的`pydantic.FieldInfo`方法，
+所以可以用于`pydantic.BaseModel`中，比如前文说到的`DemoModel`对象可以改写为如下代码:
 ```Python
 from pait import field
 
@@ -78,7 +79,8 @@ class DemoModel(BaseModel):
 def demo(demo_model: DemoModel) -> None:
     pass
 ```
-此外，当前`DemoModel`中每个属性的`Field`对象都被固定为`Query`，而前文`demo1`接口用到的是`Body`对象，与`Query`对象不匹配，这时候就需要使用到`Pait`的`AnyField`功能了，首先把每个`Field`对象都替换为`pydantic.FieldInfo`:
+此外，当前`DemoModel`中每个属性的`Field`对象都被固定为`Query`，而前文`demo1`接口用到的是`Body`对象，与`Query`对象不匹配，这时候就需要使用到`Pait`的`DefaultField`功能了，
+首先把每个`Field`对象都替换为`pydantic.FieldInfo`:
 ```Python
 from pydantic import BaseModel, Field
 
@@ -87,7 +89,7 @@ class DemoModel(BaseModel):
     name: str = Field(min_length=4, max_length=10)
     age: int = Field(ge=0, le=100)
 ```
-然后通过`pait`装饰器中的`default_field_class`分别指定了`demo`路由的`AnyField`为`Query`，`demo1`路由的`AnyField`为`Body`:
+然后通过`pait`装饰器中的`default_field_class`分别指定了`demo`路由的`DefaultField`为`Query`，`demo1`路由的`DefaultField`为`Body`:
 ```python
 @pait(default_field_class=field.Query)
 def demo(demo_model: DemoModel) -> None:
@@ -155,6 +157,8 @@ from pait.app.starlette import pait
 async def demo():
     pass
 ```
+
+> 注：`Sanic`框架要求路由函数最少必须拥有一个参数。
 
 如果开发者需要`Request`对象，则任然可以使用框架原本的方法来获取`Request`对象，不过`Pait`会要求填写的`Type`必须是`Request`对象的`Type`，`pait`才能正确的把`Request`对象注入给对应的变量，代码如下：
 === "Flask"
@@ -224,23 +228,41 @@ curl "http://127.0.0.1:8000/api/demo"
 
 一个符合`Pydantic`校验方法的类必须满足带有`__get_validators__`类方法，且该方法是一个生成器，
 于是可以这样实现一个时间戳的转换方法，使`Pydantic`在遇到时间戳时，能把时间转为`datetime`且该值的时区为服务器的时区：
-```Python
-import datetime
-from typing import Callable, Generator, Union
+
+=== "Pydantic V1"
+    ```Python
+    import datetime
+    from typing import Callable, Generator, Union
 
 
-class UnixDatetime(datetime.datetime):
+    class UnixDatetime(datetime.datetime):
 
-    @classmethod
-    def __get_validators__(cls) -> Generator[Callable, None, None]:
-        yield cls.validate
+        @classmethod
+        def __get_validators__(cls) -> Generator[Callable, None, None]:
+            yield cls.validate
 
-    @classmethod
-    def validate(cls, v: Union[int, str]) -> datetime.datetime:
+        @classmethod
+        def validate(cls, v: Union[int, str]) -> datetime.datetime:
+            if isinstance(v, str):
+                v = int(v)
+            return datetime.datetime.fromtimestamp(v)
+    ```
+=== "Pydantic V2"
+    ```py
+    from pydantic import BeforeValidator
+    from typing import Union
+    from typing_extensions import Annotated
+    from datetime import datetime
+
+
+    def validate(v: Union[int, str]) -> datetime:
         if isinstance(v, str):
             v = int(v)
-        return datetime.datetime.fromtimestamp(v)
-```
+        return datetime.fromtimestamp(v)
+
+    UnixDatetime = Annotated[datetime, BeforeValidator(validate)]
+    ```
+
 然后把这个类应用到我们的代码中：
 === "Flask"
 

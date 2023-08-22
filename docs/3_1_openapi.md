@@ -2,26 +2,26 @@
 `Pait`除了实现参数类型转换与校验功能外，还支持自动生成路由函数的OpenAPI数据，使用者只需要编写路由函数的代码，即可生成路由函数的对应OpenAPI文档，如[文档首页](/)的示例代码:
 === "Flask"
 
-    ```py linenums="1" title="docs_source_code/introduction/flask_demo.py" hl_lines="21 23-24 31"
+    ```py linenums="1" title="docs_source_code/introduction/flask_demo.py" hl_lines="20 22-23 30"
 
     --8<-- "docs_source_code/introduction/flask_demo.py"
     ```
 
 === "Starlette"
 
-    ```py linenums="1" title="docs_source_code/introduction/starlette_demo.py" hl_lines="24 26-27 33"
+    ```py linenums="1" title="docs_source_code/introduction/starlette_demo.py" hl_lines="23 25-26 32"
     --8<-- "docs_source_code/introduction/starlette_demo.py"
     ```
 
 === "Sanic"
 
-    ```py linenums="1" title="docs_source_code/introduction/sanic_demo.py" hl_lines="23 25-26 33"
+    ```py linenums="1" title="docs_source_code/introduction/sanic_demo.py" hl_lines="22 24-25 32"
     --8<-- "docs_source_code/introduction/sanic_demo.py"
     ```
 
 === "Tornado"
 
-    ```py linenums="1" title="docs_source_code/introduction/tornado_demo.py" hl_lines="23 26-27 34"
+    ```py linenums="1" title="docs_source_code/introduction/tornado_demo.py" hl_lines="22 25-26 32"
     --8<-- "docs_source_code/introduction/tornado_demo.py"
     ```
 在运行代码并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) 就可以看到SwaggerUI的页面：
@@ -126,15 +126,15 @@ def demo() -> None:
 这些响应对象提供了某种响应格式的响应对象封装，一般情况下都会选用这些响应对象，如果没有适用的响应对象，可以通过`pait.model.response.BaseResponseModel`定义一个符合需求的响应对象。
 `pait.model.response.BaseResponseModel`是一个基础的响应对象类，它实际上是包含OpenAPI响应对象描述的容器，通过给`BaseResponseModel`不同的属性赋值可以定义出一个符合OpenAPI的响应对象，属性如下表:
 
-|属性名| 描述                                                  |
-|---|-----------------------------------------------------|
-|response_data| 定义响应数据的格式，如果是带有结构的响应数据，那么填入的应该是`pydantic.BaseModel` |
-|media_type| 响应对象的`Media Type`                                   |
-|name| 响应对象的名称                                             |
-|description| 响应对象的描述                                             |
-|header| 响应对象的Header,填入的值应该是`pydantic.BaseModel`             |
-|status_code| 响应对象的Http状态码，默认为`(200, )`                           |
-|openapi_schema| 响应对象的[openapi.schema](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#schema-object)                             |
+|属性名| 描述                                                                                                            |
+|---|---------------------------------------------------------------------------------------------------------------|
+|response_data| 定义响应数据的格式，如果是带有结构的响应数据，那么填入的应该是`pydantic.BaseModel`                                                           |
+|media_type| 响应对象的`Media Type`                                                                                             |
+|name| 响应对象的名称                                                                                                       |
+|description| 响应对象的描述                                                                                                       |
+|header| 响应对象的Header，填入的值应该是`pydantic.BaseModel`而不是`Dict`                                                                |
+|status_code| 响应对象的Http状态码，默认为`(200, )`                                                                                     |
+|openapi_schema| 响应对象的[openapi.schema](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#schema-object) |
 
 通过这些属性可以定义大多数响应对象，完整的代码如下:
 === "Flask"
@@ -161,10 +161,10 @@ def demo() -> None:
     ```py linenums="1" title="docs_source_code/openapi/how_to_use_openapi/tornado_demo.py" hl_lines="12-31 35"
     --8<-- "docs_source_code/openapi/how_to_use_openapi/tornado_demo.py"
     ```
-该代码的第一段高亮代码是定义一个响应对象，它表示的Http状态码可能为200,201,404，
+该代码的第一段高亮代码是定义一个响应对象，它表示的Http状态码可能为200，201和404，
 `Media Type`是`application/json`，
 Header拥有`X-Token`和`Content-Type`两个属性，
-而最重要的是定义了返回的数据结构为:
+而最重要的是定义了如下的返回数据结构:
 ```json
 {
   "code": 0,

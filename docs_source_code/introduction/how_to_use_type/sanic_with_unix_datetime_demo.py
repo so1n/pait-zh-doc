@@ -7,6 +7,7 @@ from pait.app.sanic import pait
 from sanic import Sanic, json, response
 
 
+# 这里只展示Pydantic V1的UnixDatetime
 class UnixDatetime(datetime.datetime):
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
