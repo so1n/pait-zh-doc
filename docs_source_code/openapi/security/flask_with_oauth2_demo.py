@@ -73,4 +73,7 @@ app.add_url_rule("/api/oauth2-login", view_func=oauth2_login, methods=["POST"])
 app.add_url_rule("/api/oauth2-user-name", view_func=oauth2_user_name, methods=["GET"])
 app.add_url_rule("/api/oauth2-user-info", view_func=oauth2_user_info, methods=["GET"])
 AddDocRoute(app)
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

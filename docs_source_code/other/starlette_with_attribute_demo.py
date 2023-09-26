@@ -14,4 +14,7 @@ async def demo_route(request: Request) -> JSONResponse:
 app: Starlette = Starlette()
 app.add_route("/api/demo", demo_route, methods=["GET"])
 set_app_attribute(app, "client", httpx.AsyncClient())
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

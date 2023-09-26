@@ -45,4 +45,7 @@ app = Flask("demo")
 app.add_url_rule("/api/login", "login", login_route, methods=["POST"])
 app.add_url_rule("/api/get-user-info", "get_user_info", get_user_route, methods=["GET"])
 AddDocRoute(app)
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

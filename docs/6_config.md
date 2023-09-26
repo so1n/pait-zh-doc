@@ -1,4 +1,4 @@
-config能为`Pait`提供一些配置支持, 整个运行时只允许初始化一次，建议在添加完所有路由并且调用`load_app`后再进行初始化，如下代码：
+config能为`Pait`提供一些配置支持，在整个程序的运行期间，它只允许初始化一次，建议在添加完所有路由并且调用`load_app`后再进行初始化，如下代码：
 ```Python
 from starlette.applications import Starlette
 from pait.g import config
@@ -172,24 +172,4 @@ config.init_config(
         apply_pre_depend(check_token, match_rule=MatchRule(key="group", target="user"))
     ],
 )
-```
-
-### 1.6.apply_default_pydantic_model_config
-
-!!! note
-
-    当前版本并不会使用`BaseConfig`
-
-前面说到，`Pait`实际上会把开发者填写的函数签名转换为一个`pydantic.BaseModel`再进行校验和类型转换，这种情况下有时候需要使用`pydantic.BaseConfig`功能，比如`pydantic`默认情况下不会对开发者填写的`default`值进行校验，如果需要进行校验，则需要使用`pydantic.BaseConfig`功能，这时就可以使用`apply_default_pydantic_model_config`，使用方法如下：
-```Python
-from pait.extra.config import apply_default_pydantic_model_config
-from pait.g import config
-from pydantic import BaseConfig
-
-
-class MyBaseConfig(BaseConfig):
-    validate_assignment = True
-
-
-config.init_config(apply_func_list=[apply_default_pydantic_model_config(MyBaseConfig)])
 ```

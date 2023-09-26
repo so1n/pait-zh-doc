@@ -24,4 +24,7 @@ async def demo(demo_value: List[int] = field.MultiQuery.i(min_items=1, max_items
 app = Sanic("demo")
 app.add_route(demo, "/api/demo", methods={"GET"})
 app.exception(Exception)(api_exception)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

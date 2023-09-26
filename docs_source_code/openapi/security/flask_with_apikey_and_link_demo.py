@@ -49,4 +49,7 @@ app = Flask("demo")
 app.add_url_rule("/api/login", "login", login_route, methods=["POST"])
 app.add_url_rule("/api/api-query-key", view_func=api_key_query_route, methods=["GET"])
 AddDocRoute(app)
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

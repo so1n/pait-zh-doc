@@ -13,4 +13,7 @@ async def demo(timestamp: datetime.datetime = field.Query.i()) -> response.HTTPR
 
 app = Sanic(name="demo")
 app.add_route(demo, "/api/demo", methods=["GET"])
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

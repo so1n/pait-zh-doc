@@ -19,5 +19,8 @@ async def demo_post(model: UserModel = Body.i()) -> HTTPResponse:
 
 app = Sanic(name="demo")
 app.add_route(demo_post, "/api", methods=["POST"])
-AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    AddDocRoute(app)
+    uvicorn.run(app)

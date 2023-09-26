@@ -11,4 +11,7 @@ async def demo(content_type: str = field.Header.t(alias="Content-Type")) -> HTTP
 
 app = Sanic("demo")
 app.add_route(demo, "/api/demo", methods={"GET"})
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

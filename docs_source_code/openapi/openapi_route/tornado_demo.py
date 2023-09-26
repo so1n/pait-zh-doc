@@ -20,5 +20,8 @@ class DemoHandler(RequestHandler):
 
 app: Application = Application([(r"/api", DemoHandler)])
 AddDocRoute(app)
-app.listen(8000)
-IOLoop.instance().start()
+
+
+if __name__ == "__main__":
+    app.listen(8000)
+    IOLoop.instance().start()

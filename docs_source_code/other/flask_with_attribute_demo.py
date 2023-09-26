@@ -11,4 +11,7 @@ def demo_route() -> Response:
 app: Flask = Flask("demo")
 app.add_url_rule("/api/demo", "demo", demo_route, methods=["GET"])
 set_app_attribute(app, "client", httpx.Client())
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

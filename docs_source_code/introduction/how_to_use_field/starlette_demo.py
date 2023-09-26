@@ -48,4 +48,7 @@ async def demo_route(
 
 app: Starlette = Starlette()
 app.add_route("/api/demo/{age}", demo_route, methods=["POST"])
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

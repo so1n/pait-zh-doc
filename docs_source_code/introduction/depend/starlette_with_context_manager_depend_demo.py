@@ -63,4 +63,5 @@ app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
 app.add_exception_handler(Exception, api_exception)
 
 
-uvicorn.run(app)
+if __name__ == "__main__":
+    uvicorn.run(app)

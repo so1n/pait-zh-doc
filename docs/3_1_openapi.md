@@ -27,7 +27,7 @@
 在运行代码并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) 就可以看到SwaggerUI的页面：
 ![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/1648292884021Pait%20doc-%E9%A6%96%E9%A1%B5%E7%A4%BA%E4%BE%8B%E6%8E%A5%E5%8F%A3-Swagger%E9%A6%96%E9%A1%B5.png)
 
-其中除了手动填写的响应对象外，其他的数据都是`Pait`自动识别并生成的，但是有些数据还是需要使用者手动标注。
+其中除了手动填写的响应对象外，其他的数据都是`Pait`自动识别并生成的，但是有些数据还是通过`Pait`装饰器手动标注。
 
 ## 2.路由函数的OpenAPI属性
 为路由函数绑定OpenAPI属性非常简单，只需要在`Pait`装饰器填写对应的属性即可，常见的路由函数属性绑定如下代码：
@@ -97,7 +97,6 @@ def demo() -> None:
 |undefined|默认| `False`    | 未定义，默认的状态      |
 |design|开发中| `False`    | 设计中          |
 |dev|开发中| `False`    | 开发测试中        |
-|integration|开发完成| `False`    | 联调           |
 |complete|开发完成| `False`    | 开发完成         |
 |test|开发完成| `False`    | 测试中          |
 |release|上线| `False`    | 上线           |
@@ -186,7 +185,7 @@ Header拥有`X-Token`和`Content-Type`两个属性，
     由于`Redoc`展示的数据比`Swagger`简约了许多，本用例采用`Redoc`展示数据，实际上`Pait`支持多种OpenAPI的UI页面，详见[OpenAPI路由](/3_2_openapi_route/)。
 
 ## 4.Field
-上一节的图中不仅包含了声明的响应对象的数据，还包括请求参数的数据，如`uid`参数被声明为`required`，也就是该参数是必填的，同时也声明了它的类型是`integer`，取值范围是10-1000。
+上一节的图中不仅包含了声明的响应对象的数据，还包括请求参数的数据，如`uid`参数被声明为`required`，也就是该参数是必填的，同时也声明了它的类型是`integer`且取值范围是10-1000。
 而这一切都是通过请求参数对应的`Field`对象的属性声明的，`Field`除了这些参与校验又参与OpenAPI属性生成的属性外还有一些属性是专门为`OpenAPI`服务的，这些属性包括：
 
 | 属性 | 作用                                                                                              |
@@ -226,7 +225,7 @@ Links是OpenAPI定义的一个属性，用于指定A接口的请求参数与B接
 这个例子定义了一个登陆的接口--`login_route`和一个获取用户详情的接口--`get_user_route`，
 其中用户详情获取接口需要一个token参数来校验用户并获取用户的id，而这个token参数是在登陆接口返回的，所以用户详情接口的token参数与登陆接口的响应数据中的token是有关联的。
 
-为了能让OpenAPI识别到token参数与响应对象中的token有关联，首先需要第一段高亮代码中通过`LinksModel`声明了`link_login_token_model`实例，这个实例与`LoginRespModel`响应对象绑定，且通过OpenAPI的规则`"$response.body#/data/token"`声明了本次绑定响应对象中的响应结构体(body)中的`token`参数。
+为了能让OpenAPI识别到token参数与响应对象中的token有关联，首先需要在第一段高亮代码中通过`LinksModel`声明了`link_login_token_model`实例，这个实例与`LoginRespModel`响应对象绑定，且通过OpenAPI的规则`"$response.body#/data/token"`声明了本次绑定响应对象中的响应结构体(body)中的`token`参数。
 接着在第二段高亮代码中把`link_login_token_model`赋值到`get_user_route`路由函数中`token`的`Field`的`links`属性，这样就完成了一次关联。
 
 
@@ -243,7 +242,7 @@ Links是OpenAPI定义的一个属性，用于指定A接口的请求参数与B接
 
 !!! note
 
-    [AnyAPI](https://github.com/so1n/any-api)是从[Pait](https://github.com/so1n/any-api)(0.7.8)版本分离出来的，目前仅供`Pait`使用，在后续[AnyAPI](https://github.com/so1n/any-api)会新增更多的功能。
+    [AnyAPI](https://github.com/so1n/any-api)是从[Pait](https://github.com/so1n/any-api)(0.7.8)版本分离出来的，目前仅供`Pait`使用，在后续的版本中，[AnyAPI](https://github.com/so1n/any-api)会新增更多的功能。
 
 
 下面是一个OpenAPI对象生成与基于OpenAPI对象生成输出内容的示例
@@ -272,7 +271,9 @@ Links是OpenAPI定义的一个属性，用于指定A接口的请求参数与B接
     --8<-- "docs_source_code/openapi/how_to_use_openapi/tornado_with_output_demo.py"
     ```
 
-该示例代码会先生成一个OpenAPI示例--`openapi_model`，`openapi_model`自带一个`content`方法，它的`serialization_callback`默认值为`json.dump`所以直接调用`openapi_model.content()`会生成如下json文本:
+代码中首先是通过`OpenAPI`创建一个OpenAPI模型--`openapi_model`，它在创建的过程中会通过`app`获取到`app`对应的接口以及数据并注入到自身中。
+
+接着就是调用`openapi_model`自带的`content`方法，它的`serialization_callback`默认值为`json.dump`所以直接调用`openapi_model.content()`会生成如下JSON文本:
 
 ??? note "Json示例(示例文本较长，请按需打开)"
 

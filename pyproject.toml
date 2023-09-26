@@ -7,26 +7,29 @@ readme = "README.md"
 packages = [{include = "pait_zh_doc"}]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-pait = {version = "1.0.0a6", extras = ["grpc"]}
+python = "^3.8.1"
+pait = {path = "../pait"}
 redis = "4.5.3"
 pyyaml = "^6.0"
 pytest = "^7.4.0"
 requests = "^2.31.0"
+mkdocs-material = "^9.4.2"
+mkdocs-material-extensions = "^1.2"
+termynal = "^0.11.0"
 
 [tool.poetry.group.framework.dependencies]
-werkzeug = "1.0.1"
-Flask = "1.1.2"
-jinja2 = "^2.0.0"
+Flask = "2.0.0"
 sanic = "21.3.4"
 sanic-testing = "0.3.0"
 tornado = "6.1"
 uvicorn = "0.13.4"
 starlette = "0.14.1"
-markupsafe = "2.0.1"
-itsdangerous = "1.1.0"
 protobuf = "3.20.1"
 python-multipart = "^0.0.6"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.0"
+
 [tool.autoflake]
 in-place = true
 remove-all-unused-imports = true
@@ -54,6 +57,9 @@ exclude = [
     "^example/example_grpc/python_example_proto_code/example_proto",
     "^pait/http"
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 
 [build-system]

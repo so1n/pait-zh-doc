@@ -83,4 +83,7 @@ app.add_route("/api/oauth2-login", oauth2_login, methods=["POST"])
 app.add_route("/api/oauth2-user-name", oauth2_user_name, methods=["GET"])
 app.add_route("/api/oauth2-user-info", oauth2_user_name, methods=["GET"])
 AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

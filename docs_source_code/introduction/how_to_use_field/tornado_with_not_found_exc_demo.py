@@ -24,12 +24,17 @@ class DemoHandler(_Handler):
     async def get(
         self,
         demo_value1: str = field.Query.i(),
-        demo_value2: str = field.Query.i(not_value_exception=RuntimeError("not found data")),
+        demo_value2: str = field.Query.i(
+            not_value_exception_func=lambda param: RuntimeError(f"not found {param.name} data")
+        ),
     ) -> None:
         self.write({"data": {"demo_value1": demo_value1, "demo_value2": demo_value2}})
 
 
 app: Application = Application([(r"/api/demo", DemoHandler)])
 AddDocRoute(app)
-app.listen(8000)
-IOLoop.instance().start()
+
+
+if __name__ == "__main__":
+    app.listen(8000)
+    IOLoop.instance().start()

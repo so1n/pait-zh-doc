@@ -20,4 +20,7 @@ async def demo_post(request: Request) -> JSONResponse:
 
 
 app = Starlette(routes=[Route("/api", demo_post, methods=["POST"])])
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

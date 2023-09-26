@@ -31,4 +31,7 @@ async def demo_post(  # type: ignore[empty-body]
 app = Sanic(name="demo")
 app.add_route(demo_post, "/api", methods=["POST"])
 AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

@@ -46,7 +46,7 @@
 | prefix                     | 路由URL前缀                                                                  |
 | pin_code                   | 一种简单的安全校验机制                                                              |
 | title                      | 定义OpenAPI路由的Title，需要注意的是，调用多次`AddDocRoute`时，它们的Title应该不同                 |
-| doc_fn_dict                | OpenAPI路由中ui页面的实现                                                        |
+| doc_fn_dict                | OpenAPI路由中UI页面的实现                                                        |
 | openapi                    | `Pait`的OpenAPI对象                                                         |
 | pait                       | `Pait`，OpenAPI会基于传递的`pait`去创建子`pait`并使用。详见[如何使用Pait](/2_how_to_use_pait) |
 | add_multi_simple_route     | 绑定路由的方法，详见`SimpleRoute`章节                                                |

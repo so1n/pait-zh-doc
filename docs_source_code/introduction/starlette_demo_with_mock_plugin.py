@@ -31,4 +31,7 @@ async def demo_post(  # type: ignore[empty-body]
 
 app = Starlette(routes=[Route("/api", demo_post, methods=["POST"])])
 AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

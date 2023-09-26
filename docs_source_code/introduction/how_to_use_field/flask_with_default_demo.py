@@ -24,4 +24,7 @@ app = Flask("demo")
 app.add_url_rule("/api/demo", view_func=demo, methods=["GET"])
 app.add_url_rule("/api/demo1", view_func=demo1, methods=["GET"])
 app.errorhandler(Exception)(api_exception)
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

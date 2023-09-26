@@ -45,4 +45,7 @@ app.add_route(api_key_cookie_route, "/api/api-cookie-key", methods=["GET"])
 app.add_route(api_key_header_route, "/api/api-header-key", methods=["GET"])
 app.add_route(api_key_query_route, "/api/api-query-key", methods=["GET"])
 AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

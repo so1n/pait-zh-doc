@@ -25,4 +25,7 @@ app = Sanic("demo")
 app.add_route(demo, "/api/demo", methods={"GET"})
 app.add_route(demo1, "/api/demo1", methods={"GET"})
 app.exception(Exception)(api_exception)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

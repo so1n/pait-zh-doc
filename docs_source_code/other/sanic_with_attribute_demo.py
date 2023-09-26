@@ -12,4 +12,7 @@ async def demo_route(request: Request) -> HTTPResponse:
 app: Sanic = Sanic("demo")
 app.add_route(demo_route, "/api/demo", methods=["GET"])
 set_app_attribute(app, "client", httpx.AsyncClient())
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

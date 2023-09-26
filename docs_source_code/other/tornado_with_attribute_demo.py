@@ -13,5 +13,8 @@ class DemoHandler(RequestHandler):
 app: Application = Application()
 app.add_handlers(".*$", [("/api/demo", DemoHandler)])
 set_app_attribute(app, "client", httpx.AsyncClient())
-app.listen(8000)
-IOLoop.instance().start()
+
+
+if __name__ == "__main__":
+    app.listen(8000)
+    IOLoop.instance().start()

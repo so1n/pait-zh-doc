@@ -22,4 +22,7 @@ async def demo(demo_value: str = field.Query.i(min_length=6, max_length=6, regex
 app = Sanic("demo")
 app.add_route(demo, "/api/demo", methods={"GET"})
 app.exception(Exception)(api_exception)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

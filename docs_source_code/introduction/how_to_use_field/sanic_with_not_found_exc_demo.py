@@ -17,7 +17,9 @@ async def api_exception(request: Request, exc: Exception) -> HTTPResponse:
 @pait()
 async def demo(
     demo_value1: str = field.Query.i(),
-    demo_value2: str = field.Query.i(not_value_exception=RuntimeError("not found data")),
+    demo_value2: str = field.Query.i(
+        not_value_exception_func=lambda param: RuntimeError(f"not found {param.name} data")
+    ),
 ) -> HTTPResponse:
     return json({"data": {"demo_value1": demo_value1, "demo_value2": demo_value2}})
 
@@ -25,4 +27,7 @@ async def demo(
 app = Sanic("demo")
 app.add_route(demo, "/api/demo", methods={"GET"})
 app.exception(Exception)(api_exception)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

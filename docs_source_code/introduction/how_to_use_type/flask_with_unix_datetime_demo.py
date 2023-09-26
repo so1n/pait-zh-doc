@@ -26,4 +26,7 @@ def demo(timestamp: UnixDatetime = field.Query.i()) -> Response:
 
 app = Flask("demo")
 app.add_url_rule("/api/demo", "demo", demo, methods=["GET"])
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

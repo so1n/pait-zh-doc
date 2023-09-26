@@ -52,4 +52,7 @@ app = Sanic(name="demo")
 app.add_route(login_route, "/api/login", methods=["POST"])
 app.add_route(api_key_query_route, "/api/api-query-key", methods=["GET"])
 AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

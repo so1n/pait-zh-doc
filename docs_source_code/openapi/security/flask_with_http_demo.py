@@ -54,4 +54,7 @@ app.add_url_rule(
 app.add_url_rule("/api/user-name-by-http-bearer", view_func=get_user_name_by_http_bearer, methods=["GET"])
 app.add_url_rule("/api/user-name-by-http-digest", view_func=get_user_name_by_http_digest, methods=["GET"])
 AddDocRoute(app)
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

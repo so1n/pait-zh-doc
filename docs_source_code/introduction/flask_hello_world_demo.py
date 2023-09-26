@@ -2,7 +2,7 @@ from flask import Flask, Response, jsonify, request
 
 
 def demo_post() -> Response:
-    request_dict = request.json()
+    request_dict = request.json or {}
     uid_str: str = request_dict.get("uid", "")
     username: str = request_dict.get("username", "")
 
@@ -17,4 +17,7 @@ def demo_post() -> Response:
 
 app = Flask("demo")
 app.add_url_rule("/api", "demo", demo_post, methods=["POST"])
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

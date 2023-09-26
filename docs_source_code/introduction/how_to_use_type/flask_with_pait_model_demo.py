@@ -27,4 +27,7 @@ def demo1(demo_model: DemoModel) -> Response:
 app = Flask("demo")
 app.add_url_rule("/api/demo", "demo", demo, methods=["GET"])
 app.add_url_rule("/api/demo1", "demo1", demo1, methods=["POST"])
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

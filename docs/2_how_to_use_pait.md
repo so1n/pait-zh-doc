@@ -1,6 +1,6 @@
 在前面的章节中介绍了通过使用`Pait`装饰器以及改写路由函数的函数签名来使用`Pait`的参数转换与类型校验功能，也有简单的介绍通过`pre_depend_list`参数来使用`Pait`的Pre-Depend功能。
 这功能都是简单的使用`Pait`装饰器来装饰函数，并通过配置不同属性的值来启用不同的功能，此时的`Pait`装饰器更像是一个针对路由函数的配置功能，不过很多路由函数本身都有一些共性导致它们在使用`Pait`时填写的参数的一样的，
-比如在编写几个同个功能的路由函数时，可能会这样写：
+比如在编写几个同个功能的路由函数时，可能会这样编写代码：
 ```Python
 from pait.app import pait
 from pait.model.status import PaitStatus
@@ -20,7 +20,7 @@ def demo3() -> None:
 ```
 这份示例代码共有3个路由函数，它们都使用相同的`Pait`的`status`参数--`PaitStatus.test`，代表现在的路由函数的状态都处于测试中。
 在经过一段时间的测试后，路由函数通过测试了，此时他们的状态需要变为`Relese`，于是就得手动的把每个接口的状态都切换为`PaitStatus.release`。
-在路由函数比较多的时候，手动的切换状态是非常麻烦的，这时候可以通过自定义一个携带已经定义好数据的`Pait`来给这些路由函数使用，使这些路由函数可以共享同一个`Pait`，从而共享同一份配置功能。
+在路由函数比较多的时候，手动的切换状态是非常麻烦的，这时候可以先定义一个公共的`Pait`并在所有路由函数使用，使这些路由函数可以共享同一个`Pait`，从而共享同一份配置功能。
 
 !!! note
     - 1.本章节只提供的示例都是基于`Starlette`框架，其他框架在使用的时候除了引入`Pait`类的`import`语句稍有不同外，其他的使用方法都是一致的。
@@ -61,8 +61,8 @@ async def demo1() -> Response:
 async def demo2() -> Response:
     pass
 ```
-其中的第一段高亮代码是基于`Pait`类来创建一个变量名为`global_pait`的`Pait`实例，它与之前使用的标准`pait`装饰器基本类似，唯一的区别是它的`status`属性被指定为`PaitStatus.test`，
-而其他高亮代码把`global_pait`都应用到所有的路由函数中，此时`global_pait`的效果与如下代码的效果是一致的：
+其中的第一段高亮代码是基于`Pait`类来创建一个变量名为`global_pait`的`Pait`实例，它与之前使用的标准`pait`装饰器基本类似，唯一的区别是它的`status`属性被指定为`PaitStatus.test`。
+而其他高亮代码把`global_pait`都应用到所有的路由函数中，此时路由函数应用`global_pait`的效果与如下代码的效果是一致的：
 ```Python
 @pait(status=PaitStatus.test)
 async def demo() -> Response:

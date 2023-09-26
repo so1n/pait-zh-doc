@@ -1,12 +1,14 @@
-`Pait`内部有很多参数校验逻辑，出现错误的情况也有很多种，为了方便的捕获和了解异常，`Pait`拥有一个简单的异常机制。
+`Pait`内部有很多参数校验逻辑，所以会出现多种错误情况，为了方便地捕获和了解异常，`Pait`拥有一个简单的异常机制。
 
-首先，`Pait`的异常都是继承于`PaitBaseException`，在发生异常时可以通过:
-```python
-isinstance(exc, PaitBaseException)
-```
-来判断异常是否属于`Pait`的异常。
+!!! note
 
-此外， 由于`Pait`是使用`Pydantic`进行校验， 所以在运行时会因为校验不通过而抛出`Pydantic`相关异常， 可以通过[Error Handling](https://pydantic-docs.helpmanual.io/usage/models/#error-handling)了解如何使用`Pydantic`异常
+    `Pait`的异常都是继承于`PaitBaseException`，在发生异常时可以通过:
+    ```python
+    isinstance(exc, PaitBaseException)
+    ```
+    来判断异常是否属于`Pait`的异常。
+
+    此外， 由于`Pait`是使用`Pydantic`进行校验， 所以在运行时会因为校验不通过而抛出`Pydantic`相关异常， 可以通过[Error Handling](https://pydantic-docs.helpmanual.io/usage/models/#error-handling)了解如何使用`Pydantic`异常
 ## 1.Pait的不同异常介绍
 ### 1.1.TipException异常
 在程序运行的时候，`Pait`会检查参数是否存在，参数是否合法，以及参数是否通过`Pydantic`的校验，
@@ -40,7 +42,8 @@ Traceback (most recent call last):
 pait.exceptions.TipException: Can not found content__type value for <function raise_tip_route at 0x7f512ccdebf8>   Customer Traceback:
     File "/home/so1n/github/pait/example/param_verify/starlette_example.py", line 88, in raise_tip_route.
 ```
-可以看到异常是通过`gen_tip_exc`抛出来的，而抛出来的异常信息则包含路由函数所在位置，和异常信息，此外，可以通过`TipException.exc`获取到原本的异常。
+可以看到异常是通过`gen_tip_exc`抛出来的，而抛出来的异常信息则包含路由函数所在位置。
+不过使用了`TipException`还有一个弊端，它会导致所有异常都是`TipException`需要通过`TipException.exc`获取到原本的异常。
 
 ### 1.2.参数异常
 目前`Pait`有3种参数异常，如下:
@@ -131,7 +134,7 @@ class PaitBaseParamException(PaitBaseException):
 
 
 ### 2.2.自定义Tip异常
-自定义Tip异常是默认启用的，如果在使用的过程中觉得错误提示在解析会消耗性能或者觉得错误提示没啥作用，想取消错误提示。那么只需要把`ParamHandler`的`tip_exception_class`属性定义为`None`即可，代码如下：
+Tip异常是默认启用的，如果在使用的过程中觉得错误提示会消耗性能或者觉得错误提示没啥作用，想取消错误提示。只需要把`ParamHandler`的`tip_exception_class`属性定义为`None`即可，代码如下：
 === "Flask"
 
     ```py linenums="1" title="docs_source_code/introduction/exception/flask_with_not_tip_exception_demo.py"  hl_lines="10 11 14 28"
@@ -158,7 +161,7 @@ class PaitBaseParamException(PaitBaseException):
     ```
 
 其中第一段高亮中是继承于`ParamHandler`（或者`AsyncParamHandler`），这个类主要负责`Pait`执行参数校验与注入的功能，它有一个`tip_exception_class`方法可以用来定义`TipException`的行为，当`tip_exception_class`为空且遇到错误时不会产生异常提示，而是抛出默认的异常。
-第二段高亮则是移除从`TipException`提取原本移除的逻辑，因为现在不需要了，第三段高亮则是传入自定义的`ParamHandler`，这样`Pait`就能知道当前的路由函数不需要生成`TipException`。
+第二段高亮则是移除从`TipException`提取原本移除的逻辑，因为现在不需要了，第三段高亮则是传入自定义的`ParamHandler`。
 
 
 在运行代码并通过`curl`调用可以发现程序正常运行，如下：

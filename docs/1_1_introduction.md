@@ -25,10 +25,10 @@
     --8<-- "docs_source_code/introduction/tornado_hello_world_demo.py"
     ```
 
-示例代码展示的是将一个路由注册到Web框架的实例中，当Web框架在收到一个url为'/api'，method为`POST`请求后会交由路由函数来进行处理。
+示例代码展示的是将一个路由注册到Web框架的实例中，当Web框架在收到一个url为'/api'，method为`POST`请求后会把请求交由路由函数处理。
 而路由函数的处理逻辑也很简单，它会先进行数据校验，当数据在符合要求的情况下才会返回，否则会直接抛出错误。
 
-接下来，将展示在各个Web框架中如何使用`Pait`的参数类型转换和参数校验功能，代码如下(与文档首页一样的示例代码)：
+接下来，将展示在各个Web框架中如何使用`Pait`的参数类型转换和参数校验功能，代码如下(与文档首页的示例代码一样)：
 === "Flask"
 
     ```py linenums="1" title="docs_source_code/introduction/flask_demo.py" hl_lines="20 22-23 30"
@@ -54,7 +54,7 @@
     --8<-- "docs_source_code/introduction/tornado_demo.py"
     ```
 
-代码中第一段高亮代码中的`@pait`是`Pait`所有功能的核心，在使用`@pait`装饰路由函数后，`Pait`会通过`inspect`获取到对应的函数签名，并通过函数签名生成`pydantic.BaseModel`对象。
+代码中第一段高亮代码中的`@pait`是`Pait`所有功能的核心，在使用`@pait`装饰路由函数后，`Pait`会通过`inspect`获取到函数签名并生成依赖注入规则。
 比如第二段高亮代码中路由函数的参数都以`<name>:<type>=<default>`格式的关键参数填写，`Pait`在初始化的时候自动通过如下的规则将关键参数转化为自己的依赖注入规则：
 
 | key| 含义  | 作用                                                                |

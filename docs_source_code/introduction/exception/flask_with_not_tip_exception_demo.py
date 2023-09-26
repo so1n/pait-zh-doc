@@ -32,5 +32,8 @@ def demo(demo_value: int = field.Query.i()) -> Response:
 
 app = Flask("demo")
 app.add_url_rule("/api/demo", view_func=demo, methods=["GET"])
-app.errorhandler(Exception)(api_exception)
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.errorhandler(Exception)(api_exception)
+    app.run(port=8000)

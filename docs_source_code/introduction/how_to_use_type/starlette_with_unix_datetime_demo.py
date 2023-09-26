@@ -32,4 +32,7 @@ app = Starlette(
         Route("/api/demo", demo, methods=["GET"]),
     ]
 )
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

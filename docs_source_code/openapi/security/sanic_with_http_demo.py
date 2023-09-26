@@ -51,4 +51,7 @@ app.add_route(get_user_name_by_http_basic_credentials, "/api/user-name-by-http-b
 app.add_route(get_user_name_by_http_bearer, "/api/user-name-by-http-bearer", methods={"GET"})
 app.add_route(get_user_name_by_http_digest, "/api/user-name-by-http-digest", methods={"GET"})
 AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

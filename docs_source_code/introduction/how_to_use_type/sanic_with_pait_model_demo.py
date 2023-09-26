@@ -28,4 +28,7 @@ async def demo1(demo_model: DemoModel) -> response.HTTPResponse:
 app = Sanic(name="demo")
 app.add_route(demo, "/api/demo", methods=["GET"])
 app.add_route(demo1, "/api/demo1", methods=["POST"])
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

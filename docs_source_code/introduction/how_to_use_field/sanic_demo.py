@@ -46,4 +46,7 @@ async def demo_route(
 
 app: Sanic = Sanic(name="demo")
 app.add_route(demo_route, "/api/demo/<age>", methods={"POST"})
-app.run()
+
+
+if __name__ == "__main__":
+    app.run()

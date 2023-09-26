@@ -1,103 +1,41 @@
-在对接了需求后，我们需要先出一份接口文档给客户端后再编写接口对应的逻辑代码，这时就可以使用`Pait`来装饰一个没有逻辑功能的路由函数，
-并通过`Pait`自动生成一份API文档给客户端使用，然后双方再一起开发功能。
+在API接口开发流程中，后端开发者往往都会先定义接口文档，并通过接口文档与前端开发者讨论接口的实现并进行修改，在这个阶段的接口并没有具体的代码实现。
+同时在对接完文档后，前后端开发者会同时进行开发，这时可能会出现前端在开发过程中需要接口进行联调，而后端由于尚未开发完成无法提供该功能。
 
-但是在没达到联调之前客户端开发者也需要进行一些测试，一般情况下客户端需要先根据响应Model来编写对应的Mock数据，
-这样会增加前端的工作量，同时前端Mock的数据并不一定是我们想要的，这时可以使用`MockPlugin`插件来让接口提供Mock数据。
+为此可以使用`Mock`插件，通过`Mock`插件即使路由函数没有具体的代码也可以生成指定的响应数据，如下:
+=== "Flask"
 
-`MockPlugin`插件使用非常简单，代码如下:
-```py
-from typing import Optional, Type
-import uvicorn  # type: ignore
-from starlette.applications import Starlette
-from starlette.routing import Route
+    ```py linenums="1" title="docs_source_code/plugin/mock_plugin/flask_with_mock_plugin_demo.py" hl_lines="16 21 25"
 
-from pait import field
-from pait.app.starlette import pait
-from pait.app.starlette.plugin.mock_response import MockPlugin
-from pait.model.response import PaitJsonResponseModel
-from pydantic import BaseModel, Field
+    --8<-- "docs_source_code/plugin/mock_plugin/flask_with_mock_plugin_demo.py"
+    ```
 
+=== "Starlette"
 
-class UserRespModel(PaitJsonResponseModel):
-    is_core: bool = True
+    ```py linenums="1" title="docs_source_code/plugin/mock_plugin/starlette_with_mock_plugin_demo.py" hl_lines="20 25 29"
+    --8<-- "docs_source_code/plugin/mock_plugin/starlette_with_mock_plugin_demo.py"
+    ```
 
-    class ResponseModel(BaseModel):
-        class DataModel(BaseModel):
-            uid: int = Field(description="user id", gt=10, lt=1000)
-            user_name: str = Field(description="user name", min_length=2, max_length=4)
-            age: int = Field(description="age", gt=1, lt=100)
-            email: str = Field(description="user email")
+=== "Sanic"
 
-        code: int = Field(0, description="api code")
-        msg: str = Field("success", description="api status msg")
-        data: DataModel
+    ```py linenums="1" title="docs_source_code/plugin/mock_plugin/sanic_with_mock_plugin_demo.py" hl_lines="18 23 27"
+    --8<-- "docs_source_code/plugin/mock_plugin/sanic_with_mock_plugin_demo.py"
+    ```
 
-    description: str = "success response"
-    response_data: Type[BaseModel] = ResponseModel
+=== "Tornado"
 
+    ```py linenums="1" title="docs_source_code/plugin/mock_plugin/tornado_with_mock_plugin_demo.py" hl_lines="19 25 29"
+    --8<-- "docs_source_code/plugin/mock_plugin/tornado_with_mock_plugin_demo.py"
+    ```
 
-@pait(
-    response_model_list=[UserRespModel],
-    plugin_list=[MockPlugin.build()]
-)
-async def demo(
-    uid: int = field.Query.i(description="user id", gt=10, lt=1000),
-    email: Optional[str] = field.Query.i(default="example@xxx.com", description="user email"),
-    user_name: str = field.Query.i(description="user name", min_length=2, max_length=4),
-    age: int = field.Query.i(description="age", gt=1, lt=100),
-    display_age: int = field.Query.i(0, description="display_age"),
-) -> dict:
-    pass
-
-
-app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
-uvicorn.run(app)
-```
-这份代码中，实现了一个路由函数签名，该函数没有任何逻辑，然后通过`pait`装饰器填写`MockPlugin`和ResponseModel，
-如果有多个ResponseModel的话`MockPlugin`会默认使用第一个ResponseModel，运行这份代码后执行对应的请求命令可以得到默认的Mock响应：
+这份代码先是实现了一个名为`UserSuccessRespModel2`的响应对象，这个响应对象与之前的响应对象有一些不同的是它的部分字段拥有`example`属性。
+接着实现了一个没有任何代码逻辑的`demo`路由函数，这个函数只拥有一些参数，同时通过`pait`使用了`Mock`插件以及`UserSuccessRespModel2`响应对象，
+接着运行代码并执行如下命令：
 ```bash
-➜  ~ curl http://127.0.0.1:8000/api/demo\?uid\=123\&user_name\=so1n\&age\=18\&display_age\=1
-{"code":0,"msg":"success","data":{"uid":0,"user_name":"","age":0,"email":""}}%
+➜  curl http://127.0.0.1:8000/api/demo
+{"code":0,"data":{"age":99,"email":"example@so1n.me","multi_user_name":["mock_name"],"uid":666,"user_name":"mock_name"},"msg":"success"}
 ```
-这份默认的响应数据是`MockPlugin`通过调用`UserRespModel.get_example_value`生成的，如果对于生成的默认值不满意，
-可以通过`Field`的`example`来定义不同的响应值，比如把`UserRespModel`改成下面的样子：
-```py
-import random
-from typing import Type
+通过输出结果可以看到在使用了`Mock`插件后，API接口能够正常返回数据，且数据与`UserSuccessRespModel2`响应对象中`example`的值是一样的。
 
-from pait.model.response import PaitJsonResponseModel
-from pydantic import BaseModel, Field
-# 引入faker库
-from faker import Faker
-
-fake = Faker()
-
-
-class UserSuccessRespModel3(PaitJsonResponseModel):
-    is_core: bool = True
-
-    class ResponseModel(BaseModel):  # type: ignore
-        class DataModel(BaseModel):
-            uid: int = Field(description="user id", gt=10, lt=1000, example=lambda :random.randint(100000, 900000))
-            user_name: str = Field(description="user name", min_length=2, max_length=4, example="so1n")
-            age: int = Field(description="age", gt=1, lt=100, example=18)
-            email: str = Field(description="user email", example=fake.email)
-
-        code: int = Field(0, description="api code")
-        msg: str = Field("success", description="api status msg")
-        data: DataModel
-
-    description: str = "success response"
-    response_data: Type[BaseModel] = ResponseModel
-
-```
-这样一来每个字段都有自己的生成示例值的规则，比如字段uid就是随机从100000-900000中挑选一个值，字段eamil就是通过fake.email生成的，而字段user_name和age则有指定的固定值，
-通过运行代码后执行请求命令可以发现，返回的示例值符合我们的定义:
-```bash
-➜  ~ curl http://127.0.0.1:8000/api/demo\?uid\=123\&user_name\=so1n\&age\=18\&display_age\=1
-{"code":0,"msg":"success","data":{"uid":835740,"user_name":"so1n","age":18,"email":"warnold@example.net"}}
-➜  ~ curl http://127.0.0.1:8000/api/demo\?uid\=123\&user_name\=so1n\&age\=18\&display_age\=1
-{"code":0,"msg":"success","data":{"uid":203363,"user_name":"so1n","age":18,"email":"nathanthomas@example.net"}}
-➜  ~ curl http://127.0.0.1:8000/api/demo\?uid\=123\&user_name\=so1n\&age\=18\&display_age\=1
-{"code":0,"msg":"success","data":{"uid":508769,"user_name":"so1n","age":18,"email":"reynoldslisa@example.com"}}
-```
+> NOTE:
+> - 1.example也支持工厂函数它的作用与`default_factory`效果类似。可填写的值如`example=time.now`，` example=lambda :random.randint(100000, 900000)`等。
+> - 2.Mock插件支持通过参数`example_column_name`定义默认值字段，默认为`example`，也可以是`mock`。

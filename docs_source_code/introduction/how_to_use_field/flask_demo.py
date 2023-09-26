@@ -44,4 +44,7 @@ def demo_route(
 
 app = Flask("demo")
 app.add_url_rule("/api/demo/<age>", "demo", demo_route, methods=["POST"])
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

@@ -85,8 +85,8 @@ curl -X 'POST' \
 通过输出结果可以发现，`Pait`都能通过`Field`的种类准确的从请求对象获取对应的值。
 
 ## 2.Field的功能
-从上面的例子可以看出，`curl`命令的`url`并没有携带`email`参数， 但是接口返回的响应值中的`email`却不为空，且值是`example@xxx.com`，
-这是因为`email`字段的`Field`的`default`属性被设置为`example@xx.com`， 这样`Pait`会在无法通过请求体获取到`email`值的的情况下，也能把默认值赋给变量。
+从上面的例子可以看到`curl`命令的`url`虽然没有携带`email`参数， 但是接口返回的响应值中的`email`却为`example@xxx.com`。
+这是因为`email`字段的`Field`的`default`属性被设置为`example@xx.com`， 这样`Pait`会在无法通过请求体获取到`email`值的的情况下，把默认值赋给变量。
 
 除了默认值之外， `Field`也有很多的功能，这些功能大部分来源于`Field`所继承的`pydantic.Field`。
 
@@ -120,24 +120,28 @@ curl -X 'POST' \
     --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_default_demo.py"
     ```
 
-在运行代码，并使用`curl`调用后可以发现，当没有传demo_value参数时，`/api/demo`接口默认返回123, 而`/api/demo1`接口会抛出找不到`demo_value`值的错误:
+在运行代码，并使用`curl`调用后可以发现，当没有传demo_value参数时，`/api/demo`接口默认返回123, 而`/api/demo1`接口会抛出找不到`demo_value`值的错误，如下:
+
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo"
+> curl "http://127.0.0.1:8000/api/demo"
 123
-➜  curl "http://127.0.0.1:8000/api/demo1"
+> curl "http://127.0.0.1:8000/api/demo1"
 Can not found demo_value value
 ```
 
+
 当传的demo_value参数为456时，`/api/demo`接口和`/api/demo1`接口都会返回456:
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo?demo_value=456"
+> curl "http://127.0.0.1:8000/api/demo?demo_value=456"
 456
-➜  ~ curl "http://127.0.0.1:8000/api/demo1?demo_value=456"
+> curl "http://127.0.0.1:8000/api/demo1?demo_value=456"
 456
 ```
 
 !!! note
-    错误处理使用了`TipException`，可以通过[异常提示](/1_5_introduction/)了解`TipException`的作用。
+    错误处理使用了`TipException`，可以通过[异常提示](/1_5_exception/)了解`TipException`的作用。
 
 ### 2.2.default_factory
 `default_factory`的作用与`default`类似，只不过`default_factory`接收的值是函数，只有当请求命中路由函数且`Pait`无法从请求对象中找到变量需要的值时才会被执行并将返回值注入到变量中。
@@ -168,18 +172,20 @@ Can not found demo_value value
     --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_default_factory_demo.py"
     ```
 在运行代码并使用`curl`调用可以发现接口每次返回的结果都是不一样的:
+
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo"
+> curl "http://127.0.0.1:8000/api/demo"
 2022-02-07T14:54:29.127519
-➜  ~ curl "http://127.0.0.1:8000/api/demo"
+> curl "http://127.0.0.1:8000/api/demo"
 2022-02-07T14:54:33.789994
-➜  ~ curl "http://127.0.0.1:8000/api/demo1"
+> curl "http://127.0.0.1:8000/api/demo1"
 7e4659e18103471da9db91ed4843d962
-➜  ~ curl "http://127.0.0.1:8000/api/demo1"
+> curl "http://127.0.0.1:8000/api/demo1"
 ef84f04fa9fc4ea9a8b44449c76146b8
 ```
 ### 2.3.alias
-通常情况下`Pait`会以参数名为key从请求体中获取数据，但是一些参数名如`Content-Type`是Python不支持的变量命名方式， 此时可以使用`alias`来为变量设置别名，如下示例代码:
+通常情况下`Pait`会以参数名为key从请求体中获取数据，但有一些参数名如`Content-Type`是Python不支持的变量命名方式， 此时可以使用`alias`来为变量设置别名，如下示例代码:
 === "Flask"
 
     ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/flask_with_alias_demo.py"
@@ -206,8 +212,9 @@ ef84f04fa9fc4ea9a8b44449c76146b8
     ```
 
 运行代码并使用`curl`调用可以发现，`Pait`正常的从请求体的Header中提取`Content-Type`的值并赋给了`content_type`变量，所以路由函数能正常返回值`123`:
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo" -H "Content-Type:123"
+> curl "http://127.0.0.1:8000/api/demo" -H "Content-Type:123"
 123
 ```
 
@@ -293,7 +300,10 @@ ef84f04fa9fc4ea9a8b44449c76146b8
 - min_items：仅用于`Sequence`类型，会校验`Sequence`是否满足大于等于指定的值。
 - max_items： 仅用于`Sequence`类型，会校验`Sequence`是否满足小于等于指定的值。
 
-> 注：如果使用的Pydantic版本大于2.0.0，请使用`min_length`和`max_length`代替`min_items`和`max_items`。
+
+!!! note
+
+    如果使用的Pydantic版本大于2.0.0，请使用`min_length`和`max_length`代替`min_items`和`max_items`。
 
 示例代码如下，该接口通过`field.MultiQuery`从请求Url中获取参数`demo_value`的数组，并返回给调用端，其中数组的长度限定在大于等于1且小于等于2之间：
 === "Flask"
@@ -350,7 +360,10 @@ ef84f04fa9fc4ea9a8b44449c76146b8
 - max_length：仅用于字符串类型，会校验字符串的长度是否满足小于等于指定的值。
 - regex：仅用于字符串类型，会校验字符串是否符合该正则表达式。
 
-> 注：如果使用的Pydantic版本大于2.0.0，请使用`min_length`和`max_length`还可以校验序列类型。而`regex`字段会被`pattern`代替。
+
+!!! note
+
+    如果使用的Pydantic版本大于2.0.0，请使用`min_length`和`max_length`还可以校验序列类型，并考虑使用`pattern`代替`regex`。
 
 示例代码如下， 该接口需要从Url中获取一个值， 这个值得长度大小为6，且必须为英文字母u开头：
 === "Flask"
@@ -416,14 +429,20 @@ ef84f04fa9fc4ea9a8b44449c76146b8
     ```
 
 运行代码并使用`curl`调用， 可以发现结果符合预期：
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo" -X POST -d '{"a": "1", "b": "2"}' --header "Content-Type: application/json"
+> curl "http://127.0.0.1:8000/api/demo" \
+  -X POST -d '{"a": "1", "b": "2"}' \
+  --header "Content-Type: application/json"
+
 {"demo_value":{"a":"1","b":"2"},"a":"1"}
 ```
 
 ### 2.8.自定义查询不到值的异常
 在正常情况下，如果请求对象中没有`Pait`需要的数据，那么`Pait`会抛出`NotFoundValueException`异常。
-不过`Pait`可以支持开发者通过`not_value_exception`定义自定义异常，如下代码中路由函数有两个变量，第一个变量`demo_value1`没有设置任何`Field`的属性，而第二个变量`demo_value2`设置了`not_value_exception`属性为`RuntimeError("not found data")`：
+除此之外，`Pait`还支持开发者通过`not_value_exception_func`自定义异常处理，
+如下代码中路由函数有两个变量，第一个变量`demo_value1`没有设置任何`Field`的属性，
+而第二个变量`demo_value2`设置了`not_value_exception_func`属性为`lambda param: RuntimeError(f"not found {param.name} data")`：
 
 === "Flask"
 
@@ -449,25 +468,26 @@ ef84f04fa9fc4ea9a8b44449c76146b8
     ```py linenums="1" title="docs_source_code/introduction/how_to_use_field/tornado_with_not_found_exc_demo.py""
     --8<-- "docs_source_code/introduction/how_to_use_field/tornado_with_not_found_exc_demo.py"
     ```
-运行代码，并在终端执行如下`curl`命令，可以看到`demo_value1`变量缺值和`demo_value2`缺值的响应是不同的：
+接着运行代码，并在终端执行如下`curl`命令：
+<!-- termynal -->
 ```bash
-➜ ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=1&demo_value2=2"
+> curl "http://127.0.0.1:8000/api/demo?demo_value1=1&demo_value2=2"
 {"data": {"demo_value1": "1", "demo_value2": "2"}}
-➜ ~ curl "http://127.0.0.1:8000/api/demo?demo_value2=2"
+> curl "http://127.0.0.1:8000/api/demo?demo_value2=2"
 {"data": "Can not found demo_value1 value"}
-➜ ~ curl "http://127.0.0.1:8000/api/demo?demo_value1=1"
-{"data": "not found data"}
+> curl "http://127.0.0.1:8000/api/demo?demo_value1=1"
+{"data":"not found demo_value2 data"}
 ```
-
+通过输出结果可以看到`demo_value1`缺值和`demo_value2`缺值的响应是不同的，其中`demo_value2`的缺值异常消息由`lambda param: RuntimeError(f"not found {param.name} data")`抛出的。
 ### 2.8.其它功能
 除了上述功能外，`Pait`还有其它功能，可以到对应模块文档了解：
 
 | 属性                   | 文档                           | 描述                                                                                                               |
 |----------------------|------------------------------|------------------------------------------------------------------------------------------------------------------|
 | links                | [OpenAPI](/3_1_openapi/)     | 用于支持OpenAPI的link功能                                                                                               |
-| media_type           | [OpenAPI](/3_1_openapi/)     | Field对应的media_type，用于OpenAPI的Scheme的参数media type分类。                                                              |
-| openapi_serialization | [OpenAPI](/3_1_openapi/)     | 用于该值在OpenAPI的Schema的序列化方式。                                                                                       |
+| media_type           | [OpenAPI](/3_1_openapi/)     | Field对应的media_type，用于OpenAPI Scheme的media type。                                                                  |
+| openapi_serialization | [OpenAPI](/3_1_openapi/)     | 指定OpenAPI Schema的序列化方式。                                                                                          |
 | example              | [OpenAPI](/3_1_openapi/)     | 用于文档的示例值，以及Mock请求与响应等Mock功能，同时支持变量和可调用函数如`datetime.datetim.now`，推荐与[faker](https://github.com/joke2k/faker)一起使用。 |
 | description          | [OpenAPI](/3_1_openapi/)     | 用于OpenAPI的参数描述                                                                                                   |
 | openapi_include      | [OpenAPI](/3_1_openapi/)     | 定义该字段不被OpenAPI读取                                                                                                 |                                                                                                 |
-| extra_param_list     | [Plugin](/5_1_introduction/) | 定义插件的行为                                                                                                          |
+| extra_param_list     | [Plugin](/5_1_introduction/) | 定义插件与参数之间的关系                                                                                                     |

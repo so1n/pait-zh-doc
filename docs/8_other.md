@@ -223,14 +223,15 @@ SimpleRoute的使用方法如下:
 如果符合，会使用`UnifiedResponsePluginProtocol`插件使路由函数的返回转换为符合Web框架的响应类型，最后再把路由函数注册到Web框架中。
 
 在运行代码后，可以通过以下命令进行测试:
+<!-- termynal -->
 ```bash
-➜  curl http://127.0.0.1:8000/json
+>  curl http://127.0.0.1:8000/json
 {}
-➜  curl http://127.0.0.1:8000/api/json
+>  curl http://127.0.0.1:8000/api/json
 {}
-➜  curl http://127.0.0.1:8000/api/text
+>  curl http://127.0.0.1:8000/api/text
 demo
-➜   curl http://127.0.0.1:8000/api/html
+>  curl http://127.0.0.1:8000/api/html
 <h1>demo</h1>
 ```
 

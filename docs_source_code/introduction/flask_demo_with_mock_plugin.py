@@ -19,7 +19,7 @@ class DemoResponseModel(JsonResponseModel):
 
 
 @pait(response_model_list=[DemoResponseModel], plugin_list=[MockPlugin.build()])
-def demo_post(
+def demo_post(  # type: ignore
     uid: int = Body.t(description="user id", gt=10, lt=1000),
     username: str = Body.t(description="user name", min_length=2, max_length=4),
 ) -> Response:
@@ -29,4 +29,7 @@ def demo_post(
 app = Flask("demo")
 app.add_url_rule("/api", "demo", demo_post, methods=["POST"])
 AddDocRoute(app)
-app.run(port=8000)
+
+
+if __name__ == "__main__":
+    app.run(port=8000)

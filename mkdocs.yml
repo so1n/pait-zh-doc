@@ -78,6 +78,10 @@ plugins:
     - search:
         lang:
             - en
+    - termynal:
+        prompt_literal_start:
+          - "$"
+          - ">"
 markdown_extensions:
   - admonition
   - attr_list
@@ -90,7 +94,11 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.highlight:
@@ -98,3 +106,5 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.snippets
+extra_css:
+  - stylesheets/extra.css

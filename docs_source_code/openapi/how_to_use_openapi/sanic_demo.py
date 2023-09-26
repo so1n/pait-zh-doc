@@ -48,4 +48,7 @@ async def demo(
 app = Sanic(name="demo")
 app.add_route(demo, "/api/demo", methods=["GET"])
 AddDocRoute(app)
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

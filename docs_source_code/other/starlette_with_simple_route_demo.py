@@ -30,4 +30,7 @@ add_multi_simple_route(
     prefix="/api",
     title="api",
 )
-uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)

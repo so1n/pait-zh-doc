@@ -14,7 +14,7 @@
 一般的后端系统中都带有用户Token校验业务，这个业务是非常符合`Depend`的使用场景。
 在这个场景中，用户每次访问接口时都需要带上Token，服务端在收到用户的请求后会先判断Token是否合法，如果不合法则会返回错误，合法则会执行接口的逻辑。
 
-如果在使用类`Flask`的微Web框架，大多数使用者都会选择使用`Python`装饰器的方法来共享用户Token校验，如下:
+如果在使用类`Flask`的微Web框架，大多数使用者都会选择使用`Python`装饰器来共享用户Token校验逻辑，如下:
 ```python
 @check_token()
 def demo_route() -> None:
@@ -26,11 +26,9 @@ def demo_route() -> None:
 def demo_route(uid: str) -> None:
     pass
 ```
-但是这种实现方法比较动态，代码检测工具很难检测出来是否有问题，只有在订好内部规范的情况下，才有可能防止开发人员错误的使用`check_token`装饰器，但也没办法完全防止错误的使用，而使用`Pait`的`Depend`可以解决这个问题。
+但是这种实现方法比较动态，导致代码检测工具很难检测这段代码是否有问题，只有在订好内部规范的情况下，才有可能防止开发人员错误的使用`check_token`装饰器，但并没办法完全防止`check_token`装饰器被错误的使用。
 
-`Pait`的`Depend`使用示例代码如下，其中第一段高亮代码是模仿数据库的调用方法，目前假设数据库只有用户`so1n`拥有token，且token值为"u12345"。
-第二段高亮代码是一个名为`get_user_by_token`的函数，它的作用是从Header中获取Token，并校验Token是否存在，如果存在则返回用户，不存在则抛错。这个函数是一个特殊的函数，它的参数填写规则与被`Pait`装饰的路由函数一致， 之前提到的任何写法都可以在这个函数中使用，同时该函数可以被`Pait`的`Depend`使用。
-第三段高亮则是路由函数填写的Token参数，比较特殊的是这里通过`field.Depend`来裹住`get_user_by_token`函数：
+使用`Pait`的`Depend`可以解决这个问题，`Pait`的`Depend`使用示例代码如下:
 === "Flask"
 
     ```py linenums="1" title="docs_source_code/introduction/depend/flask_with_depend_demo.py"  hl_lines="13 16-19 23"
@@ -55,15 +53,20 @@ def demo_route(uid: str) -> None:
     ```py linenums="1" title="docs_source_code/introduction/depend/tornado_with_depend_demo.py" hl_lines="18 21-24 29"
     --8<-- "docs_source_code/introduction/depend/tornado_with_depend_demo.py"
     ```
-接着使用`curl`命令进行测试，发现这段代码工作一切正常，当token存在时返回用户，不存在则返回抛错信息:
+代码中第一段高亮代码是模仿数据库的调用方法，目前假设数据库只有用户`so1n`拥有token，且token值为"u12345"。
+第二段高亮代码是一个名为`get_user_by_token`的函数，它负责从Header中获取Token，并校验Token是否存在，如果存在则返回用户，不存在则抛错。这个函数是一个特殊的函数，它的参数填写规则与被`Pait`装饰的路由函数一致， 之前提到的任何写法都可以在这个函数中使用，同时该函数可以被`Pait`的`Depend`使用。
+第三段高亮则是路由函数填写的Token参数，比较特殊的是这里通过`field.Depend`来裹住`get_user_by_token`函数，这样`Pait`就能够知道当前路由函数的Token参数必须通过`get_user_by_token`函数获取。
+
+在运行代码并使用`curl`命令进行测试，发现这段代码工作一切正常，当token存在时返回用户，不存在则返回抛错信息:
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u12345"
+> curl "http://127.0.0.1:8000/api/demo" --header "token:u12345"
 {"user":"so1n"}
-➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u123456"
+> curl "http://127.0.0.1:8000/api/demo" --header "token:u123456"
 {"data":"Can not found by token:u123456"}
 ```
 
-除此之外，`Pait`还能支持多层Depend嵌套的，以上面的代码为例子，假设Token要经过一层特别的校验，且该校验逻辑会被复用，则代码可以改写成如下代码：
+除此之外，`Pait`还能支持多层Depend嵌套的，以上面的代码为例子，现在假设Token在获取后要经过一层特别的校验，校验成功后才会去数据库获取对应的用户，代码可以改写成如下代码：
 === "Flask"
 
     ```py linenums="1" title="docs_source_code/introduction/depend/flask_with_nested_depend_demo.py"  hl_lines="16-19 22"
@@ -89,20 +92,22 @@ def demo_route(uid: str) -> None:
     --8<-- "docs_source_code/introduction/depend/tornado_with_nested_depend_demo.py"
     ```
 
-其中高亮部分为新修改的地方， 主要是新增了一个`check_token`的函数用来获取和校验Token，而`get_user_by_token`则依赖于`check_token`获取Token并判断用户是否存在。
-使用`curl`进行接口测试，发现响应结果正常，不符合校验逻辑的会返回抛错信息：
+其中高亮部分为新修改的地方， 主要是新增了一个`check_token`的函数用来获取和校验Token，同时`get_user_by_token`依赖于`check_token`校验Token是否合法。
+
+在运行代码并使用`curl`进行接口测试，发现响应结果正常，不符合校验逻辑的会返回抛错信息：
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u12345"
+> curl "http://127.0.0.1:8000/api/demo" --header "token:u12345"
 {"user":"so1n"}
-➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u123456"
+> curl "http://127.0.0.1:8000/api/demo" --header "token:u123456"
 {"data":"Can not found by token:u123456"}
-➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:fu12345"
+> curl "http://127.0.0.1:8000/api/demo" --header "token:fu12345"
 {"data":"Illegal Token"}
 ```
 
 ## 2.基于ContextManager的Depend
-上文所示的`Depends`用法虽然能正常的使用，但是它不能像`Python`装饰器一样知道函数的运行情况，包括函数是否正常运行，产生的异常是什么，何时运行结束等等等，
-所以`Pait`的`Depend`通过支持`ContentManager`来解决这个问题。
+上文所示的`Depends`用法虽然都能够正常的运行，但是它们没办法像`Python`装饰器一样知道函数的运行情况，包括函数是否正常运行，产生的异常是什么，何时运行结束等等等，
+这时就需要基于`ContextManager`的`Depend`来解决这个问题。
 
 这种方式的使用方法很简单，只要把函数加上对应的`ContextManager`装饰器，然后按照[官方文档](https://docs.python.org/3/library/contextlib.html)使用`try`,`except`,`finally`语法块即可，如下示例代码:
 ```Python
@@ -127,7 +132,7 @@ def demo() -> Generator[Any, Any, Any]:
 
     `ContextManager`的`Depend`函数除了参数外，其余的编写方法和官方的一致，具体可见[contextlib — Utilities for with-statement contexts](https://docs.python.org/3/library/contextlib.html)
 
-下面的代码是一个使用了`ContextManager`和`Depend`例子：
+下面的代码是一个使用了`ContextManager`和`Depend`的例子：
 === "Flask"
 
     ```py linenums="1" title="docs_source_code/introduction/depend/flask_with_context_manager_depend_demo.py"  hl_lines="16-32 35-46 50"
@@ -153,14 +158,15 @@ def demo() -> Generator[Any, Any, Any]:
     --8<-- "docs_source_code/introduction/depend/tornado_with_context_manager_depend_demo.py"
     ```
 该例子假设每次调用请求时都会基于对应的uid创建一个Session，并在请求结束时自动关闭，
-其中第一段高亮代码是模拟一个基于Uid的Session，第二段高亮代码则是带有`ContextManger`的Depends函数，并分别在`try`, `except`以及`finally`打印不同的内容，
+其中第一段高亮代码是模拟一个基于Uid的Session，第二段高亮代码则是一个被`ContextManger`装饰的Depends函数，并分别在`try`, `except`以及`finally`打印不同的内容，
 而第三段高亮代码则是路由函数，它会依据参数`is_raise`是否为`True`来决定抛错还是正常返回。
 
-现在运行代码并使用`curl`进行接口测试，发现第一个请求是通过的，但是第二个请求发生异常(返回空字符串)：
+现在运行代码并使用`curl`进行接口测试，发现第一个请求的响应结果是正常的，而第二个请求发生异常(返回空字符串)：
+<!-- termynal -->
 ```bash
-➜  ~ curl "http://127.0.0.1:8000/api/demo?uid=999"
+> curl "http://127.0.0.1:8000/api/demo?uid=999"
 {"code":0,"msg":999}
-➜  ~ curl "http://127.0.0.1:8000/api/demo?uid=999&is_raise=True"
+> curl "http://127.0.0.1:8000/api/demo?uid=999&is_raise=True"
 {"data":""}
 ```
 这时切回到运行Python进程的终端，可以发现终端打印了类似如下数据:
@@ -175,8 +181,9 @@ INFO:     127.0.0.1:44164 - "GET /api/demo?uid=999&is_raise=True HTTP/1.1" 200 O
 ```
 从输出的数据可以看出， 第一个请求访问服务端时，服务端进程只打印了`init`和`exit`，而对于第二个请求，服务端的逻辑会执行到异常处，所以会在`init`和`exit`中间多打印了一行`error`。
 ## 3.基于类的Depend
-前文所述的都是基于函数的`Depend`，而`Pait`还提供基于类的的实现。
-基于类的`Depend`用法与基于函数的`Depend`类似，不过`Pait`除了解析基于类的`Depend`的`__call__`方法的函数签名外，还会去解析它的属性，如下代码:
+前文展示的用例使用的都是基于函数的`Depend`，除此之外，`Pait`还提供基于类的`Depend`。
+基于类的`Depend`用法与基于函数的`Depend`类似，不过在运行时`Pait`除了解析基于类的`Depend`的`__call__`方法的函数签名外，还会去解析它的属性。
+基于类的`Depend`使用示例如下:
 === "Flask"
 
     ```py linenums="1" title="docs_source_code/introduction/depend/flask_with_class_depend_demo.py"  hl_lines="19-28 32"
@@ -202,19 +209,19 @@ INFO:     127.0.0.1:44164 - "GET /api/demo?uid=999&is_raise=True HTTP/1.1" 200 O
     --8<-- "docs_source_code/introduction/depend/tornado_with_class_depend_demo.py"
     ```
 
-其中的第一段高亮代码是基于类的`Depend`实现，这段代码主要分为两部分，
-第一部分是类的属性，这里也采用`<name>: <type> = <default>`的格式编写的，这样一来每当请求命中路由时，`Pait`都会为该类注入对应的值。
-第二部分是根据`Depend的使用`中的例子进行改写的，它除了校验Token外，还会校验Token对应的用户名是否正确(正常的逻辑基本不会这样做，这里只做功能演示)。
-这里的`__call__`方法是真正被`pait`调用方法，所以它的使用方法与基于函数的`Depend`类似。
+代码中的第一段高亮代码是基于类的`Depend`实现，这段代码主要分为两部分，
+第一部分是类的属性，这里也采用`<name>: <type> = <default>`的格式编写的，每当请求命中路由时，`Pait`都会为该类注入对应的值。
+第二部分是根据`Depend的使用`中的例子进行改写的，它除了校验Token外，还会校验Token对应的用户名是否正确(正常的逻辑基本不会这样做，这里只做功能演示)，`__call__`方法的使用方法与基于函数的`Depend`类似。
 
 ??? tip "`__call__`方法使用限制说明"
+    在`Python`中万物皆对象，所以一个拥有`__call__`方法的类与函数类似，如下示例代码：
     ```Python
     from typing import Any
     class DemoDepend(object):
         def __call__(self, *args: Any, **kwargs: Any) -> Any:
             pass
     ```
-    是一个直观的使用方式，但是由于`Python`的限制，它不支持函数签名重写，比如下面的重写方法函数的例子:
+    代码中的`__call__`方法是一个直观的使用方式，但是由于`Python`的限制，`__call__`方法不支持函数签名重写，比如下面的例子:
     ```Python
     from typing import Any
     from pait import field
@@ -228,7 +235,8 @@ INFO:     127.0.0.1:44164 - "GET /api/demo?uid=999&is_raise=True HTTP/1.1" 200 O
         def __call__(self, uid: str = field.Query.i()) -> Any:
             pass
     ```
-    这时候解析出来的`__call__`方法仍然是`__call__(self, uid: str = field.Query.i()) -> Any`，而不是`__call__(uid: str = field.Query.i(), user_name: str = field.Query.i()) -> Any`。此时推荐使用`pait_handler`方法，使用方法如下:
+    该类实例化后，`inspect`解析出来的`__call__`方法的函数签名仍然是`__call__(self, uid: str = field.Query.i()) -> Any`，而不是`__call__(uid: str = field.Query.i(), user_name: str = field.Query.i()) -> Any`。
+    这会导致`Pait`无法提取正确的参数规则，为了解决这个问题，`Pait`在遇到`Depend`类时会优先去解析`pait_handler`方法，而该方法是允许被重写的，如下:
     ```Python
     from typing import Any
     from pait import field
@@ -242,10 +250,12 @@ INFO:     127.0.0.1:44164 - "GET /api/demo?uid=999&is_raise=True HTTP/1.1" 200 O
         def pait_handler(self, uid: str = field.Query.i()) -> Any:
             pass
     ```
-    这样`Pait`就能正常解析出`pait_handler`的函数签名是`pait_handler(uid: str = field.Query.i(), user_name: str = field.Query.i()) -> Any`
+    该类实例化后，`Pait`就能正常解析出`pait_handler`的函数签名是`pait_handler(uid: str = field.Query.i(), user_name: str = field.Query.i()) -> Any`
+
 而第二段高亮代码中则把`Depend`参数中的基于函数的`Depend`替换为基于类的`Depend`。
 
-运行代码并执行如下`curl`命令，可以看到如下输出:
+在运行代码并执行如下`curl`命令，可以看到如下输出:
+<!-- termynal -->
 ```bash
 ➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u12345"
 {"data":"Can not found user_name value"}
@@ -287,17 +297,17 @@ INFO:     127.0.0.1:44164 - "GET /api/demo?uid=999&is_raise=True HTTP/1.1" 200 O
     def demo1(user_name: str = field.Depends.i(GetUserDepend)):
         pass
     ```
-    这个例子中每个接口针对使用者的年龄有所不同，大部分情况下小于18岁是不可以访问的，而`demo1`接口的限制的是小于16岁的是不可以访问的，所以他们的初始化参数是不同的。
-    而`pait.util.partial_wrapper`的作用与官方的`functools.partial`类似，它可以把参数跟`GetUserDepend`绑定，然后在初始化的时候会把参数传递进去，唯一不同的是它支持PEP612，所以可以在编写代码的时候获得`Type Hint`的功能，时刻保证自己的代码是健全的。
+    这个例子中每个接口针对使用者的年龄有所不同，大部分接口都会限制小于18岁的用户是不可以的，而`demo1`接口则是小于16岁的用户是不可以访问的，所以他们的初始化参数是不同的。
+    而`pait.util.partial_wrapper`的作用与官方的`functools.partial`类似，它可以把参数跟`GetUserDepend`绑定，然后在初始化的时候会把参数传递进去，唯一不同的是它支持PEP612，所以可以获得到代码提示以及使用检查工具进行代码检查。
 
 ## 4.Pre-Depend
-在一些场景下只需要`Depends`函数执行校验逻辑，如果校验失败就抛出错误，正常就返回空数据，路由函数实际上并不需要`Depends`函数的返回值，那么这时候可能会考虑用变量名`_`来进行替代，如下:
+在一些场景下路由函数只需要`Depends`函数执行校验逻辑，如果校验失败就抛出错误，正常就放行，路由函数实际上并不需要`Depends`函数的返回值，那么这时候可能会考虑用变量名`_`来进行替代，如下:
 ```python
 @pait()
 def demo(_: str = field.Depends.i(get_user_by_token)) -> None:
     pass
 ```
-但是Python是不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们的变量名都改为`_`。
+不过`Python`并不支持一个函数内出现相同名字的变量， 这意味着有多个类似的参数时，不能把他们的变量名都改为`_`。
 
 为此，`Pait`通过可选参数`pre_depend_list`来提供了`Pre-Depends`功能，使用方法很简单，只需要把`Depend`函数从参数迁移到`Pait`的`pre_depend_list`可选参数即可，
 `Depend`代码的逻辑和功能均不会被受到影响，这样修改后代码会变为如下（高亮代码为修改部分）：
@@ -328,16 +338,17 @@ def demo(_: str = field.Depends.i(get_user_by_token)) -> None:
     ```
 
 运行代码并执行`curl`代码示例，输出结果如下：
+<!-- termynal -->
 ```python
-➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u12345"
+> curl "http://127.0.0.1:8000/api/demo" --header "token:u12345"
 {"msg":"success"}
-➜  ~ curl "http://127.0.0.1:8000/api/demo" --header "token:u123456"
+> curl "http://127.0.0.1:8000/api/demo" --header "token:u123456"
 {"data":"Can not found by token:u123456"}
 ```
-可以看到`Pre-Depend`能够正常。
+可以看到`Pre-Depend`能够正常工作。
 
 !!! note
-    - 1.当使用`Pre-Depend`时，`Pait`会先按顺序执行`Pre-Depend`再执行路由函数，如果`Pre-Depend`执行出错则会直接抛错。
+    - 1.当使用`Pre-Depend`时，`Pait`会先按顺序执行`Pre-Depend`后再执行路由函数，如果`Pre-Depend`执行出错则会直接抛错。
     - 2.`Pre-Depend`绑定是`Pait`而不是路由函数，这意味着`Pre-Depend`可以跟随`Pait`一起复用，详见[Pait的复用](/2_how_to_use_pait/)。
 
 
@@ -422,4 +433,4 @@ app.run(port=8000)
 ```
 该代码主要变动有两个，第一个是第一段高亮代码，该代码的`get_redis`函数从返回一个`Redis`连接变为返回一个获取`Redis`连接的方法，
 第二个变动是第二段高亮代码，这里从直接调用`Redis`连接变为先获取`Redis`连接再进行调用然后取消对`Redis`连接的占用。
-这样一来只有使用到了`Redis`才会去获取到`Redis`的连接，系统的并发瓶颈也就不会受到`Redis`连接池影响了。
+这样一来只有使用到了`Redis`才会去获取到`Redis`的连接，系统的并发瓶颈也就不会很容易的受到`Redis`连接池影响了。
