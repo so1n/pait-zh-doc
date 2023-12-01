@@ -667,7 +667,7 @@
             
   
   <span class="md-ellipsis">
-    插件[Editing]
+    插件
   </span>
   
 
@@ -677,7 +677,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
-            插件[Editing]
+            插件
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -771,7 +771,7 @@
         
   
   <span class="md-ellipsis">
-    缓存插件
+    缓存响应插件
   </span>
   
 
@@ -927,10 +927,8 @@
 
   <h1>如何使用Pait装饰器</h1>
 
-<p>在前面的章节中介绍了通过使用<code>Pait</code>装饰器以及改写路由函数的函数签名来使用<code>Pait</code>的参数转换与类型校验功能，也有简单的介绍通过<code>pre_depend_list</code>参数来使用<code>Pait</code>的Pre-Depend功能。
-这功能都是简单的使用<code>Pait</code>装饰器来装饰函数，并通过配置不同属性的值来启用不同的功能，此时的<code>Pait</code>装饰器更像是一个针对路由函数的配置功能，不过很多路由函数本身都有一些共性导致它们在使用<code>Pait</code>时填写的参数的一样的，
-比如在编写几个同个功能的路由函数时，可能会这样编写代码：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">pait.app</span> <span class="kn">import</span> <span class="n">pait</span>
+<p>在使用<code>Pait</code>的过程中，可能会发现有多个路由函数使用到参数配置是相同的，如下代码：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">pait.app.any</span> <span class="kn">import</span> <span class="n">pait</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">pait.model.status</span> <span class="kn">import</span> <span class="n">PaitStatus</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PaitStatus</span><span class="o">.</span><span class="n">test</span><span class="p">)</span>
@@ -946,26 +944,27 @@
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">def</span> <span class="nf">demo3</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="k">pass</span>
 </code></pre></div>
-<p>这份示例代码共有3个路由函数，它们都使用相同的<code>Pait</code>的<code>status</code>参数--<code>PaitStatus.test</code>，代表现在的路由函数的状态都处于测试中。
-在经过一段时间的测试后，路由函数通过测试了，此时他们的状态需要变为<code>Relese</code>，于是就得手动的把每个接口的状态都切换为<code>PaitStatus.release</code>。
-在路由函数比较多的时候，手动的切换状态是非常麻烦的，这时候可以先定义一个公共的<code>Pait</code>并在所有路由函数使用，使这些路由函数可以共享同一个<code>Pait</code>，从而共享同一份配置功能。</p>
+<p>示例代码中共有3个路由函数，由于他们还处于测试阶段，所以它们<code>status</code>的值都是<code>PaitStatus.test</code>。
+在经过一段时间的测试后，代码已经变得完善了并且可以准备发布，此时路由函数的状态需要变更为<code>Relese</code>，
+于是就得手动的把每个路由函数的状态都切换为<code>PaitStatus.release</code>，
+在路由函数比较多的时候，手动的切换状态是非常麻烦的。
+为此，可以先定义一个公共的<code>Pait</code>并在所有路由函数使用，使这些路由函数可以共享同一个<code>Pait</code>，从而共享同一份配置功能。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul>
-<li>1.本章节只提供的示例都是基于<code>Starlette</code>框架，其他框架在使用的时候除了引入<code>Pait</code>类的<code>import</code>语句稍有不同外，其他的使用方法都是一致的。</li>
-<li>2.本章节着重描写的是<code>Pait</code>类的用法，至于不同属性的作用会在其对应的功能文档中描写。</li>
-<li>3.<code>Pait</code>可以认为是一个托管数据的容器，只要他们的属性一致，那么他们表达的功能是一致的，即使他们之间没有任何关系。</li>
+<li>1.本章节提供的示例都是基于<code>Starlette</code>框架，其他框架在使用的时候只有导入<code>Pait</code>类的<code>import</code>语句稍有不同外。</li>
+<li>2.本章节着重介绍的是<code>Pait</code>类的用法，不同属性的作用会在其对应的文档介绍。</li>
+<li>3.<code>Pait</code>可以认为是一个托管数据的容器，只要他们的属性一致，那么他们的功能是一致的，即使他们之间没有任何关系。</li>
 </ul>
 </div>
 <h2 id="1pait">1.自定义Pait</h2>
-<p>在前文关于<code>Pait</code>的介绍，都是通过如下语法去引入并使用的:</p>
+<p>在前文关于<code>Pait</code>的介绍，都是通过如下语法导入<code>Pait</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">pait.app.flask</span> <span class="kn">import</span> <span class="n">pait</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">pait.app.sanic</span> <span class="kn">import</span> <span class="n">pait</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">pait</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kn">from</span> <span class="nn">pait.app.tornado</span> <span class="kn">import</span> <span class="n">pait</span>
 </code></pre></div>
-<p>这是最方便的引用<code>Pait</code>的方法，不过它本身是针对每个Web框架定制<code>Pait</code>类的单例（在本章暂且称为标准<code>pait</code>装饰器），在自定义<code>Pait</code>时，建议通过Web框架对应的<code>Pait</code>类入手，
-并基于<code>Pait</code>类重新实例化一个自定义的<code>Pait</code>实例，然后把路由函数的<code>Pait</code>装饰器替换为自定义的<code>Pait</code>实例，比如下面的示例代码：</p>
+<p>通过该语法导入的<code>pait</code>是每个Web框架对应<code>Pait</code>类的单例，在自定义<code>Pait</code>时，建议通过Web框架对应的<code>Pait</code>类入手，比如下面的示例代码：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">pait.model.status</span> <span class="kn">import</span> <span class="n">PaitStatus</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">Response</span>
@@ -987,14 +986,12 @@
 </span><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo2</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
 <a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="k">pass</span>
 </code></pre></div>
-<p>其中的第一段高亮代码是基于<code>Pait</code>类来创建一个变量名为<code>global_pait</code>的<code>Pait</code>实例，它与之前使用的标准<code>pait</code>装饰器基本类似，唯一的区别是它的<code>status</code>属性被指定为<code>PaitStatus.test</code>。
-而其他高亮代码把<code>global_pait</code>都应用到所有的路由函数中，此时路由函数应用<code>global_pait</code>的效果与如下代码的效果是一致的：</p>
+<p>示例代码的第一段高亮代码是基于<code>Pait</code>类创建一个名为<code>global_pait</code>的<code>Pait</code>实例，它与框架对应<code>pait</code>实例类似，唯一的区别是它的<code>status</code>属性被指定为<code>PaitStatus.test</code>。
+其他高亮代码则是把<code>global_pait</code>都应用到所有的路由函数中，路由函数的<code>status</code>与下面这段代码的<code>status</code>是一致的：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nd">@pait</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">PaitStatus</span><span class="o">.</span><span class="n">test</span><span class="p">)</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">demo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="k">pass</span>
 </code></pre></div>
-<p>所有路由函数的<code>status</code>属性都为<code>PaitStatus.test</code>，
-如果在后续的代码迭代导致这几个路由函数的<code>status</code>属性需要变动时，只需要直接修<code>global_pait</code>的属性则可以让所有接口的<code>Pait</code>属性都得到更改。</p>
 <h2 id="2pait">2.创建子Pait</h2>
 <p><code>Pait</code>可以通过<code>create_sub_pait</code>方法创建自己的子<code>Pait</code>，每个子<code>Pait</code>的属性都是从父<code>Pait</code>克隆的，比如下面这段代码：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
@@ -1004,15 +1001,16 @@
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">other_pait</span><span class="p">:</span> <span class="n">Pait</span> <span class="o">=</span> <span class="n">global_pait</span><span class="o">.</span><span class="n">create_sub_pait</span><span class="p">()</span>
 </code></pre></div>
 <p>代码中<code>other_pait</code>是通过<code>global_pait</code>创建的，所以它的<code>status</code>属性也跟<code>global_pait</code>的<code>status</code>属性一样都是<code>PaitStatus.test</code>。</p>
-<p>如果子<code>Pait</code>的部分属性不想克隆于父<code>Pait</code>，那么可以通过在创建的时候通过指定属性的值，使子<code>Pait</code>的属性被指定的值覆盖，如下代码:</p>
+<p>如果不想克隆父<code>Pait</code>的属性，那么可以在创建子<code>Pait</code>时指定子<code>Pait</code>的属性，从而达到覆盖父<code>Pait</code>属性的效果，如下代码:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">global_pait</span><span class="p">:</span> <span class="n">Pait</span> <span class="o">=</span> <span class="n">Pait</span><span class="p">(</span><span class="n">author</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;so1n&quot;</span><span class="p">,),</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="p">)</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">user_pait</span><span class="p">:</span> <span class="n">Pait</span> <span class="o">=</span> <span class="n">global_pait</span><span class="o">.</span><span class="n">create_sub_pait</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>代码中<code>global_pait</code>与<code>user_pait</code>的<code>author</code>属性都是<code>("so1n", )</code>，但是由于在创建<code>user_pait</code>时指定了<code>group</code>的值为<code>user</code>，所以<code>global_pait</code>的<code>group</code>属性为<code>global</code>，而<code>user_pait</code>的<code>group</code>属性为<code>user</code>。</p>
+<p><code>global_pait</code>与<code>user_pait</code>的<code>author</code>属性都为<code>("so1n", )</code>，
+但是由于在创建<code>user_pait</code>时指定了<code>group</code>的值为<code>user</code>，所以<code>global_pait</code>与<code>user_pait</code>的<code>group</code>属性是不同的，它们分别为<code>global</code>和<code>user</code>。</p>
 <h2 id="3pait">3.使用Pait</h2>
-<p>子<code>Pait</code>创建之后的用法与标准<code>pait</code>装饰器的用法是完全一致的，唯一不同的是它本身已经携带了部分属性的配置信息，在装饰路由之后，会使路由函数拥有了对应的配置功能。如下代码：</p>
+<p>子<code>Pait</code>的用法与标准<code>pait</code>装饰器的用法是完全一致的，唯一不同的是它本身已经携带了部分配置数据，在装饰路由之后，会使路由函数拥有了对应的配置功能。如下代码：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
@@ -1032,10 +1030,10 @@
 <a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_server_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
 <a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>    <span class="k">pass</span>
 </code></pre></div>
-<p>代码中的用户登录路由函数<code>user_login</code>以及用户注销路由函数<code>user_logout</code>都使用<code>user_pait</code>，
-所以他们的<code>group</code>的值都为<code>user</code>；而获取服务器时间戳的路由函数<code>get_server_timestamp</code>则单独使用的是<code>global_pait</code>，它的<code>group</code>的值是<code>global</code>。</p>
-<p>如果想更改<code>user_logout</code>路由函数的<code>Pait</code>属性， 还可以在<code>user_logout</code>的<code>user_pait</code>装饰器填写对应的参数来达到更改的目的，
-如下面的代码，其中高亮部分会把路由函数<code>user_logout</code>的<code>group</code>属性变为<code>user-logout</code>而不是<code>user</code>:</p>
+<p>路由函数<code>user_login</code>和<code>user_logout</code>都被<code>user_pait</code>装饰， 所以他们的<code>group</code>的值都为<code>user</code>；
+而路由函数<code>get_server_timestamp</code>被<code>global_pait</code>装饰，所以它的<code>group</code>的值为<code>global</code>。</p>
+<p>此外，在子<code>pait</code>装饰路由函数时，可以通过定义属性的值实现覆写子<code>pait</code>原先的属性值。
+如下面的代码，高亮代码中的路由函数的<code>user_logout</code>的<code>group</code>属性变为<code>user-logout</code>而不再是<code>user</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">pait.app.starlette</span> <span class="kn">import</span> <span class="n">Pait</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
@@ -1077,10 +1075,10 @@
 <a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_server_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">JSONResponse</span><span class="p">:</span>
 <a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>    <span class="k">pass</span>
 </code></pre></div>
-<p>其中高亮部分使用到了<code>Pait</code>的<code>append_xxx</code>系列的参数来追加值，从而使<code>user_logout</code>的<code>author</code>值变为<code>("so1n", "Other Author")</code></p>
+<p>高亮部分代码中使用到了<code>Pait</code>的<code>append_xxx</code>系列的参数来追加值，从而使<code>user_logout</code>的<code>author</code>值变为<code>("so1n", "Other Author")</code></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>追加的值只会添加都最后一个元素，而部分功能如<code>Pre-Depend</code>需要考虑元素放置的顺序，使用时请留意追加的顺序是否合适。</p>
+<p>追加的值只会添加到序列中的末尾，而部分功能如<code>Pre-Depend</code>需要考虑值的放置顺序，使用时请留意追加的顺序是否合适。</p>
 </div>
 
 
