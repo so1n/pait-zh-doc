@@ -22,7 +22,7 @@
     仅支持Python3.8+版本
 
 ```bash
-pip install pait --pre
+pip install pait
 ```
 
 ## 使用
