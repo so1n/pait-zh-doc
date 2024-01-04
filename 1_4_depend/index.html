@@ -849,25 +849,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../7_gRPC_gateway/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    gRPC Gateway[Editing]
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../8_other/" class="md-nav__link">
         
   
@@ -1298,7 +1279,7 @@
 第三段高亮代码则是路由函数填写的Token参数，这里比较特殊的是通过<code>field.Depend</code>来裹住<code>get_user_by_token</code>函数，
 这样<code>Pait</code>就能够知道当前路由函数的Token参数必须通过<code>get_user_by_token</code>函数获取。</p>
 <p>在运行代码并调用<code>curl</code>命令可以发现发现这段代码工作一切正常，当token存在时返回用户，不存在则返回抛错信息:
-After running the code and calling the <code>curl</code> command, can find that this code works normally. 
+After running the code and calling the <code>curl</code> command, can find that this code works normally.
 When the token exists, it returns to the user. If it does not exist, it returns an error message:</p>
 <div class="termy" data-termynal data-ty-macos data-ty-title="bash"><span data-ty="input" data-ty-prompt="&gt;">curl &quot;http://127.0.0.1:8000/api/demo&quot; --header &quot;token:u12345&quot;</span><span data-ty>{&quot;user&quot;:&quot;so1n&quot;}</span><span data-ty="input" data-ty-prompt="&gt;">curl &quot;http://127.0.0.1:8000/api/demo&quot; --header &quot;token:u123456&quot;</span><span data-ty>{&quot;data&quot;:&quot;Can not found by token:u123456&quot;}<br></span></div>
 
