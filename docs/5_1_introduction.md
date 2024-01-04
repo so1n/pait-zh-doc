@@ -31,7 +31,7 @@ app = Starlette(routes=[Route("/api/demo", demo, methods=["GET"])])
 
 uvicorn.run(app)
 ```
-假设代码中的`app`已经装载了一个中间件和对应的`Pait`插件，在收到一个请求时，它的处理逻辑会变为如下(采用不同的方式描述处理逻辑，核心逻辑是一致的):
+假设代码中的`app`已经装载了一个中间件和对应的`Pait`插件，在收到一个请求时，它会按如下顺序处理请求(采用不同的方式描述处理逻辑，核心逻辑是一致的):
 
 === "graph"
 
@@ -74,9 +74,7 @@ uvicorn.run(app)
 
     ![pait-plugin](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/1647762511992pait-plugin.jpg)
 
-在这个处理逻辑中， 请求会先由Web框架的中间件处理，接着由Web框架执行查找路由的功能，当找不到路由时就会返回`Not Found`的响应给客户端，如果找到了对应的路由，就会把请求传入到到`Pait`的处理逻辑。
-
-在`Pait`的处理逻辑中请求被分为几步处理：
+在这个逻辑中， 请求会先由Web框架的中间件处理，接着由Web框架查找路由，当找不到路由时就会返回`Not Found`的响应给客户端，如果找到了对应的路由，就会把请求交给`Pait`处理。在`Pait`的处理可以被分为以下几步：
 
 - 1.请求会先被前置插件处理，这时候前置插件只能得到框架对应的`request`参数(如果是`flask`框架，则没有)以及`Path`参数。
 - 2.当前置插件处理完毕后就会把请求传入到核心插件进行参数提取和校验转换。
@@ -84,24 +82,26 @@ uvicorn.run(app)
 - 4.最后才经由后置插件把参数交给真正的路由函数处理生成响应并一一返回。
 
 ## 如何使用
-目前`Pait`通过`plugin_list`和`post_plugin_list`参数分别接收前置插件和后置插件，如下：
+目前`Pait`通过`plugin_list`和`post_plugin_list`参数接收前置插件和后置插件，如下：
 ```Python
+from pait.app.any import pait
 from pait.plugin.required import RequiredPlugin
 
 @pait(post_plugin_list=[RequiredPlugin.build(required_dict={"email": ["username"]})])
 ```
-这段代码使用到的是一个名为`RequiredPlugin`的插件，这个插件属于后置插件，所以需要通过`post_plugin_list`参数使用插件。
-同时，由于插件需要被`Pait`进行编排后才可以直接使用，所以插件不支持直接初始化插件，而是需要使用`build`方法来初始化插件(插件的`__init__`方法也不会提供准确的函数签名)。
+示例代码使用到的是一个名为`RequiredPlugin`的后置插件，需要通过`post_plugin_list`参数使用。
+同时，插件需要被`Pait`编排后才可以使用，所以插件不支持通过`__init__`方法初始化，而是需要使用`build`方法来初始化插件。
 
 如果考虑到插件的复用，推荐使用`create_factory`函数，该函数使用了[PEP-612](https://peps.python.org/pep-0612/)，支持IDE提醒和类型检查，`create_factory`使用方法如下：
 ```Python
+from pait.app.any import pait
 from pait.util import create_factory
+from pait.plugin.required import RequiredPlugin
 
-# 首先传入插件的build方法，并把build需要的参数传进去
-# 然后得到的是一个可调用的方法
+# 传入插件的build方法，并填写build需要的参数，就可以得到一个插件构建工厂函数
 required_plugin = create_factory(RequiredPlugin.build)(required_dict={"email": ["username"]})
 
-# 直接调用create_factory的返回，这时候插件会注入到路由函数中并进行一些初始化，同时也不影响其它路由函数的使用
+# 直接调用`required_plugin`会得到一个单独的插件，不会与其他函数共享
 @pait(post_plugin_list=[required_plugin()])
 def demo_1():
     pass
@@ -112,15 +112,18 @@ def demo_2():
 ```
 
 ## 关闭预检查
-`Pait`是一个装饰器，用来装饰路由函数，所以在程序启动的时候会直接运行，装填各种参数并进行初始化。
-不过`Pait`在把插件装填到路由函数时会调用到插件的`pre_check_hook`方法，对用户使用插件是否正确进行校验，比如下面的代码:
+`Pait`是一个用来装饰路由函数的装饰器，所以在程序启动的时候会直接运行，装填各种参数并进行初始化。
+不过插件在初始化之前会调用到插件的`pre_check_hook`方法以检查是否正确使用插件，比如下面的代码:
 ```Python
+from pait.app.any import pait
+from pait.field import Body
+
 @pait()
 def demo(
     uid: str = Body.i(default=None)
 ) -> None:
     pass
 ```
-在启动的时候核心插件会校验到用户填写的`default`值并不属于`str`类型，所以会抛出错误。
-不过这类检查可能会影响到程序的启动时间，所以建议在测试环境下才通过`pre_check`进行检查，在生产环境则关闭该功能。
+在程序启动的时候核心插件会校验`default`值并不属于`str`类型，所以会抛出错误。
+不过`pre-check`可能会影响到程序的启动时间，所以建议只在测试环境下才进行`pre_check`，在生产环境则关闭该功能。
 关闭的方法很简单，通过设置环境变量`PAIT_IGNORE_PRE_CHECK`为True即可关闭。

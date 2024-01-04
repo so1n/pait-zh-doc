@@ -1,0 +1,3 @@
+[submodule "docs_source_code"]
+	path = docs_source_code
+	url = git@github.com:so1n/pait.git
