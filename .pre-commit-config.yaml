@@ -6,7 +6,7 @@ repos:
         additional_dependencies:
           ["types-redis"]
   - repo: https://github.com/PyCQA/isort
-    rev: 5.9.3
+    rev: 5.13.2
     hooks:
       - id: isort
         exclude: "^docs_source_code/unit_test_helper"

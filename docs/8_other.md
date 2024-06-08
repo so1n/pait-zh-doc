@@ -174,27 +174,27 @@ SimpleRoute的使用方法如下:
 
 === "Flask"
 
-    ```py linenums="1" title="docs_source_code/docs_source_code/other/flask_with_simple_route_demo.py" hl_lines="8-20 24-32"
+    ```py linenums="1" title="docs_source_code/other/flask_with_simple_route_demo.py" hl_lines="8-20 24-32"
 
-    --8<-- "docs_source_code/docs_source_code/docs_source_code/other/flask_with_simple_route_demo.py"
+    --8<-- "docs_source_code/docs_source_code/other/flask_with_simple_route_demo.py"
     ```
 
 === "Starlette"
 
-    ```py linenums="1" title="docs_source_code/docs_source_code/other/starlette_with_simple_route_demo.py" hl_lines="8-20 24-32"
-    --8<-- "docs_source_code/docs_source_code/docs_source_code/other/starlette_with_simple_route_demo.py"
+    ```py linenums="1" title="docs_source_code/other/starlette_with_simple_route_demo.py" hl_lines="8-20 24-32"
+    --8<-- "docs_source_code/docs_source_code/other/starlette_with_simple_route_demo.py"
     ```
 
 === "Sanic"
 
-    ```py linenums="1" title="docs_source_code/docs_source_code/other/sanic_with_simple_route_demo.py" hl_lines="9-21 25-33"
-    --8<-- "docs_source_code/docs_source_code/docs_source_code/other/sanic_with_simple_route_demo.py"
+    ```py linenums="1" title="docs_source_code/other/sanic_with_simple_route_demo.py" hl_lines="9-21 25-33"
+    --8<-- "docs_source_code/docs_source_code/other/sanic_with_simple_route_demo.py"
     ```
 
 === "Tornado"
 
-    ```py linenums="1" title="docs_source_code/docs_source_code/other/tornado_with_simple_route_demo.py" hl_lines="9-21 25-33"
-    --8<-- "docs_source_code/docs_source_code/docs_source_code/other/tornado_with_simple_route_demo.py"
+    ```py linenums="1" title="docs_source_code/other/tornado_with_simple_route_demo.py" hl_lines="9-21 25-33"
+    --8<-- "docs_source_code/docs_source_code/other/tornado_with_simple_route_demo.py"
     ```
 第一段高亮代码是按照`SimpleRoute`标准创建了三个路由函数，SimpleRoute的标准如下:
 
