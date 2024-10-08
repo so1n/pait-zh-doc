@@ -1,5 +1,5 @@
 # 介绍
-`Pait`是一个有助于开发者快速编写API路由函数的Python API开发工具，拥有参数类型检查， 类型转换，自动API文档等功能，适合用于后端的接口开发。
+`Pait`是一个有助于后端开发者快速编写API路由函数的Python API开发工具，它拥有参数类型检查， 类型转换，自动API文档等功能，适合用于后端的接口开发。
 
 此外，它还被设计成一个适配多个Python Web应用框架的适配器(详见[Web框架支持](/#web))，
 基于`Pait`可以无需考虑不同WEB框架的差异性快速开发适配各个WEB框架的应用，比如[grpc-gateway](https://github.com/python-pai/grpc-gateway)。
@@ -11,8 +11,10 @@
  - [x] 请求参数的自动校验和类型转化(依赖`Pydantic`和`inspect`，目前支持`Pydantic`V1和V2版本)。
  - [x] 自动生成openapi文件，支持`Swagger`,`Redoc`,`RapiDoc` and `Elements`。
  - [x] TestClient支持, 支持测试用例的响应结果校验。
- - [x] 插件拓展，如参数关系依赖校验，Mock响应等。
+ - [x] 插件拓展，如参数关系依赖校验，Mock响应，Json响应自动补全和校验等。
  - [x] gRPC GateWay(在1.0版本后，该功能已迁移到[grpc-gateway](https://github.com/python-pai/grpc-gateway))
+ - [x] 支持Asyncio框架调用同步路由。
+ - [x] 支持Flask, Sanic, Starlette, Tornado等Web框架。
  - [ ] 自动API测试
  - [ ] WebSocket支持
  - [ ] SSE 支持
@@ -49,21 +51,21 @@ pip install pait
 
 === "Tornado"
 
-    ```py linenums="1" title="docs_source_code/docs_source_code/introduction/tornado_demo.py" hl_lines="23 25-26 33"
+    ```py linenums="1" title="docs_source_code/docs_source_code/introduction/tornado_demo.py" hl_lines="23 25-27 33"
     --8<-- "docs_source_code/docs_source_code/introduction/tornado_demo.py"
     ```
 
-代码中总共有三段高亮代码，其中第一段高亮代码中的`@pait`会装饰路由函数， 并在程序启动时自动从路由函数提取接口的请求参数数据。
+示例代码总共有三段高亮代码，其中第一段高亮代码中的`@pait`会装饰路由函数， 并在程序启动时自动从路由函数提取接口的请求参数数据。
 此外还通过`response_model_list`属性声明了路由函数的响应对象是`DemoResponseModel`，
 `DemoResponseModel`对象的`description`和`response_data`属性分别用于描述路由函数的响应对象说明和响应对象的结构类型。
 
-第二段高亮代码中路由函数的参数格式是一种符合`Pait`规范的格式。
-在初始化时，`@pait`会主动去解析路由函数并根据路由函数的函数签名生成依赖注入规则。
+第二段高亮代码中路由函数的参数格采用了符合`Pait`规范的格式。
+`@pait`在初始化时，会主动去解析路由函数并根据路由函数的函数签名生成依赖注入规则。
 当请求命中路由函数时，`Pait`会根据依赖注入规则从`Request`对象获取到对应的值并将其注入到路由函数中。
 
 第三段的高亮代码的主要工作是向`app`实例注册`OpenAPI`路由，为Web框架提供`OpenAPI`文档功能。
 
-在一切准备就绪后开始运行代码，并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) 就可以看到SwaggerUI的页面，页面将显示如下图一样的两组接口：
+在一切准备就绪后开始运行代码并在浏览器访问: [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000/swagger) 就可以看到SwaggerUI的页面，页面将显示如下图一样的两组接口：
 ![](https://cdn.jsdelivr.net/gh/so1n/so1n_blog_photo@master/blog_photo/1648292884021Pait%20doc-%E9%A6%96%E9%A1%B5%E7%A4%BA%E4%BE%8B%E6%8E%A5%E5%8F%A3-Swagger%E9%A6%96%E9%A1%B5.png)
 
 其中名为`pait_doc`组的接口属于`Pait`自带的`OpenAPI`接口，另外一组是包含刚创建`/api`接口的`default`组，点开`/api`接口后会弹出接口详情：
